@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "netherthefarm:blocks/spawn_point"
+  }
+}

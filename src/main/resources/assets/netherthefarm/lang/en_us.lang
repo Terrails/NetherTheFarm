@@ -1,0 +1,11 @@
+generator.NetherSurvival=Nether Survival
+
+tile.obelisk.name=Obelisk
+tile.hydroofarm.name=Hydro o' Farm
+tile.spawn_point.name=Spawn Point
+tile.tank.name=Tank
+
+tile.netherthefarm:tank.fluid.desc=%s/%s (%s) // CURRENTLY NOT USED
+tile.netherthefarm:tank.fluid.empty=0/%s (Empty) // CURRENTLY NOT USED
+
+itemGroup.NetherTheFarm=Nether The Farm

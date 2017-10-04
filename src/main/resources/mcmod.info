@@ -1,0 +1,16 @@
+[
+{
+  "modid": "netherthefarm",
+  "name": "Nether The Farm",
+  "description": "Mod created for farming in nether, WIP",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Terrails"],
+  "credits": "To terrails for creating the mod",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
