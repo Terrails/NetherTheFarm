@@ -1,4 +1,4 @@
-package terrails.netherthefarm.items;
+package terrails.netherthefarm.init;
 
 import net.minecraft.item.Item;
 

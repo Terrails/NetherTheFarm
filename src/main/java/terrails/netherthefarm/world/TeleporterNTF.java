@@ -1,6 +1,5 @@
 package terrails.netherthefarm.world;
 
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -11,7 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import terrails.netherthefarm.blocks.ModBlocks;
+import terrails.netherthefarm.init.ModBlocks;
 import terrails.netherthefarm.config.ConfigHandler;
 import terrails.netherthefarm.world.data.CustomWorldData;
 import terrails.terracore.helper.BlockHelper;
@@ -19,9 +18,9 @@ import terrails.terracore.helper.BlockHelper;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public class CustomTeleporter extends Teleporter {
+public class TeleporterNTF extends Teleporter {
 
-    public CustomTeleporter(WorldServer world, BlockPos blockPos) {
+    public TeleporterNTF(WorldServer world, BlockPos blockPos) {
         super(world);
         this.worldServer = world;
         this.blockPos = blockPos;
@@ -41,7 +40,7 @@ public class CustomTeleporter extends Teleporter {
             CustomWorldData worldData = CustomWorldData.get(playerMP.getEntityWorld());
 
             if (dimension != 0)
-                playerList.transferPlayerToDimension(playerMP, dimension, new CustomTeleporter(world, blockPos));
+                playerList.transferPlayerToDimension(playerMP, dimension, new TeleporterNTF(world, blockPos));
             playerMP.setPositionAndUpdate(x + 0.5, y, z + 0.5);
 
             BlockPos worldDataPos = new BlockPos(worldData.posX(), worldData.posY(), worldData.posZ());

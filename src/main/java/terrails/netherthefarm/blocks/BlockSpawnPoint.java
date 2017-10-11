@@ -28,7 +28,7 @@ public class BlockSpawnPoint extends BlockBase {
     public BlockSpawnPoint(String name) {
         super(Material.IRON, name);
         setBlockUnbreakable();
-        setCreativeTab(NetherTheFarm.creativeTab);
+        setCreativeTab(Constants.NTF_TAB);
     }
 
     @Override

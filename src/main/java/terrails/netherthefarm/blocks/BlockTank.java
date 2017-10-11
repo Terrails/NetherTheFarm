@@ -29,6 +29,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import terrails.netherthefarm.Constants;
 import terrails.netherthefarm.NetherTheFarm;
 import terrails.netherthefarm.render.TileEntityTankRenderer;
 import terrails.netherthefarm.tile.TileEntityTank;
@@ -46,7 +47,7 @@ public class BlockTank extends BlockBase implements ITileEntityProvider {
         setHarvestLevel("pickaxe", 1);
         setHardness(5.0F);
         setResistance(5.0F);
-        setCreativeTab(NetherTheFarm.creativeTab);
+        setCreativeTab(Constants.NTF_TAB);
         GameRegistry.registerTileEntity(TileEntityTank.class, name);
     }
 

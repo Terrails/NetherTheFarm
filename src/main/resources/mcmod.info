@@ -2,7 +2,7 @@
 {
   "modid": "netherthefarm",
   "name": "Nether The Farm",
-  "description": "Mod created for farming in nether, WIP",
+  "description": "Mod created for making nether a place like overworld!",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",

@@ -27,6 +27,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import terrails.netherthefarm.Constants;
 import terrails.netherthefarm.NetherTheFarm;
 import terrails.netherthefarm.api.capabilities.IFirstSpawn;
 import terrails.netherthefarm.capabilities.firstspawn.CapabilityFirstSpawn;
@@ -46,8 +47,8 @@ public class BlockObelisk extends BlockBase implements ITileEntityProvider {
         super(Material.ROCK, name);
         setHardness(4.0F);
         setHarvestLevel("pickaxe", 2);
-        setCreativeTab(NetherTheFarm.creativeTab);
-        setDefaultState(blockState.getBaseState().withProperty(IS_HANDLES, false));
+        setCreativeTab(Constants.NTF_TAB);
+        setDefaultState(blockState.getBaseState().withProperty(IS_HANDLES, true));
         GameRegistry.registerTileEntity(TileEntityObelisk.class, "obelisk");
     }
 

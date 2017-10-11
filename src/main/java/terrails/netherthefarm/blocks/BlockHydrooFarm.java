@@ -7,16 +7,20 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
+import terrails.netherthefarm.Constants;
 import terrails.netherthefarm.NetherTheFarm;
 import terrails.terracore.block.BlockBase;
 
-@SuppressWarnings("deprecation")
-public class BlockWater extends BlockBase {
+import javax.annotation.ParametersAreNonnullByDefault;
 
-    public BlockWater(String name) {
+@SuppressWarnings("deprecation")
+@ParametersAreNonnullByDefault
+public class BlockHydrooFarm extends BlockBase {
+
+    public BlockHydrooFarm(String name) {
         super(Material.WATER, name);
         setHardness(0.5F);
-        setCreativeTab(NetherTheFarm.creativeTab);
+        setCreativeTab(Constants.NTF_TAB);
     }
 
     @Override

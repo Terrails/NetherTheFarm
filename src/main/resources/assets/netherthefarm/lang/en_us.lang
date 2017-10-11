@@ -1,11 +1,17 @@
+// Custom Generator \\
 generator.NetherSurvival=Nether Survival
 
+// Creative Tab \\
+itemGroup.NetherTheFarm=Nether The Farm
+
+// Blocks \\
 tile.obelisk.name=Obelisk
 tile.hydroofarm.name=Hydro o' Farm
 tile.spawn_point.name=Spawn Point
 tile.tank.name=Tank
+tile.soul_soil.name=Soul Soil
 
-tile.netherthefarm:tank.fluid.desc=%s/%s (%s) // CURRENTLY NOT USED
-tile.netherthefarm:tank.fluid.empty=0/%s (Empty) // CURRENTLY NOT USED
 
-itemGroup.NetherTheFarm=Nether The Farm
+// Tank Functionality "NOT USING THIS ANYMORE" \\
+tile.netherthefarm:tank.fluid.desc=%s/%s (%s)
+tile.netherthefarm:tank.fluid.empty=0/%s (Empty)

@@ -1,4 +1,4 @@
-package terrails.netherthefarm.blocks;
+package terrails.netherthefarm.init;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -11,37 +11,39 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import terrails.netherthefarm.blocks.*;
 import terrails.netherthefarm.items.block.ItemBlockTank;
 import terrails.terracore.registry.BlockRegistry;
 
 @Mod.EventBusSubscriber
 public class ModBlocks extends BlockRegistry {
 
-    public static BlockWater HYDROOFARM;
-    public static BlockSpawnPoint SPAWN_POINT;
-    public static BlockObelisk OBELISK;
-    public static BlockTank TANK;
+    public static Block HYDROOFARM;
+    public static Block SPAWN_POINT;
+    public static Block OBELISK;
+    public static Block TANK;
+    public static Block SOUL_SOIL;
 
     public static void init() {
-        SPAWN_POINT = (BlockSpawnPoint) addBlock("spawn_point", new BlockSpawnPoint("spawn_point"));
-        TANK = (BlockTank) addBlock("tank", new BlockTank("tank"));
-        HYDROOFARM = (BlockWater) addBlock("hydroofarm", new BlockWater("hydroofarm"));
-        OBELISK = (BlockObelisk) addBlock("obelisk", new BlockObelisk("obelisk"));
+        SPAWN_POINT = addBlock("spawn_point", new BlockSpawnPoint("spawn_point"));
+        TANK = addBlock("tank", new BlockTank("tank"));
+        HYDROOFARM = addBlock("hydroofarm", new BlockHydrooFarm("hydroofarm"));
+        OBELISK = addBlock("obelisk", new BlockObelisk("obelisk"));
+        SOUL_SOIL = addBlock("soul_soil", new BlockSoulSoil("soul_soil"));
     }
 
     @SideOnly(Side.CLIENT)
     public static void initModels() {
-        OBELISK.initModel();
-        TANK.initModel();
+        ((BlockObelisk) OBELISK).initModel();
+        ((BlockTank) TANK).initModel();
     }
 
     @SubscribeEvent
-    public static void registerPotions(RegistryEvent.Register<Block> event) {
+    public static void registerBlocks(RegistryEvent.Register<Block> event) {
         event.getRegistry().registerAll(getBlocks());
     }
-
     @SubscribeEvent
-    public static void registerItems(net.minecraftforge.event.RegistryEvent.Register<Item> event) {
+    public static void registerItemBlocks(net.minecraftforge.event.RegistryEvent.Register<Item> event) {
         for (Block block : getBlocks()) {
             if (block != TANK)
                 event.getRegistry().register(new ItemBlock(block).setRegistryName(block.getRegistryName()));
@@ -49,7 +51,6 @@ public class ModBlocks extends BlockRegistry {
                 event.getRegistry().register(new ItemBlockTank(TANK).setRegistryName(block.getRegistryName()));
         }
     }
-
     @SubscribeEvent
     public static void registerModels(ModelRegistryEvent event) {
         ModBlocks.initModels();

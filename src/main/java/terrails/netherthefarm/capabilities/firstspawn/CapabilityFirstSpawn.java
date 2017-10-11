@@ -66,14 +66,6 @@ public class CapabilityFirstSpawn implements ICapabilitySerializable<NBTBase> {
                 compound.setInteger("obeliskDim", instance.obeliskDim());
                 compound.setInteger("startingFeatures", instance.hasStartingFeatures());
                 compound.setInteger("playerDimBeforeDeath", instance.oldPlayerDimension());
-           //     for (int dimension : DimensionManager.getIDs()) {
-            //        compound.setBoolean("hasObeliskDim" + dimension, instance.hasObeliskInDim(dimension));
-            //        compound.setInteger("obeliskPosXDim" + dimension, instance.posDimX(dimension));
-           //         compound.setInteger("obeliskPosYDim" + dimension, instance.posDimY(dimension));
-           //         compound.setInteger("obeliskPosZDim" + dimension, instance.posDimZ(dimension));
-                //    compound.setInteger("obeliskDimension" + dimension, instance.obeliskDimDimension(dimension));
-          //      }
-            //    compound.setTag("nbtTag", compound);
                 return compound;
             }
             @Override
@@ -86,14 +78,6 @@ public class CapabilityFirstSpawn implements ICapabilitySerializable<NBTBase> {
                 instance.setObeliskDim(compound.getInteger("obeliskDim"));
                 instance.hasStartingFeatures(compound.getInteger("startingFeatures"));
                 instance.oldPlayerDimension(compound.getInteger("playerDimBeforeDeath"));
-           //     for (int dimension : DimensionManager.getIDs()) {
-            //        instance.setHasObeliskDim(instance.hasObeliskInDim(dimension), dimension);
-           //         instance.setPosDimX(instance.posDimX(dimension), dimension);
-           //         instance.setPosDimY(instance.posDimY(dimension), dimension);
-            //        instance.setPosDimZ(instance.posDimZ(dimension), dimension);
-              //      instance.setObeliskDimDimension(instance.obeliskDimDimension(dimension), dimension);
-             //   }
-           //     instance.setNbtTag(compound.getCompoundTag("nbtTag"));
             }
         }, () -> new FirstSpawn());
     }

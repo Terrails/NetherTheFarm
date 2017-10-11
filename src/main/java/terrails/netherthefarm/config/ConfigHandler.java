@@ -39,7 +39,7 @@ public class ConfigHandler {
     }
 
     public static void syncConfig(){
-        obelisk = configFile.get(GENERAL_SETTINGS, "Obelisk, Spawn Point Respawn", true, "Disable if you don't use Nether Survival World Type and \n want to use Biomes O' Plenty World Type without spawning in nether").getBoolean();
+        obelisk = configFile.get(GENERAL_SETTINGS, "Spawn Point Respawn", true, "Disable if you don't use Nether Survival World Type and \n want to use Biomes O' Plenty World Type without spawning in nether").getBoolean();
 
         startingItems = configFile.getStringList("Starting Items", GENERAL_SETTINGS + ".Starting Features", DEFAULT_ITEMS, "The List of Starting Items");
         startingPotions = configFile.getStringList("Starting Effects", GENERAL_SETTINGS + ".Starting Features", DEFAULT_EFFECTS, "The List of Starting Effects");

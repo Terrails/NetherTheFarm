@@ -1,5 +1,6 @@
 {
   "variants": {
-    "normal": {"model": "netherthefarm:spawn_point"}
+    "normal": {"model": "netherthefarm:spawn_point"},
+    "inventory": {"model": "netherthefarm:spawn_point"}
   }
 }

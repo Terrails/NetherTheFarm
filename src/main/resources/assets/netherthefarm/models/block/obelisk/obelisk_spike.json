@@ -2,7 +2,8 @@
 	"credit": "Made with Blockbench, a free, modern block model editor by JannisX11",
 	"textures": {
 		"2": "blocks/red_nether_brick",
-		"3": "blocks/dragon_egg"
+		"3": "blocks/dragon_egg",
+		"particle": "blocks/cauldron_inner"
 	},
 	"elements": [
 		{

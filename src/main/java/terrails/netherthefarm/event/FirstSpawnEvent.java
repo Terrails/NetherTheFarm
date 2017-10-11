@@ -8,6 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -17,18 +18,19 @@ import terrails.netherthefarm.capabilities.firstspawn.CapabilityFirstSpawn;
 import terrails.netherthefarm.config.ConfigHandler;
 import terrails.netherthefarm.world.data.CustomWorldData;
 
+@Mod.EventBusSubscriber
 public class FirstSpawnEvent {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void firstSpawn(PlayerEvent.PlayerLoggedInEvent event) {
+    public static void firstSpawn(PlayerEvent.PlayerLoggedInEvent event) {
         EntityPlayer player = event.player;
         EntityPlayerMP playermp = (EntityPlayerMP) event.player;
         CustomWorldData worldData = CustomWorldData.get(playermp.getEntityWorld());
         IFirstSpawn firstSpawn = playermp.getCapability(CapabilityFirstSpawn.FIRST_SPAWN_CAPABILITY, null);
 
-        if (firstSpawn.hasStartingFeatures() == 0){giveStartingItemsToPlayer(player);}
+        if (firstSpawn.hasStartingFeatures() == 0) giveStartingItemsToPlayer(player);
     }
-    private void giveStartingItemsToPlayer(EntityPlayer player) {
+    private static void giveStartingItemsToPlayer(EntityPlayer player) {
         for (String oneLine : ConfigHandler.startingItems) {
             String array = oneLine.toLowerCase();
 
@@ -56,7 +58,7 @@ public class FirstSpawnEvent {
         player.getCapability(CapabilityFirstSpawn.FIRST_SPAWN_CAPABILITY, null).hasStartingFeatures(1);
     }
 
-    private ItemStack getItemWithEnchant(String oneLine, ItemStack stack) {
+    private static ItemStack getItemWithEnchant(String oneLine, ItemStack stack) {
         if (oneLine.contains(" -enchantment:")) {
             String step1 = oneLine.substring(oneLine.indexOf("-enchantment:")).replace("-enchantment:", "");
             String step2 = step1.contains(" -") ? step1.replaceAll("([\\s]).*", "$1").replace(" ", "") : step1;
@@ -81,7 +83,7 @@ public class FirstSpawnEvent {
         }
         return stack;
     }
-    private ItemStack getItemCustomName(String oneLine, ItemStack stack) {
+    private static ItemStack getItemCustomName(String oneLine, ItemStack stack) {
         if (oneLine.contains(" -name:")) {
             String step1 = oneLine.substring(oneLine.indexOf("-name:")).replace("-name:", "");
             String step2 = step1.contains(" -") ? step1.replaceAll("([\\s]).*", "$1").replace(" ", "") : step1;
@@ -90,7 +92,7 @@ public class FirstSpawnEvent {
         }
         return stack;
     }
-    private int getItemQuantity(String oneLine) {
+    private static int getItemQuantity(String oneLine) {
         if (oneLine.contains(" -quantity")) {
             String step1 = oneLine.substring(oneLine.indexOf("-quantity:")).replace("-quantity:", "");
             String step2 = step1.contains(" -") ? step1.replaceAll("([\\s]).*", "$1").replace(" ", "") : step1;
@@ -102,7 +104,7 @@ public class FirstSpawnEvent {
         return 1;
     }
 
-    private int getEffectTime(String oneLine) {
+    private static int getEffectTime(String oneLine) {
         if (oneLine.contains("-time:")) {
             String step1 = oneLine.substring(oneLine.indexOf("-time:")).replace("-time:", "");
             String step2 = step1.contains(" -") ? step1.replaceAll("([\\s]).*", "$1").replace(" ", "") : step1;
@@ -113,7 +115,7 @@ public class FirstSpawnEvent {
         }
         return 0;
     }
-    private int getAmplifier(String oneLine) {
+    private static int getAmplifier(String oneLine) {
         if (oneLine.contains("-amplifier:")) {
             String step1 = oneLine.substring(oneLine.indexOf("-amplifier:")).replace("-amplifier:", "");
             String step2 = step1.contains(" -") ? step1.replaceAll("([\\s]).*", "$1").replace(" ", "") : step1;
