@@ -23,7 +23,7 @@ public class NetherEvent {
     @SubscribeEvent
     public static void deathEvent(PlayerEvent.PlayerRespawnEvent event) {
         if (event.player.getEntityWorld().getWorldType().getName().equals(Constants.NETHER_SURVIVAL.getName()) || event.player.getEntityWorld().getWorldType().getName().equals("BIOMESOP")) {
-            if (ConfigHandler.obelisk) {
+            if (ConfigHandler.spawnPoint) {
                 EntityPlayer player = event.player;
                 EntityPlayerMP playerMP = (EntityPlayerMP) event.player;
                 World world = playerMP.getEntityWorld();
@@ -56,7 +56,7 @@ public class NetherEvent {
                             TeleporterNTF.teleportToDimension(playerMP, firstSpawn.oldPlayerDimension(), BlockBed.getSafeExitLocation(world, respawnPoint, 0));
                         else if (respawnPoint == obeliskPos)
                             TeleporterNTF.teleportToDimension(playerMP, firstSpawn.obeliskDim(), respawnPoint.up());
-                        else if (respawnPoint == spawnPointPos && ConfigHandler.obelisk)
+                        else if (respawnPoint == spawnPointPos && ConfigHandler.spawnPoint)
                             TeleporterNTF.teleportToDimension(playerMP, worldData.spawnPointDim(), respawnPoint);
                         else if (respawnPoint == player.getBedLocation(dimension))
                             TeleporterNTF.teleportToDimension(playerMP, dimension, BlockBed.getSafeExitLocation(world, respawnPoint, 0));
@@ -110,7 +110,7 @@ public class NetherEvent {
 
         if (event.player.getEntityWorld().getWorldType().getName().equals(Constants.NETHER_SURVIVAL.getName()) || event.player.getEntityWorld().getWorldType().getName().equals("BIOMESOP")) {
             if (player.world.isRemote) return;
-            if (!worldData.hasSpawnPoint() && ConfigHandler.obelisk) teleportPlayer(player);
+            if (!worldData.hasSpawnPoint() && ConfigHandler.spawnPoint) teleportPlayer(player);
         }
     }
     private static void teleportPlayer(EntityPlayerMP player) {

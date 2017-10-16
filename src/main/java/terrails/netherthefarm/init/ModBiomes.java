@@ -1,21 +1,8 @@
 package terrails.netherthefarm.init;
 
-import net.minecraft.init.Biomes;
-import net.minecraft.world.DimensionType;
-import net.minecraft.world.biome.Biome;
-import net.minecraftforge.common.BiomeManager;
-import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import terrails.netherthefarm.Constants;
-import terrails.netherthefarm.world.WorldHellProviderNTF;
-import terrails.netherthefarm.world.biome.biomes.BiomeHellSwamp;
-
-@Mod.EventBusSubscriber
+//@Mod.EventBusSubscriber
 public class ModBiomes {
-
+    /*
     public static Biome HELL_SWAMP;
 
     public static void init() {
@@ -46,4 +33,5 @@ public class ModBiomes {
             }
         }
     }
+    */
 }

@@ -44,7 +44,7 @@ public class TeleporterNTF extends Teleporter {
             playerMP.setPositionAndUpdate(x + 0.5, y, z + 0.5);
 
             BlockPos worldDataPos = new BlockPos(worldData.posX(), worldData.posY(), worldData.posZ());
-            if (!worldData.hasSpawnPoint() && ConfigHandler.obelisk) {
+            if (!worldData.hasSpawnPoint() && ConfigHandler.spawnPoint) {
                 if (playerMP.getEntityWorld().getWorldType().getName().equals("NetherSurvival") || playerMP.getEntityWorld().getWorldType().getName().equals("BIOMESOP")) {
                     if (!worldData.hasSpawnPoint() && world.getBlockState(worldDataPos) != ModBlocks.SPAWN_POINT.getDefaultState()) {
                         lavaPlatform(playerMP, world);

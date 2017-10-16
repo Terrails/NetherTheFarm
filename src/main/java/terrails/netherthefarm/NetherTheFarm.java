@@ -32,7 +32,6 @@ public class NetherTheFarm {
 
         ModBlocks.init();
         ModItems.init();
-        ModBiomes.init();
         CapabilityFirstSpawn.register();
     }
 

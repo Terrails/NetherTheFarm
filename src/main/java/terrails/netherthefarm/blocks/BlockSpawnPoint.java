@@ -33,7 +33,7 @@ public class BlockSpawnPoint extends BlockBase {
 
     @Override
     public void addInformation(ItemStack stack, @Nullable World player, List<String> tooltip, ITooltipFlag advanced) {
-        if (!ConfigHandler.obelisk)
+        if (!ConfigHandler.spawnPoint)
             tooltip.add(ChatFormatting.RED + "The Block is disabled in Config");
     }
 
@@ -62,7 +62,7 @@ public class BlockSpawnPoint extends BlockBase {
         worldData.setPosY(pos.getY());
         worldData.setPosZ(pos.getZ());
         worldData.spawnPointDim(placer.world.provider.getDimension());
-        if (!ConfigHandler.obelisk && placer instanceof EntityPlayer && !worldIn.isRemote){
+        if (!ConfigHandler.spawnPoint && placer instanceof EntityPlayer && !worldIn.isRemote){
             Constants.playerMessage((EntityPlayer) placer, "Obelisks and Spawn Points are disabled");
         }
     }
