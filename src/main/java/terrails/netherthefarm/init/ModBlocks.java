@@ -25,11 +25,11 @@ public class ModBlocks extends BlockRegistry {
     public static Block SOUL_SOIL;
 
     public static void init() {
-        SPAWN_POINT = addBlock("spawn_point", new BlockSpawnPoint("spawn_point"));
-        TANK = addBlock("tank", new BlockTank("tank"));
-        HYDROOFARM = addBlock("hydroofarm", new BlockHydrooFarm("hydroofarm"));
-        OBELISK = addBlock("obelisk", new BlockObelisk("obelisk"));
-        SOUL_SOIL = addBlock("soul_soil", new BlockSoulSoil("soul_soil"));
+        SPAWN_POINT = addBlock(new BlockSpawnPoint("spawn_point"));
+        TANK = addBlock(new BlockTank("tank"));
+        HYDROOFARM = addBlock(new BlockHydrooFarm("hydroofarm"));
+        OBELISK = addBlock(new BlockObelisk("obelisk"));
+        SOUL_SOIL = addBlock(new BlockSoulSoil("soul_soil"));
     }
 
     @SideOnly(Side.CLIENT)
@@ -45,10 +45,12 @@ public class ModBlocks extends BlockRegistry {
     @SubscribeEvent
     public static void registerItemBlocks(net.minecraftforge.event.RegistryEvent.Register<Item> event) {
         for (Block block : getBlocks()) {
-            if (block != TANK)
-                event.getRegistry().register(new ItemBlock(block).setRegistryName(block.getRegistryName()));
-            else
-                event.getRegistry().register(new ItemBlockTank(TANK).setRegistryName(block.getRegistryName()));
+            if (block.getRegistryName() != null) {
+                if (block != TANK)
+                    event.getRegistry().register(new ItemBlock(block).setRegistryName(block.getRegistryName()));
+                else
+                    event.getRegistry().register(new ItemBlockTank(TANK).setRegistryName(block.getRegistryName()));
+            }
         }
     }
     @SubscribeEvent
