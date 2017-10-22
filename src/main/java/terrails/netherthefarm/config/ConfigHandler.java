@@ -55,6 +55,6 @@ public class ConfigHandler {
             "minecraft:stone_pickaxe -enchantment:unbreaking:2 -name:'Start Pick'"
     };
     private final static String[] DEFAULT_EFFECTS = {
-            "fire_resistance -time:150"
+            "minecraft:fire_resistance -time:150"
     };
 }
