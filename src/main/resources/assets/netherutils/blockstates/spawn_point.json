@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "normal": {"model": "netherutils:spawn_point"},
+    "inventory": {"model": "netherutils:spawn_point"}
+  }
+}

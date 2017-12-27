@@ -1,0 +1,6 @@
+{
+  "parent": "block/cross",
+  "textures": {
+    "cross": "netherutils:blocks/sapling_ash"
+  }
+}

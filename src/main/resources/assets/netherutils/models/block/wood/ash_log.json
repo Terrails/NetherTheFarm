@@ -1,0 +1,7 @@
+{
+  "parent": "block/cube_column",
+  "textures": {
+    "end": "netherutils:blocks/log_ash_top",
+    "side": "netherutils:blocks/log_ash"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "check_decay=true,decayable=false,variant=hell": {"model": "netherutils:wood/hell_leaves"},
+    "check_decay=true,decayable=false,variant=ash":  { "model": "netherutils:wood/ash_leaves" },
+    "check_decay=true,decayable=false,variant=soul":  { "model": "netherutils:wood/soul_leaves" },
+    "check_decay=true,decayable=true,variant=hell": {"model": "netherutils:wood/hell_leaves"},
+    "check_decay=true,decayable=true,variant=ash":  { "model": "netherutils:wood/ash_leaves" },
+    "check_decay=true,decayable=true,variant=soul":  { "model": "netherutils:wood/soul_leaves" },
+    "check_decay=false,decayable=false,variant=hell": {"model": "netherutils:wood/hell_leaves"},
+    "check_decay=false,decayable=false,variant=ash":  { "model": "netherutils:wood/ash_leaves" },
+    "check_decay=false,decayable=false,variant=soul":  { "model": "netherutils:wood/soul_leaves" },
+    "check_decay=false,decayable=true,variant=hell": {"model": "netherutils:wood/hell_leaves"},
+    "check_decay=false,decayable=true,variant=ash":  { "model": "netherutils:wood/ash_leaves" },
+    "check_decay=false,decayable=true,variant=soul":  { "model": "netherutils:wood/soul_leaves" }
+  }
+}

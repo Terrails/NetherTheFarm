@@ -1,0 +1,18 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "forge:multi-layer",
+    "custom": {
+      "base": "netherutils:hydroofarm#base",
+      "Solid": "netherutils:hydroofarm#base",
+      "Translucent": "netherutils:hydroofarm#glass"
+    },
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{"model": "netherutils:hydroofarm/inventory", "transform": "forge:default-block"}],
+    "base": [{"model": "netherutils:hydroofarm/cage"}],
+    "glass": [{"model": "netherutils:hydroofarm/glass_water"}]
+  }
+}

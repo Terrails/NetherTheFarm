@@ -1,8 +1,0 @@
-{
-    "parent": "netherthefarm:block/soul_soil/soul_soil",
-    "textures": {
-        "particle": "blocks/soul_sand",
-        "soul_sand": "blocks/soul_sand",
-        "top": "netherthefarm:blocks/soul_soil_moisture"
-    }
-}

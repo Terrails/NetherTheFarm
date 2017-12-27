@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "stage=1,variant=hell": {"model": "netherutils:wood/hell_sapling"},
+    "stage=1,variant=ash":  { "model": "netherutils:wood/ash_sapling" },
+    "stage=1,variant=soul":  { "model": "netherutils:wood/soul_sapling" },
+    "stage=0,variant=hell": {"model": "netherutils:wood/hell_sapling"},
+    "stage=0,variant=ash":  { "model": "netherutils:wood/ash_sapling" },
+    "stage=0,variant=soul": {"model": "netherutils:wood/soul_sapling"}
+  }
+}

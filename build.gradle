@@ -1,3 +1,4 @@
+/**───────────────────────────────────────────────────────────────────────────────────**/
 buildscript {
     repositories {
         jcenter()
@@ -7,47 +8,63 @@ buildscript {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
+/**───────────────────────────────────────────────────────────────────────────────────**/
 apply plugin: 'net.minecraftforge.gradle.forge'
-//Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = targetCompatibility = '1.8'
+compileJava { sourceCompatibility = targetCompatibility = '1.8' }
 
-version = mod_version
-group = "terrails.netherthefarm" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+version = "1.12" + "-" + getVersions('VERSION')
+group = "terrails.netherthefarm"
 archivesBaseName = "NetherTheFarm"
 
 minecraft {
-    version = mc_version + "-" + forge_version
-    mappings = mcp_mappings
+    version = "1.12.2" + "-" + "14.23.1.2559"
+	mappings = "snapshot_20171003"
     runDir = "run"
-
-    replace "@VERSION@", project.version
-    replaceIn "Constants.java"
 }
-
-repositories {
-    mavenLocal()
+/*
+configurations {
+    shade
+    compile.extendsFrom shade
 }
+*/
 dependencies {
-    compile 'terrails.terracore:TerraCore-1.12:2.1.1'
+    compile project(':TerraCore')
+  //  shade
 }
 
 processResources {
-    // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
 
-    // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
 
-        // replace version and mcversion
         expand 'version':project.version, 'mcversion':project.minecraft.version
     }
 
-    // copy everything else except the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
+    }
+}
+
+String getVersions(String type) {
+    String major = "0"
+    String revision = "0"
+    String patch = "0"
+    String prefix = "public static final String $type = \""
+    File file = file("src/main/java/terrails/netherutils/Constants.java")
+    file.eachLine { String s ->
+        s = s.trim()
+        if (s.startsWith(prefix)) {
+            s = s.substring(prefix.length(), s.length() - 2)
+            String[] pts = s.split("\\.")
+
+            major = pts[0]
+            revision = pts[1]
+            patch = pts[2]
+        }
+        return "$major.$revision.$patch"
     }
 }

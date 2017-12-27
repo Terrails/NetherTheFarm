@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "variant=hell": {"model": "netherutils:wood/hell_planks"},
+    "variant=ash":  { "model": "netherutils:wood/ash_planks" },
+    "variant=soul":  { "model": "netherutils:wood/soul_planks" }
+  }
+}

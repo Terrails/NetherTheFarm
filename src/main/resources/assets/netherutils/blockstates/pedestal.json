@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "item=false": { "model": "netherutils:pedestal" },
+    "item=true": { "model": "netherutils:pedestal" },
+    "inventory": { "model": "netherutils:pedestal", "transform": "forge:default-block" }
+  }
+}

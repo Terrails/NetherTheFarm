@@ -1,7 +1,7 @@
 [
 {
-  "modid": "netherthefarm",
-  "name": "Nether The Farm",
+  "modid": "netherutils",
+  "name": "Nether Utils",
   "description": "Mod created for making nether a place like overworld!",
   "version": "${version}",
   "mcversion": "${mcversion}",

@@ -1,0 +1,11 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "custom": { "flip-v": true }
+  },
+  "variants": {
+    "has_tesr=false": { "model": "netherutils:obelisk/obelisk_pad" },
+    "has_tesr=true": { "model": "netherutils:obelisk/obelisk_spike" },
+    "inventory": { "model": "netherutils:obelisk/obelisk_inventory" }
+  }
+}

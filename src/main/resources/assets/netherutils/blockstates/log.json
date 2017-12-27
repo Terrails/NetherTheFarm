@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=y,variant=hell": {"model": "netherutils:wood/hell_log"},
+    "axis=z,variant=hell":   { "model": "netherutils:wood/hell_log", "x": 90 },
+    "axis=x,variant=hell":   { "model": "netherutils:wood/hell_log", "x": 90, "y": 90 },
+    "axis=none,variant=hell": { "model": "netherutils:wood/hell_bark" },
+    "axis=y,variant=ash":  { "model": "netherutils:wood/ash_log" },
+    "axis=z,variant=ash":   { "model": "netherutils:wood/ash_log", "x": 90 },
+    "axis=x,variant=ash":   { "model": "netherutils:wood/ash_log", "x": 90, "y": 90 },
+    "axis=none,variant=ash": { "model": "netherutils:wood/ash_bark" },
+    "axis=y,variant=soul": {"model": "netherutils:wood/soul_log"},
+    "axis=z,variant=soul":   { "model": "netherutils:wood/soul_log", "x": 90 },
+    "axis=x,variant=soul":   { "model": "netherutils:wood/soul_log", "x": 90, "y": 90 },
+    "axis=none,variant=soul": { "model": "netherutils:wood/soul_bark" }
+  }
+}

@@ -1,7 +1,0 @@
-{
-  "variants": {
-    "moisture=false": { "model": "netherthefarm:soul_soil/soul_soil_dry" },
-    "moisture=true": { "model": "netherthefarm:soul_soil/soul_soil_moist" },
-    "inventory": { "model": "netherthefarm:soul_soil/soul_soil_dry", "transform": "forge:default-block" }
-  }
-}

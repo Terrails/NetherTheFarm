@@ -1,0 +1,11 @@
+{
+  "variants": {
+    "normal": {
+      "model": "netherutils:portal_mk1"
+    },
+    "inventory": {
+      "model": "netherutils:portal_mk1",
+      "transform": "forge:default-block"
+    }
+  }
+}

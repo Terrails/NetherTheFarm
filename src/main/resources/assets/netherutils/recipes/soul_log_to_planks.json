@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "netherutils:planks",
+    "data": 2,
+    "count": 4
+  },
+  "ingredients": [
+    {
+      "item": "netherutils:log",
+      "data": 2
+    }
+  ]
+}
