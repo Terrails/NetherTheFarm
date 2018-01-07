@@ -1,0 +1,23 @@
+{
+  "display": {
+    "description": "Acquire the tank",
+    "icon": {
+      "item": "netherutils:tank"
+    },
+    "title": "Simple Fluid Transfer"
+  },
+  "parent": "netherutils:obelisk",
+  "criteria": {
+    "tank": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "netherutils:tank",
+            "data": 0
+          }
+        ]
+      }
+    }
+  }
+}

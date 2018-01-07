@@ -5,39 +5,40 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
-import terrails.netherutils.init.ModFeatures;
 import terrails.netherutils.tileentity.portal.TileEntityPortalMaster;
+import terrails.netherutils.tileentity.portal.TileEntityPortalSlave;
 
-public class SPacketButton implements IMessage {
+public class SPacketInteger implements IMessage {
 
-    private boolean value;
+    private int value;
     private int x;
     private int y;
     private int z;
     private int option;
 
-    public SPacketButton() {}
+    public SPacketInteger() {}
 
-    public SPacketButton(boolean value, BlockPos pos) {
+    public SPacketInteger(int value, BlockPos pos) {
+        this(value, pos, 1);
+    }
+
+    public SPacketInteger(int value, BlockPos pos, int option) {
         this.value = value;
         this.x = pos.getX();
         this.y = pos.getY();
         this.z = pos.getZ();
-    }
-
-    public SPacketButton(boolean value, BlockPos pos, int option) {
-        this(value, pos);
         this.option = option;
     }
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        this.value = buf.readBoolean();
+        this.value = buf.readInt();
         this.x = buf.readInt();
         this.y = buf.readInt();
         this.z = buf.readInt();
@@ -46,17 +47,17 @@ public class SPacketButton implements IMessage {
 
     @Override
     public void toBytes(ByteBuf buf) {
-        buf.writeBoolean(this.value);
+        buf.writeInt(this.value);
         buf.writeInt(this.x);
         buf.writeInt(this.y);
         buf.writeInt(this.z);
         buf.writeInt(this.option);
     }
 
-    public static class Handler implements IMessageHandler<SPacketButton, IMessage> {
+    public static class Handler implements IMessageHandler<SPacketInteger, IMessage> {
 
         @Override
-        public IMessage onMessage(SPacketButton message, MessageContext ctx) {
+        public IMessage onMessage(SPacketInteger message, MessageContext ctx) {
             if (ctx.side != Side.SERVER)
                 return null;
 
@@ -70,32 +71,16 @@ public class SPacketButton implements IMessage {
                 if (tileEntity instanceof TileEntityPortalMaster) {
                     TileEntityPortalMaster portal = (TileEntityPortalMaster) tileEntity;
                     switch (message.option) {
-                        case 0:
-                            portal.isActive(message.value);
-                            ModFeatures.Network.WRAPPER.sendToDimension(new CPacketBoolean(message.value, pos), world.provider.getDimension());
-                            break;
-                        case 1:
-                            portal.isActivating = message.value;
+                        case 1: // Send fuel amount to server and than to all players in the same dimension
+                            if (portal.getTank().getFluid() != null) {
+                                portal.getTank().setFluid(new FluidStack(portal.getTank().getFluid(), message.value));
+                            } else portal.getTank().setFluid(null);
                             break;
                     }
-                } /*else if (tileEntity instanceof TileEntityPortalSlave) {
-                    ((TileEntityPortalSlave) tileEntity).isActive(message.value);
-                }*/
-
-                /*
-                if (tileEntity instanceof TileEntityPortal) {
-                    TileEntityPortal portal = (TileEntityPortal) tileEntity;
-                    if (message.option == 0) {
-                        portal.isActive(value);
-                        ModNetwork.NETWORK.sendToDimension(new CPacketBoolean(value, pos), world.provider.getDimension());
-                    } else if (message.option == 1) {
-                        portal.isActivating(value);
-                    }
-                } else
-                if (tileEntity instanceof TileEntityPortalSlave) {
-                    ((TileEntityPortalSlave) tileEntity).isActive(value);
+                } else if (tileEntity instanceof TileEntityPortalSlave) {
+                    TileEntityPortalSlave portal = (TileEntityPortalSlave) tileEntity;
+                 //   switch (message.option) {}
                 }
-                */
             });
             return null;
         }

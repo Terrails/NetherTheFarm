@@ -8,6 +8,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
+import net.minecraftforge.fml.common.eventhandler.Event;
 import terrails.netherutils.api.world.IWorldData;
 import terrails.netherutils.config.ConfigHandler;
 import terrails.netherutils.init.ModBlocks;
@@ -37,9 +40,15 @@ public class TeleporterNTF extends Teleporter {
         PlayerList playerList = Objects.requireNonNull(world.getMinecraftServer()).getPlayerList();
         IWorldData data = CustomWorldData.get(world);
 
-        if (player.dimension != dimension)
-            playerList.transferPlayerToDimension(player, dimension, new TeleporterNTF(world, pos));
-        player.setPositionAndUpdate(x + 0.5, y, z + 0.5);
+        if (player.dimension != dimension) {
+            // Compatibility with EntityTravelToDimensionEvent
+            EntityTravelToDimensionEvent event = new EntityTravelToDimensionEvent(player, dimension);
+            MinecraftForge.EVENT_BUS.post(event);
+            if (!event.isCanceled()) {
+                playerList.transferPlayerToDimension(player, dimension, new TeleporterNTF(world, pos));
+            }
+        }
+     //   player.setPositionAndUpdate(x + 0.5, y, z + 0.5);
 
         if (oldDimension == 1) {
             world.updateEntityWithOptionalForce(player, false);
@@ -146,7 +155,7 @@ public class TeleporterNTF extends Teleporter {
     public void placeInPortal(Entity entity, float rotationYaw) {
         this.worldServer.getBlockState(new BlockPos(this.pos.getX(), this.pos.getY(), this.pos.getZ()));
 
-        entity.setPosition(this.pos.getX(), this.pos.getY(), this.pos.getZ());
+        entity.setPosition(this.pos.getX() + 0.5, this.pos.getY(), this.pos.getZ() + 0.5);
         entity.motionX = 0.0f;
         entity.motionY = 0.0f;
         entity.motionZ = 0.0f;

@@ -13,10 +13,6 @@ import terrails.netherutils.tileentity.portal.TileEntityPortalMaster;
 public class PortalContainer extends Container {
 
     private TileEntityPortalMaster tile;
-    private int fuelTime;
-
-    public static final int FUEL = 0;
-    public static final int[] INPUT = new int[]{1,2,3,4,5,6,7,8,9};
 
     public PortalContainer(IInventory playerInventory, TileEntityPortalMaster tile) {
         this.tile = tile;
@@ -26,18 +22,13 @@ public class PortalContainer extends Container {
     }
 
     private void addPlayerSlots(IInventory playerInventory) {
-        for (int row = 0; row < 3; ++row) {
-            for (int col = 0; col < 9; ++col) {
-                int x = 8 + col * 18;
-                int y = row * 18 + 70 + 14;
-                this.addSlotToContainer(new Slot(playerInventory, col + row * 9 + 10, x, y));
+        for(int row = 0; row < 3; row++){
+            for(int col = 0; col < 9; col++){
+                this.addSlotToContainer(new Slot(playerInventory, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));
             }
         }
-
-        for (int row = 0; row < 9; ++row) {
-            int x = 8 + row * 18;
-            int y = 58 + 70 + 14;
-            this.addSlotToContainer(new Slot(playerInventory, row, x, y));
+        for(int col = 0; col < 9; col++){
+            this.addSlotToContainer(new Slot(playerInventory, col, 8 + col * 18, 142));
         }
     }
     private void addOwnSlots() {

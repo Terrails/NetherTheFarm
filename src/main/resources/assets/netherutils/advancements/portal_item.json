@@ -1,0 +1,15 @@
+{
+  "display": {
+    "description": "Acquire the item to get out of the nether",
+    "icon": {
+      "item": "minecraft:netherrack"
+    },
+    "title": "My way out!"
+  },
+  "parent": "netherutils:tank",
+  "criteria": {
+    "portal_item": {
+      "trigger": "netherutils:portal_item"
+    }
+  }
+}

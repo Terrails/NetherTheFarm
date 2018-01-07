@@ -6,13 +6,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import terrails.netherutils.init.ModBlocks;
 
 public class Constants {
 
     public static final String MOD_ID = "netherutils";
-    public static final String NAME = "Nether Utils";
-    public static final String VERSION = "1.1.5";
+    public static final String NAME = "NetherUtils";
+    public static final String VERSION = "1.1.7";
 
     public static final String MINECRAFT_VERSION = "1.12.2";
     public static final String TERRACORE_VERSION = "2.1.6";
@@ -31,11 +32,12 @@ public class Constants {
     }
     public static class Log {
 
-        public static void info(String prefix, String message) {
-            LogManager.getLogger(prefix).info(message);
+        public static void info(String name, Object message) {
+            LogManager.getLogger(name).info(message);
         }
-        public static void info(String message) {
-            LogManager.getLogger(NAME).info(message);
+
+        public static void info(Object message) {
+            info(NAME, message);
         }
 
         public static void playerMessage(EntityPlayer player, String message) {

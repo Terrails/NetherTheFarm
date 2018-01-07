@@ -1,8 +1,11 @@
 package terrails.netherutils.config;
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.config.ConfigElement;
+import net.minecraftforge.fml.client.config.DummyConfigElement.DummyCategoryElement;
 import net.minecraftforge.fml.client.config.GuiConfig;
+import net.minecraftforge.fml.client.config.GuiConfigEntries;
 import net.minecraftforge.fml.client.config.IConfigElement;
 import terrails.netherutils.Constants;
 
@@ -17,22 +20,47 @@ public class ConfigGUI extends GuiConfig {
     }
 
     private static List<IConfigElement> getConfigElements() {
-
         List<IConfigElement> list = new ArrayList<>();
-
-        ConfigHandler.config.setCategoryLanguageKey(ConfigHandler.FIRST_SPAWN, "nu.config.starting.title");
-        ConfigHandler.config.setCategoryLanguageKey(ConfigHandler.GENERAL_SETTINGS, "nu.config.general.title");
-        ConfigHandler.config.setCategoryLanguageKey(ConfigHandler.FEATURES, "nu.config.features.title");
-        ConfigHandler.config.setCategoryLanguageKey(ConfigHandler.FEATURES_PORTAL, "nu.config.features_portal.title");
-        ConfigHandler.config.setCategoryLanguageKey(ConfigHandler.GENERATION, "nu.config.generation.title");
-        ConfigHandler.config.setCategoryComment(ConfigHandler.FIRST_SPAWN, "Starting items and potion effects");
-        ConfigHandler.config.setCategoryComment(ConfigHandler.GENERAL_SETTINGS, "General settings");
-        ConfigHandler.config.setCategoryComment(ConfigHandler.FEATURES, "Edit the features of the mod");
-        ConfigHandler.config.setCategoryComment(ConfigHandler.GENERATION, "Configure the wood generation");
-        ConfigHandler.config.setCategoryComment(ConfigHandler.FEATURES_PORTAL, "Configure the portal settings");
-
-        list.addAll(new ConfigElement(ConfigHandler.config.getCategory(ConfigHandler.GENERAL_SETTINGS)).getChildElements());
-
+        list.add(new DummyCategoryElement(new TextComponentTranslation("nu.config.starting", "").getFormattedText(), "nu.config.starting", FirstSpawn.class));
+        list.add(new DummyCategoryElement(new TextComponentTranslation("nu.config.features", "").getFormattedText(), "nu.config.features", Features.class));
+        list.add(new DummyCategoryElement(new TextComponentTranslation("nu.config.generation", "").getFormattedText(), "nu.config.generation", Generation.class));
         return list;
+    }
+    public static class FirstSpawn extends GuiConfigEntries.CategoryEntry {
+        public FirstSpawn(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop) {
+            super(owningScreen, owningEntryList, prop);
+        }
+
+        @Override
+        protected GuiScreen buildChildScreen() {
+            return new GuiConfig(owningScreen, new ConfigElement(ConfigHandler.config.getCategory(ConfigHandler.FIRST_SPAWN)).getChildElements(), owningScreen.modID, false, false, "/" + Constants.MOD_ID + ".cfg");
+        }
+    }
+    public static class Features extends GuiConfigEntries.CategoryEntry {
+        public Features (GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop) {
+            super(owningScreen, owningEntryList, prop);
+        }
+
+        @Override
+        protected GuiScreen buildChildScreen() {
+            return new GuiConfig(owningScreen, getConfigElements(), owningScreen.modID, false, false, "/" + Constants.MOD_ID + ".cfg");
+        }
+
+        private static List<IConfigElement> getConfigElements() {
+            ConfigHandler.config.getCategory(ConfigHandler.FEATURES_PORTAL).setLanguageKey("nu.config.features_portal");
+            ConfigHandler.config.getCategory(ConfigHandler.FEATURES_TANK).setLanguageKey("nu.config.features_tank");
+            ConfigHandler.config.getCategory(ConfigHandler.FEATURES_NETHER).setLanguageKey("nu.config.features_nether");
+            return (new ConfigElement(ConfigHandler.config.getCategory(ConfigHandler.FEATURES)).getChildElements());
+        }
+    }
+    public static class Generation extends GuiConfigEntries.CategoryEntry {
+        public Generation (GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop) {
+            super(owningScreen, owningEntryList, prop);
+        }
+
+        @Override
+        protected GuiScreen buildChildScreen() {
+            return new GuiConfig(owningScreen, new ConfigElement(ConfigHandler.config.getCategory(ConfigHandler.GENERATION)).getChildElements(), owningScreen.modID, false, false, "/" + Constants.MOD_ID + ".cfg");
+        }
     }
 }

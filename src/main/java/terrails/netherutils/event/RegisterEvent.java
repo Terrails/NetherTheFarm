@@ -7,11 +7,9 @@ import net.minecraft.item.ItemBlock;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import terrails.netherutils.blocks.BlockObelisk;
-import terrails.netherutils.blocks.BlockPortal;
-import terrails.netherutils.blocks.BlockPortalSlave;
-import terrails.netherutils.blocks.BlockTank;
+import terrails.netherutils.blocks.*;
 import terrails.netherutils.blocks.item.*;
 import terrails.netherutils.blocks.wood.WoodType;
 import terrails.netherutils.init.ModBlocks;
@@ -36,6 +34,7 @@ public class RegisterEvent {
             else if (block == LOG) event.getRegistry().register(new ItemBlockLog(LOG).setRegistryName(Objects.requireNonNull(block.getRegistryName())));
             else if (block == LEAVES) event.getRegistry().register(new ItemBlockLeaf(LEAVES).setRegistryName(Objects.requireNonNull(block.getRegistryName())));
             else if (block == SAPLING) event.getRegistry().register(new ItemBlockSapling(SAPLING).setRegistryName(Objects.requireNonNull(block.getRegistryName())));
+            else if (block == PORTAL_MASTER) event.getRegistry().register(new ItemBlockPortal(PORTAL_MASTER));
             else event.getRegistry().register(new ItemBlock(block).setRegistryName(Objects.requireNonNull(block.getRegistryName())));
         }
         event.getRegistry().registerAll(ModItems.getItems());
@@ -48,6 +47,8 @@ public class RegisterEvent {
         ((BlockObelisk) OBELISK).initModel();
         ((BlockPortal) PORTAL_MASTER).initModel();
         ((BlockPortalSlave) PORTAL_SLAVE).initModel();
+        ((BlockPedestal) PEDESTAL).initModel();
+
         WoodType.Init.initModel();
 
         // Default Models

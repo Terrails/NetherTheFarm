@@ -25,14 +25,14 @@ public class CPacketBoolean implements IMessage {
     public CPacketBoolean() {}
 
     public CPacketBoolean(boolean value, BlockPos pos) {
+        this(value, pos, 1);
+    }
+
+    public CPacketBoolean(boolean value, BlockPos pos, int option) {
         this.value = value;
         this.x = pos.getX();
         this.y = pos.getY();
         this.z = pos.getZ();
-    }
-
-    public CPacketBoolean(boolean value, BlockPos pos, int option) {
-        this(value, pos);
         this.option = option;
     }
 
@@ -69,14 +69,30 @@ public class CPacketBoolean implements IMessage {
 
                     if (tileEntity instanceof TileEntityPortalMaster) {
                         TileEntityPortalMaster portal = (TileEntityPortalMaster) tileEntity;
-                        if (message.option == 0) {
-                            portal.isActive(message.value);
-                        } else if (message.option == 1) {
-                            portal.isActivating = message.value;
+                        switch (message.option) {
+                            case 1:
+                                portal.isActive(message.value);
+                                break;
+                            case 2:
+                                portal.isActivating = message.value;
+                                break;
+                            case 3:
+                                portal.isActivationDone = message.value;
+                                break;
+                            case 4:
+                                portal.isReadyToTeleport = message.value;
+                                break;
                         }
                     } else if (tileEntity instanceof TileEntityPortalSlave) {
                         TileEntityPortalSlave portal = (TileEntityPortalSlave) tileEntity;
-                        portal.isActive(message.value);
+                        switch (message.option) {
+                            case 1:
+                                portal.isActive(message.value);
+                                break;
+                            case 2:
+                                portal.isReadyToTeleport = message.value;
+                                break;
+                        }
                     }
                 }
             });

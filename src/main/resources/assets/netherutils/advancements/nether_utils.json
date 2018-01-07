@@ -1,0 +1,23 @@
+{
+  "display": {
+    "description": "Here are the advancements for the mod!",
+    "icon": {
+      "item": "netherutils:soul_soil"
+    },
+    "title": "NetherUtils",
+    "background": "minecraft:textures/gui/advancements/backgrounds/stone.png"
+  },
+  "criteria": {
+    "tank": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "netherutils:forbidden_fruit",
+            "data": 0
+          }
+        ]
+      }
+    }
+  }
+}

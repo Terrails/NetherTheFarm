@@ -1,7 +1,7 @@
 [
 {
   "modid": "netherutils",
-  "name": "Nether Utils",
+  "name": "NetherUtils",
   "description": "Mod created for making nether a place like overworld!",
   "version": "${version}",
   "mcversion": "${mcversion}",

@@ -1,9 +1,7 @@
 package terrails.netherutils.tileentity.portal;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -12,8 +10,12 @@ import terrails.netherutils.api.portal.IPortalMaster;
 import terrails.netherutils.api.portal.IPortalSlave;
 import terrails.netherutils.init.ModFeatures;
 import terrails.netherutils.network.CPacketBoolean;
+import terrails.netherutils.network.SPacketBoolean;
 import terrails.netherutils.world.TeleporterNTF;
+import terrails.netherutils.world.data.CustomWorldData;
 import terrails.terracore.block.tile.TileEntityBase;
+
+import java.util.List;
 
 public class TileEntityPortalSlave extends TileEntityBase implements ITickable, IPortalSlave {
     
@@ -21,73 +23,78 @@ public class TileEntityPortalSlave extends TileEntityBase implements ITickable, 
     private boolean status;
     private BlockPos masterPos = BlockPos.ORIGIN;
 
-    public float counterCircle;
-    public boolean isAtPosition2;
+    public Counter counterCircle = new Counter();
+    public Counter counterTeleport = new Counter();
+    public boolean isAtPosTopMiddleCircle;
+    public boolean isAtPosSideCircles;
 
-    public float counterTeleport;
-    public boolean isAtPosition;
+    public boolean isReadyToTeleport;
+
 
     @Override
     public void update() {
         if (!getWorld().isRemote) {
+            boolean hasMaster = false;
 
-            boolean hasIt = false;
-            for (IPortalMaster master : PortalId.MASTER_LIST) {
-                if (master.getSlavePos().equals(getPos())) {
-                    hasIt = true;
-                    if (hasRequiredBlocks()) {
+            if (!CustomWorldData.get(getWorld()).hasRead()) {
+                hasMaster = true;
+            }
+
+            if (PortalRegistry.LIST.size() > 0) {
+                for (IPortalMaster master : PortalRegistry.LIST) {
+                    if (master.getSlavePos().equals(getPos())) {
+                        hasMaster = true;
                         isActive(master.isActive());
                         if (isActive()) {
-                            teleport();
-                        } else hasIt = false;
-                    } else isActive(false);
-                    onChanged();
+                            doTeleportation();
+                        }
+                        onChanged();
+                    }
                 }
             }
-            if (!hasIt) {
+
+            if (!hasMaster) {
                 world.setBlockToAir(getPos());
                 world.removeTileEntity(getPos());
             }
         }
     }
 
-    private int tpCounter;
-    private void teleport() {
-        if (getWorld().provider.getDimension() != 0)
-            return;
-        if (!getWorld().isRemote && getWorld().provider.getDimension() == 0) {
-            if (getWorld().isAnyPlayerWithinRangeAt(getPos().getX() + 0.5, getPos().getY() + 1, getPos().getZ() + 0.5, 0.5)) {
-                EntityPlayer player = getWorld().getClosestPlayer(getPos().getX() + 0.5, getPos().getY() + 1, getPos().getZ() + 0.5, 0.5, false);
-                if (player != null && tpCounter >= 230 && player instanceof EntityPlayerMP) {
-                    TeleporterNTF.teleport((EntityPlayerMP) player, -1, getMasterPos(), false);
-                    player.setPositionAndUpdate(getMasterPos().getX() + 1.5, getMasterPos().getY(), getMasterPos().getZ() + 0.5);
-                    tpCounter = 0;
-                }
-                tpCounter++;
-            } else tpCounter = 0;
-        }
-    }
-
-    public boolean hasRequiredBlocks() {
-        Block block = Blocks.STONE_SLAB;
-        if (getWorld().getBlockState(getPos().east().north()).getBlock() == block) {
-            if (getWorld().getBlockState(getPos().south().east()).getBlock() == block) {
-                if (getWorld().getBlockState(getPos().west().south()).getBlock() == block) {
-                    if (getWorld().getBlockState(getPos().west().north()).getBlock() == block) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    public void onChanged() {
+    private void onChanged() {
         if (oldActive != status) {
             if (!getWorld().isRemote) {
-                ModFeatures.Network.WRAPPER.sendToDimension(new CPacketBoolean(isActive(), getPos(), 0), getWorld().provider.getDimension());
+                sendStatus();
                 oldActive = status;
             }
+        }
+    }
+
+    private void doTeleportation() {
+        if (getWorld().provider.getDimension() != 0 || getWorld().isRemote)
+            return;
+
+        EntityPlayer player = getWorld().getClosestPlayer(getPos().getX() + 0.5, getPos().getY() + 0.75, getPos().getZ() + 0.5, 0.5, false);
+        if (player instanceof EntityPlayerMP && isReadyToTeleport) {
+
+            TeleporterNTF.teleport((EntityPlayerMP) player, -1, getMasterPos().add(1, 0, 0), false);
+
+            this.isReadyToTeleport = false;
+            sendReadyToTeleport();
+        }
+    }
+
+    public void sendReadyToTeleport() {
+        if (!getWorld().isRemote) {
+            ModFeatures.Network.WRAPPER.sendToDimension(new CPacketBoolean(isReadyToTeleport, getPos(), 2), getWorld().provider.getDimension());
+        } else {
+            ModFeatures.Network.WRAPPER.sendToServer(new SPacketBoolean(isReadyToTeleport, getPos(), 2));
+        }
+    }
+    public void sendStatus() {
+        if (!getWorld().isRemote) {
+            ModFeatures.Network.WRAPPER.sendToDimension(new CPacketBoolean(isActive(), getPos(), 1), getWorld().provider.getDimension());
+        } else {
+            ModFeatures.Network.WRAPPER.sendToServer(new SPacketBoolean(isActive(), getPos(), 1));
         }
     }
 
@@ -113,7 +120,12 @@ public class TileEntityPortalSlave extends TileEntityBase implements ITickable, 
     public boolean isActive() {
         return this.status;
     }
-    
+
+    @Override
+    public BlockPos getBlockPos() {
+        return this.getPos();
+    }
+
     @Override
     public void setMasterPos(BlockPos pos) {
         this.masterPos = pos;

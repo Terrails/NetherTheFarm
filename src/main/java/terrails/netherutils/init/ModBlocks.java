@@ -26,6 +26,8 @@ public class ModBlocks extends BlockRegistry {
     public static Block PORTAL_MASTER;
     public static Block PORTAL_SLAVE;
 
+    public static Block PEDESTAL;
+
     protected static void init() {
         blockList = Lists.newArrayList();
         SPAWN_POINT = add(new BlockSpawnPoint("spawn_point"));
@@ -35,6 +37,8 @@ public class ModBlocks extends BlockRegistry {
 
         PORTAL_MASTER = add(new BlockPortal("portal"));
         PORTAL_SLAVE = add(new BlockPortalSlave("portal_slave"));
+
+        PEDESTAL = add(new BlockPedestal("pedestal"));
 
         PLANKS = add(new BlockNTFPlanks("planks"));
         LOG = add(new BlockNTFLog("log"));

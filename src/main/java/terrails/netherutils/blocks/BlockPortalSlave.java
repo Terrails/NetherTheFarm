@@ -2,8 +2,12 @@ package terrails.netherutils.blocks;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityWitherSkull;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,6 +15,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.Explosion;
@@ -21,6 +26,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import terrails.netherutils.client.render.TESRPortalSlave;
+import terrails.netherutils.init.ModBlocks;
 import terrails.netherutils.tileentity.portal.TileEntityPortalSlave;
 import terrails.terracore.block.BlockBase;
 
@@ -31,14 +37,30 @@ public class BlockPortalSlave extends BlockBase {
 
     public BlockPortalSlave(String name) {
         super(Material.ROCK, name);
-        setLightLevel(1.5F);
         setBlockUnbreakable();
-        GameRegistry.registerTileEntity(TileEntityPortalSlave.class, "portal_slave");
+        GameRegistry.registerTileEntity(TileEntityPortalSlave.class, name);
+    }
+
+    @Override
+    public boolean canEntityDestroy(IBlockState state, IBlockAccess world, BlockPos pos, Entity entity) {
+        if (entity instanceof EntityDragon) {
+            return world.getBlockState(pos).getBlock() != ModBlocks.PORTAL_SLAVE;
+        }
+        else if (entity instanceof EntityWither || entity instanceof EntityWitherSkull) {
+            return world.getBlockState(pos).getBlock() != ModBlocks.PORTAL_SLAVE;
+        }
+
+        return super.canEntityDestroy(state, world, pos, entity);
     }
 
     @SideOnly(Side.CLIENT)
     public void initModel() {
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPortalSlave.class, new TESRPortalSlave());
+    }
+
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+        return BlockPortal.BOUNDING_BOX;
     }
 
     @Override
@@ -81,22 +103,6 @@ public class BlockPortalSlave extends BlockBase {
             }
             drops.add(stack);
         }
-    }
-    @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
-        if (world.isRemote) {
-            return true;
-        }
-        TileEntity te = world.getTileEntity(pos);
-        if (!(te instanceof TileEntityPortalSlave)) {
-            return false;
-        } else if (player.isSneaking()) {
-            TileEntityPortalSlave tile = (TileEntityPortalSlave) te;
-            if (!tile.isActive() && !tile.hasRequiredBlocks()) { 
-                player.sendMessage(new TextComponentString("Missing required blocks!"));
-            }
-        }
-        return true;
     }
 
     @Override

@@ -1,6 +1,8 @@
 package terrails.netherutils.tileentity;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -12,7 +14,6 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import terrails.netherutils.api.handler.FluidHandler;
 import terrails.netherutils.blocks.BlockTank;
 import terrails.netherutils.config.ConfigHandler;
@@ -21,7 +22,6 @@ import terrails.terracore.block.tile.fluid.FluidTankCustom;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 public class TileEntityTank extends TileEntityBase implements ITickable {
 
@@ -32,24 +32,18 @@ public class TileEntityTank extends TileEntityBase implements ITickable {
     private FluidStack oldFluidStack;
 
     @Override
-    @ParametersAreNonnullByDefault
-    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState) {
-       return oldState.getBlock() != newState.getBlock();
-    }
-
-    @Override
     public void update() {
         IBlockState state = world.getBlockState(pos);
-        if (hasWater() && !state.getValue(BlockTank.HAS_WATER)) {
-            world.setBlockState(pos, state.withProperty(BlockTank.HAS_WATER, true), 2);
-        } else if (!hasWater() && state.getValue(BlockTank.HAS_WATER)) {
-            world.setBlockState(pos, state.withProperty(BlockTank.HAS_WATER, false), 2);
+        if (hasWater() && state.getValue(BlockTank.LEVEL) == 0 && !hasLava()) {
+            world.setBlockState(pos, state.withProperty(BlockTank.LEVEL, 1), 2);
+        } else if ((!hasWater() && state.getValue(BlockTank.LEVEL) > 0) || hasLava()) {
+            world.setBlockState(pos, state.withProperty(BlockTank.LEVEL, 0), 2);
         }
 
-        if (getTank().getFluid() != null) {
-            if (getTank().getFluidAmount() != oldFluidAmount || getTank().getFluid() != oldFluidStack) {
-                oldFluidAmount = getTank().getFluidAmount();
-                oldFluidStack = getTank().getFluid();
+        if (getFluidStack() != null) {
+            if (getFluidStack().amount != oldFluidAmount || getFluidStack() != oldFluidStack) {
+                oldFluidAmount = getFluidStack().amount;
+                oldFluidStack = getFluidStack();
                 sendUpdates();
             }
         }
@@ -62,6 +56,49 @@ public class TileEntityTank extends TileEntityBase implements ITickable {
         markDirty();
     }
 
+    // == Custom Methods == \\
+
+    public int getLightLevel() {
+        if (getTank().getFluid() == null)
+            return 0;
+        if (getTank().getFluid().getFluid() == null)
+            return 0;
+
+        return getTank().getFluid().getFluid().getLuminosity();
+    }
+    public int getComparatorStrength() {
+        return 15 * getTank().getFluidAmount() / getTank().getCapacity();
+    }
+    private boolean hasWater() {
+        return ConfigHandler.minTankWater != 0 && tank.getFluid() != null && tank.getFluid().getFluid() == FluidRegistry.WATER && tank.getFluidAmount() >= ConfigHandler.minTankWater;
+    }
+    private boolean hasLava() {
+        for (EnumFacing facing : EnumFacing.values()) {
+            Block block = world.getBlockState(pos.offset(facing)).getBlock();
+            if (block == Blocks.LAVA || block == Blocks.FLOWING_LAVA) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public FluidTank getTank() {
+        return tank;
+    }
+    public void setTank(FluidTank tank) {
+        this.tank = tank;
+    }
+
+    public FluidStack getFluidStack() {
+        return tank.getFluid();
+    }
+
+    // == End == \\
+
+    @Override
+    public boolean shouldRefresh(World world, BlockPos pos, @Nonnull IBlockState oldState, @Nonnull IBlockState newState) {
+        return oldState.getBlock() != newState.getBlock();
+    }
 
     @Override
     public void readFromNBT(NBTTagCompound compound) {
@@ -81,29 +118,6 @@ public class TileEntityTank extends TileEntityBase implements ITickable {
     @Nullable
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-        IFluidHandler fluidHandler = new FluidHandler(getTank());
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(fluidHandler);
-        }
-        return super.getCapability(capability, facing);
-    }
-
-    public int getLightLevel() {
-        if (getTank().getFluid() != null && getTank().getFluidAmount() > 0) {
-            return getTank().getFluid().getFluid().getLuminosity();
-        } else return 0;
-    }
-    public int getComparatorStrength() {
-        return 15 * getTank().getFluidAmount() / getTank().getCapacity();
-    }
-    public boolean hasWater() {
-        return ConfigHandler.minTankWater != 0 && tank.getFluid() != null && tank.getFluid().getFluid() == FluidRegistry.WATER && tank.getFluidAmount() >= ConfigHandler.minTankWater;
-    }
-
-    public FluidTank getTank() {
-        return tank;
-    }
-    public void setTank(FluidTank tank) {
-        this.tank = tank;
+        return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY ? CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandler(getTank())) : super.getCapability(capability, facing);
     }
 }

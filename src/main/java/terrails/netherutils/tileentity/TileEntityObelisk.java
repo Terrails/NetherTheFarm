@@ -1,6 +1,7 @@
 package terrails.netherutils.tileentity;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.AxisAlignedBB;
 import terrails.terracore.block.tile.TileEntityBase;
 
 public class TileEntityObelisk extends TileEntityBase {
@@ -26,4 +27,10 @@ public class TileEntityObelisk extends TileEntityBase {
         compound.setBoolean("hasTESR", hasTESR());
         return super.writeToNBT(compound);
     }
+
+    @Override
+    public AxisAlignedBB getRenderBoundingBox() {
+        return new AxisAlignedBB(getPos().add(-5, -5, -5), getPos().add(5, 5, 5));
+    }
+
 }

@@ -15,23 +15,17 @@ sourceCompatibility = targetCompatibility = '1.8'
 compileJava { sourceCompatibility = targetCompatibility = '1.8' }
 
 version = "1.12" + "-" + getVersions('VERSION')
-group = "terrails.netherthefarm"
-archivesBaseName = "NetherTheFarm"
+group = "terrails.netherutils"
+archivesBaseName = "NetherUtils"
 
 minecraft {
-    version = "1.12.2" + "-" + "14.23.1.2559"
+    version = "1.12.2" + "-" + "14.23.1.2582"
 	mappings = "snapshot_20171003"
     runDir = "run"
 }
-/*
-configurations {
-    shade
-    compile.extendsFrom shade
-}
-*/
+
 dependencies {
     compile project(':TerraCore')
-  //  shade
 }
 
 processResources {

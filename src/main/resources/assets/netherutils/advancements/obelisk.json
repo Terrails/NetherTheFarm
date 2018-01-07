@@ -1,0 +1,23 @@
+{
+  "display": {
+    "description": "Acquire the obelisk",
+    "icon": {
+      "item": "netherutils:obelisk"
+    },
+    "title": "A new bed!?"
+  },
+  "parent": "netherutils:the_forbidden_fruit",
+  "criteria": {
+    "tank": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "netherutils:obelisk",
+            "data": 0
+          }
+        ]
+      }
+    }
+  }
+}

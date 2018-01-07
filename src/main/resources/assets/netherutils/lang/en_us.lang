@@ -11,6 +11,7 @@ tile.obelisk.name=Obelisk
 tile.spawn_point.name=Spawn Point
 tile.tank.name=Tank
 tile.soul_soil.name=Soul Soil
+tile.pedestal.name=Pedestal
 tile.planks_hell.name=Hell Planks
 tile.planks_ash.name=Ash Planks
 tile.planks_soul.name=Soul Planks
@@ -25,26 +26,35 @@ tile.sapling_ash.name=Ash Sapling
 tile.sapling_soul.name=Soul Sapling
 
 // Items \\
-item.forbidden_fruit.name=Forbidden Fruit
+item.forbidden_fruit.name=The Forbidden Fruit
+item.debug_tool.name=Debug Tool
+
 
 // GUI \\
 nu.gui.fuel=Fuel at %s
 
 nu.gui.status1=Online
 nu.gui.status2=Offline
-nu.gui.status3=Activating
+nu.gui.status3=Activation sequence
 
 nu.gui.start1=Press to activate
 nu.gui.start2=Currently online
-nu.gui.start3=Activating
+nu.gui.start3=Currently activating
 
 nu.gui.stop1=Press to deactivate
 nu.gui.stop2=Currently offline
-nu.gui.stop3=Activating
+nu.gui.stop3=Press to stop
 
 // Config \\
-nu.config.starting.title=First Spawn
-nu.config.general.title=General
-nu.config.features.title=Features
-nu.config.features_portal.title=Portal
-nu.config.generation.title=Generation
+nu.config.starting=First Spawn
+nu.config.starting.tooltip=Starting items and potion effects
+nu.config.features=Features
+nu.config.features.tooltip=Edit the features of the mod
+nu.config.features_portal=Portal
+nu.config.features_portal.tooltip=Configure the portal settings
+nu.config.features_tank=Tank
+nu.config.features_tank.tooltip=Configure the tank settings
+nu.config.features_nether=Nether
+nu.config.features_nether.tooltip=Configure nether settings
+nu.config.generation=Generation
+nu.config.generation.tooltip=Configure the wood generation

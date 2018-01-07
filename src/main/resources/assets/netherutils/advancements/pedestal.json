@@ -1,0 +1,23 @@
+{
+  "display": {
+    "description": "Acquire the pedestal",
+    "icon": {
+      "item": "netherutils:pedestal"
+    },
+    "title": "A simple item holder!?"
+  },
+  "parent": "netherutils:tank",
+  "criteria": {
+    "tank": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "netherutils:pedestal",
+            "data": 0
+          }
+        ]
+      }
+    }
+  }
+}

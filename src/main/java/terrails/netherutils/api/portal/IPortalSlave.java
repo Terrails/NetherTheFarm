@@ -7,5 +7,5 @@ public interface IPortalSlave {
     void setMasterPos(BlockPos pos);
     BlockPos getMasterPos();
 
-    BlockPos getPos();
+    BlockPos getBlockPos();
 }

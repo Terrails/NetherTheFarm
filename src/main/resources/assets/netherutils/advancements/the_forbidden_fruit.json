@@ -1,0 +1,23 @@
+{
+  "display": {
+    "description": "Acquire the forbidden fruit",
+    "icon": {
+      "item": "netherutils:forbidden_fruit"
+    },
+    "title": "The Forbidden Fruit"
+  },
+  "parent": "netherutils:nether_utils",
+  "criteria": {
+    "tank": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "netherutils:forbidden_fruit",
+            "data": 0
+          }
+        ]
+      }
+    }
+  }
+}

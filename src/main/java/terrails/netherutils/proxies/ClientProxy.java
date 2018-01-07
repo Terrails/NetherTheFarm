@@ -12,7 +12,7 @@ public class ClientProxy implements IProxy {
 
     @Override
     public void preInit(FMLPreInitializationEvent event) {
-        OBJLoader.INSTANCE.addDomain(Constants.MOD_ID);
+
     }
 
     @Override

@@ -21,6 +21,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
+import net.minecraftforge.event.entity.player.UseHoeEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import terrails.netherutils.Constants;
 import terrails.netherutils.init.ModBlocks;
 import terrails.terracore.block.BlockBase;
@@ -59,19 +61,6 @@ public class BlockSoulSoil extends BlockBase {
         } else if (!stateValue) {
             worldIn.setBlockState(pos, state.withProperty(MOISTURE, true), 2);
         }
-    }
-
-    @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if (worldIn.isAirBlock(pos.up())) {
-            boolean isWoodenHoe = playerIn.getHeldItem(hand).getUnlocalizedName().toLowerCase().contains("wood");
-            if (!isWoodenHoe)
-                setBlock(playerIn, worldIn, pos, ModBlocks.SOUL_SOIL.getDefaultState().withProperty(MOISTURE, false));
-            else if (!worldIn.isRemote) {
-                Constants.Log.playerMessage(playerIn, "You cannot use a wooden hoe on soul sand!");
-            }
-        }
-        return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ);
     }
 
     @Override
@@ -143,28 +132,6 @@ public class BlockSoulSoil extends BlockBase {
         return facing == EnumFacing.DOWN ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
     }
 
-    private static void setBlock(EntityPlayer player, World world, BlockPos pos, IBlockState state) {
-        world.playSound(player, pos, SoundEvents.ITEM_HOE_TILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
-        player.swingArm(getHand(player));
-
-        if (!world.isRemote) {
-            world.setBlockState(pos, state, 11);
-            player.getActiveItemStack().damageItem(1, player);
-            AxisAlignedBB axisalignedbb = Objects.requireNonNull(ModBlocks.SOUL_SOIL.getDefaultState().getCollisionBoundingBox(world, pos)).offset(pos);
-            for (Entity entity : world.getEntitiesWithinAABBExcludingEntity(null, axisalignedbb)) {
-                entity.setPosition(entity.posX, axisalignedbb.maxY, entity.posZ);
-            }
-        }
-    }
-    private static EnumHand getHand(EntityPlayer player) {
-        for (EnumHand hand : EnumHand.values()) {
-            ItemStack currentStack = player.getHeldItem(hand);
-            if (!currentStack.isEmpty()) {
-                return hand;
-            }
-        }
-        return EnumHand.MAIN_HAND;
-    }
     private boolean hasLava(World worldIn, BlockPos pos) {
         for (BlockPos.MutableBlockPos blockpos$mutableblockpos : BlockPos.getAllInBoxMutable(pos.add(-4, 0, -4), pos.add(4, 1, 4))) {
             if (worldIn.getBlockState(blockpos$mutableblockpos).getMaterial() == Material.LAVA) {

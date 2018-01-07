@@ -11,5 +11,5 @@ public interface IPortalMaster {
     void isActive(boolean isActive);
     boolean isActive();
 
-    BlockPos getPos();
+    BlockPos getBlockPos();
 }

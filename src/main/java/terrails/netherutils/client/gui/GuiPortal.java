@@ -45,8 +45,8 @@ public class GuiPortal extends GuiContainer {
         int yPos = (this.height - this.ySize) / 2;
         this.drawTexturedModalRect(xPos, yPos, 0, 0, this.xSize, this.ySize);
 
-        if (tile.transferring != -1) {
-            int i = this.tile.transferring * 5 / 40;
+        if (tile.counterFluidTransfer.value() != -1 && tile.getFuelAmount() < tile.getTankCapacity()) {
+            int i = (int) this.tile.counterFluidTransfer.value() * 5 / 40;
             drawTexturedModalRect(xPos + 31 - i, yPos + 29, 2, 167, i, 4);
         }
 
@@ -66,11 +66,9 @@ public class GuiPortal extends GuiContainer {
             TextureMap map = Minecraft.getMinecraft().getTextureMapBlocks();
             TextureAtlasSprite sprite = map.getTextureExtry(fluid) != null ? map.getTextureExtry(fluid) : map.registerSprite(tile.getFuel().getFluid().getStill());
 
-            int i = this.tile.getFuelAmount() * 53 / this.tile.getTankCapacity();
+            int i = this.tile.getFuelAmount() * 52 / this.tile.getTankCapacity();
             drawTexturedModalRect(xPos + 7, yPos + 69 - i, sprite, 16, 16 - (16 - i));
         }
-
-
 
         /*
         mc.getTextureManager().bindTexture(GUI_TEXTURE);
@@ -133,11 +131,12 @@ public class GuiPortal extends GuiContainer {
     protected void actionPerformed(GuiButton button) {
         if (button.id == START && !tile.isActive() && tile.hasFuel() && tile.hasRequiredBlocks() && mc.world.provider.getDimension() == -1) {
             this.tile.isActivating = true;
-            this.tile.sendActivating();
-        } else if (button.id == STOP && tile.isActive()) {
+            this.tile.sendActivation();
+        } else if (button.id == STOP && (tile.isActive() || tile.isActivating)) {
             this.tile.isActivating = false;
             this.tile.isActive(false);
-            this.tile.sendServerPackets();
+            this.tile.sendActivation();
+            this.tile.sendActive();
         }
     }
 
@@ -179,13 +178,13 @@ public class GuiPortal extends GuiContainer {
 
                 int i = yStart;
 
-                if (tile.isActivating) {
+                if (tile.isActivating && this.id == START) {
                     i += this.width * 2;
                 }
                 else if (tile.isActive() && this.id == START) {
                     i += this.width * 2;
                 }
-                else if (!tile.isActive() && this.id == STOP) {
+                else if (!tile.isActive() && !tile.isActivating && this.id == STOP) {
                     i += this.width * 2;
                 }
                 else if (this.hovered) {

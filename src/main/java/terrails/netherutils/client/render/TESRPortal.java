@@ -6,11 +6,12 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import terrails.netherutils.Constants;
+import terrails.netherutils.init.ModFeatures;
+import terrails.netherutils.network.SPacketBoolean;
 import terrails.netherutils.tileentity.portal.TileEntityPortalMaster;
 
 public class TESRPortal extends TileEntitySpecialRenderer<TileEntityPortalMaster> {
@@ -19,8 +20,8 @@ public class TESRPortal extends TileEntitySpecialRenderer<TileEntityPortalMaster
 
     @Override
     public void render(TileEntityPortalMaster te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
-        boolean isGamePaused = !Minecraft.getMinecraft().isGamePaused() && Minecraft.getMinecraft().isIntegratedServerRunning();
-        boolean isPlayerInRange = getWorld().isAnyPlayerWithinRangeAt(te.getPos().getX() + 0.5, te.getPos().getY() + 1, te.getPos().getZ() + 0.5, 0.5);
+        boolean isGamePaused = Minecraft.getMinecraft().isGamePaused();
+        boolean isPlayerInRange = getWorld().isAnyPlayerWithinRangeAt(te.getPos().getX() + 0.5, te.getPos().getY() + 0.75, te.getPos().getZ() + 0.5, 0.5);
 
         GlStateManager.pushAttrib();
         GlStateManager.pushMatrix();
@@ -29,78 +30,98 @@ public class TESRPortal extends TileEntitySpecialRenderer<TileEntityPortalMaster
         GlStateManager.disableRescaleNormal();
 
         if (te.isActivating) {
-            if (isGamePaused) te.counterActivation++;
-            renderActivationSequence(te);
-            if (te.counterActivation >= 800) {
-                te.counterActivation = 0;
-            }
+            if (!te.isActivationDone) {
+                if (!isGamePaused) {
+                    te.counterActivation.increment();
+                }
+                renderActivationSequence(te.counterActivation.value());
+                if (te.counterActivation.value() >= 1200) {
+                    te.isActivationDone = true;
+                    te.sendActivationDone();
+                    te.counterActivation.clear();
+                }
+            } else renderActivatedCircle();
         }
         else if (te.isActive()) {
             if (isPlayerInRange) {
-                if (isGamePaused) {
-                    te.counterCircle++;
-                    te.counterTeleport++;
+                if (!isGamePaused) {
+                    te.counterCircle.increment();
+                    te.counterTeleport.increment();
                 }
 
-                renderTeleportCircleTop(te);
-                if (te.isAtPosition)
-                    renderBottomTeleportCircle(te);
-                renderSideTeleportCircles(1, 1, te);
-                renderSideTeleportCircles(1, -1, te);
-                renderSideTeleportCircles(-1, 1, te);
-                renderSideTeleportCircles(-1, -1, te);
+                renderTeleportCircleTop(te.isAtPosTopMiddleCircle, te.counterTeleport.value());
+                if (te.isAtPosTopMiddleCircle) {
+                    renderTeleportCircleBottom(te.counterTeleport.value());
+                }
+                renderTeleportCircleSide(1, 1, te.counterCircle.value(), te);
+                renderTeleportCircleSide(1, -1, te.counterCircle.value(), te);
+                renderTeleportCircleSide(-1, 1, te.counterCircle.value(), te);
+                renderTeleportCircleSide(-1, -1, te.counterCircle.value(), te);
 
-                if (te.isAtPosition2) {
+                if (te.isAtPosSideCircles) {
                     renderParticles(te);
                 }
 
-                if (te.counterCircle >= 500) {
-                    te.counterCircle = 0;
+                if (te.counterCircle.value() >= 800) {
+                    te.counterCircle.clear();
                 }
-                if (te.counterTeleport >= 360) {
-                    te.isAtPosition = true;
-                    te.counterTeleport = 0;
+
+                if (te.counterTeleport.value() >= 720) {
+                    if (te.isAtPosTopMiddleCircle) {
+                        te.isReadyToTeleport = true;
+                        te.sendReadyToTeleport();
+                    }
+                    te.isAtPosTopMiddleCircle = true;
+                    te.counterTeleport.clear();
                 }
             } else {
                 renderActivatedCircle();
-                te.counterCircle = 0;
-                te.counterTeleport = 0;
-                te.isAtPosition = false;
-                te.isAtPosition2 = false;
+                te.counterCircle.clear();
+                te.counterTeleport.clear();
+                te.counterActivation.clear();
+                te.isAtPosSideCircles = false;
+                te.isAtPosTopMiddleCircle = false;
             }
-            te.counterActivation = 0;
-        } else if (!te.isActive()) {
-            te.counterActivation = 0;
-            te.counterCircle = 0;
-            te.counterTeleport = 0;
-            te.isAtPosition = false;
-            te.isAtPosition2 = false;
         }
+        else if (!te.isActive()) {
+            te.counterActivation.clear();
+            te.counterCircle.clear();
+            te.counterTeleport.clear();
+            te.isAtPosTopMiddleCircle = false;
+            te.isAtPosSideCircles = false;
+        }
+
         GlStateManager.popMatrix();
         GlStateManager.popAttrib();
     }
 
-    private void renderTeleportCircleTop(TileEntityPortalMaster te) {
+    private void renderTeleportCircleTop(boolean isAtPosTopMiddleCircle, float counterTeleport) {
         GlStateManager.matrixMode(GL11.GL_MODELVIEW);
         GlStateManager.pushMatrix();
         GlStateManager.disableLighting();
         GlStateManager.disableCull();
         GlStateManager.enableBlend();
 
-        GlStateManager.translate(0.5f, 1, 0.5f);
-        if (te.isAtPosition) {
+        GlStateManager.translate(0.5f, /*1*/0.6, 0.5f);
+        if (isAtPosTopMiddleCircle) {
             GlStateManager.translate(0, 2.1, 0);
-            GlStateManager.translate(0, -te.counterTeleport / 175, 0);
+            GlStateManager.translate(0, -counterTeleport / 345, 0);
         }
-        else {GlStateManager.translate(0, te.counterTeleport / 175, 0);}
+        else {
+            GlStateManager.translate(0, counterTeleport / 345, 0);
+        }
 
-        GlStateManager.scale(0.5f, 0, 0.5f);
+        GlStateManager.scale(0.75f, 0, 0.75f);
 
-        if (te.isAtPosition) {GlStateManager.scale((360 - te.counterTeleport) / 145, 0, (360 - te.counterTeleport) / 145);}
-        else {GlStateManager.scale(te.counterTeleport / 145, 0, te.counterTeleport / 145);}
+        if (isAtPosTopMiddleCircle) {
+            GlStateManager.scale((720 - counterTeleport) / 400, 0, (720 - counterTeleport) / 400);
+        }
+        else {
+            GlStateManager.scale(counterTeleport / 400, 0, counterTeleport / 400);
+        }
 
         GlStateManager.rotate(90, 1, 0, 0);
-        GlStateManager.rotate(te.counterTeleport, 0, 0, 1);
+        GlStateManager.rotate(counterTeleport/2, 0, 0, 1);
 
         GlStateManager.blendFunc(770, 1);
 
@@ -123,21 +144,21 @@ public class TESRPortal extends TileEntitySpecialRenderer<TileEntityPortalMaster
         GlStateManager.enableLighting();
         GlStateManager.popMatrix();
     }
-    private void renderBottomTeleportCircle(TileEntityPortalMaster te) {
+    private void renderTeleportCircleBottom(float counterTeleport) {
         GlStateManager.matrixMode(GL11.GL_MODELVIEW);
         GlStateManager.pushMatrix();
         GlStateManager.disableLighting();
         GlStateManager.disableCull();
         GlStateManager.enableBlend();
 
-        GlStateManager.translate(0.5f, 1, 0.5f);
-        GlStateManager.translate(0, te.counterTeleport/175, 0);
+        GlStateManager.translate(0.5f, /*1*/0.6, 0.5f);
+        GlStateManager.translate(0, counterTeleport/345, 0);
 
-        GlStateManager.scale(0.5f, 0, 0.5f);
-        GlStateManager.scale(te.counterTeleport/145, 0, te.counterTeleport/145);
+        GlStateManager.scale(0.75f, 0, 0.75f);
+        GlStateManager.scale(counterTeleport/400, 0, counterTeleport/400);
 
         GlStateManager.rotate(90, 1, 0, 0);
-        GlStateManager.rotate(te.counterTeleport, 0, 0, 1);
+        GlStateManager.rotate(counterTeleport/2, 0, 0, 1);
 
         GlStateManager.blendFunc(770, 1);
 
@@ -160,29 +181,28 @@ public class TESRPortal extends TileEntitySpecialRenderer<TileEntityPortalMaster
         GlStateManager.enableLighting();
         GlStateManager.popMatrix();
     }
-    private void renderSideTeleportCircles(double posX, double posZ, TileEntityPortalMaster te) {
+
+    private void renderTeleportCircleSide(double posX, double posZ, float counterCircle, TileEntityPortalMaster te) {
         GlStateManager.matrixMode(GL11.GL_MODELVIEW);
         GlStateManager.pushMatrix();
         GlStateManager.disableLighting();
         GlStateManager.enableBlend();
         GlStateManager.disableCull();
 
-        if (te.isAtPosition2) {
-            GlStateManager.translate(0.5f + posX, 2, 0.5f + posZ);
+        if (te.isAtPosSideCircles) {
+            GlStateManager.translate(0.5f + posX, /*2*/1.5, 0.5f + posZ);
             GlStateManager.scale(0.25f, 0, 0.25f);
         } else {
-            double translate = 0.51 + (te.counterCircle / 215);
-            if (translate >= 2) te.isAtPosition2 = true;
+            double translate = /* 0.51 */ 0.65 + (counterCircle / /*322*/ 360);
+            if (translate >= /*2*/1.5) te.isAtPosSideCircles = true;
             GlStateManager.translate(0.5f + posX, translate, 0.5f + posZ);
 
-            double scale = (te.counterCircle - 500) / 750;
+            double scale = (counterCircle - 800) / 2000/*1250*/;
             if (scale >= -0.25) GlStateManager.scale(0.25f, 0, 0.25f);
             else GlStateManager.scale(scale, 0, scale);
         }
-
-        float angle = (System.currentTimeMillis() / 20) % 360;
         GlStateManager.rotate(90, 1, 0, 0);
-        GlStateManager.rotate(angle, 0, 0, 1);
+        GlStateManager.rotate((System.currentTimeMillis() / 20) % 360, 0, 0, 1);
 
         GlStateManager.blendFunc(770, 1);
 
@@ -206,7 +226,7 @@ public class TESRPortal extends TileEntitySpecialRenderer<TileEntityPortalMaster
         GlStateManager.popMatrix();
     }
 
-    private void renderActivationSequence(TileEntityPortalMaster te) {
+    private void renderActivationSequence(float counterActivation) {
         GlStateManager.matrixMode(GL11.GL_MODELVIEW);
         GlStateManager.pushMatrix();
         GlStateManager.disableCull();
@@ -215,18 +235,17 @@ public class TESRPortal extends TileEntitySpecialRenderer<TileEntityPortalMaster
 
         GlStateManager.blendFunc(770, 1);
 
-        GlStateManager.translate(0.5F, 0.1F, 0.5F);
+        GlStateManager.translate(0.5F, /*0.1F*/0, 0.5F);
         GlStateManager.scale(1.5F, 1F, 1.5F);
 
-        float translationCounter = te.counterActivation / 900;
+        float translationCounter = counterActivation / 2000;
         GlStateManager.translate(0, translationCounter, 0);
 
-        float scaleCounter = Math.abs((te.counterActivation) - 800) / 1000;
+        float scaleCounter = Math.abs(counterActivation - 1200) / 1000;
         GlStateManager.scale(scaleCounter + 0.35F, 1, scaleCounter + 0.35F);
 
-        long angle = (System.currentTimeMillis() / 20) % 360;
         GlStateManager.rotate(90, 1, 0, 0);
-        GlStateManager.rotate(angle, 0, 0, 1);
+        GlStateManager.rotate((System.currentTimeMillis() / 20) % 360, 0, 0, 1);
 
         Minecraft.getMinecraft().renderEngine.bindTexture(TEXTURE_LOCATION);
         shadeModel();
@@ -248,6 +267,7 @@ public class TESRPortal extends TileEntitySpecialRenderer<TileEntityPortalMaster
         GlStateManager.enableLighting();
         GlStateManager.popMatrix();
     }
+
     private void renderActivatedCircle() {
         GlStateManager.matrixMode(GL11.GL_MODELVIEW);
         GlStateManager.pushMatrix();
@@ -255,12 +275,11 @@ public class TESRPortal extends TileEntitySpecialRenderer<TileEntityPortalMaster
         GlStateManager.enableBlend();
         GlStateManager.disableCull();
 
-        GlStateManager.translate(0.5f, 1, 0.5f);
-        GlStateManager.scale(0.5f, 0, 0.5f);
+        GlStateManager.translate(0.5F, /*1*/0.6F, 0.5F);
+        GlStateManager.scale(0.5F, 0, 0.5F);
 
-        float counter = (System.currentTimeMillis() / 20) % 360;
         GlStateManager.rotate(90, 1, 0, 0);
-        GlStateManager.rotate(counter, 0, 0, 1);
+        GlStateManager.rotate((System.currentTimeMillis() / 20) % 360, 0, 0, 1);
 
         GlStateManager.blendFunc(770, 1);
 
@@ -284,16 +303,16 @@ public class TESRPortal extends TileEntitySpecialRenderer<TileEntityPortalMaster
         GlStateManager.popMatrix();
     }
 
-    private void renderParticles(TileEntity te) {
-        double xPos = te.getPos().getX();
-        double yPos = te.getPos().getY();
-        double zPos = te.getPos().getZ();
+    private void renderParticles(TileEntityPortalMaster te) {
+        double xPos = te.getPos().getX() + 0.5;
+        double yPos = te.getPos().getY() + /*0.6*/0.1;
+        double zPos = te.getPos().getZ() + 0.5;
         for (int i = 0; i < 2; ++i)
         {
-            getWorld().spawnParticle(EnumParticleTypes.PORTAL, xPos + 0.5, yPos + 0.6, zPos + 0.5, 1, 0.4, 1);
-            getWorld().spawnParticle(EnumParticleTypes.PORTAL, xPos + 0.5, yPos + 0.6, zPos + 0.5, 1, 0.4, -1);
-            getWorld().spawnParticle(EnumParticleTypes.PORTAL, xPos + 0.5, yPos + 0.6, zPos + 0.5, -1, 0.4, -1);
-            getWorld().spawnParticle(EnumParticleTypes.PORTAL, xPos + 0.5, yPos + 0.6, zPos + 0.5, -1, 0.4, 1);
+            getWorld().spawnParticle(EnumParticleTypes.PORTAL, xPos, yPos, zPos, 1, 0.4, 1);
+            getWorld().spawnParticle(EnumParticleTypes.PORTAL, xPos, yPos, zPos, 1, 0.4, -1);
+            getWorld().spawnParticle(EnumParticleTypes.PORTAL, xPos, yPos, zPos, -1, 0.4, -1);
+            getWorld().spawnParticle(EnumParticleTypes.PORTAL, xPos, yPos, zPos, -1, 0.4, 1);
         }
     }
 

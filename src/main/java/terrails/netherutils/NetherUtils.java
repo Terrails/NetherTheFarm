@@ -1,13 +1,13 @@
 package terrails.netherutils;
 
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.*;
+import terrails.netherutils.api.world.IWorldData;
 import terrails.netherutils.init.ModFeatures;
 import terrails.netherutils.proxies.IProxy;
-import terrails.netherutils.tileentity.portal.PortalId;
+import terrails.netherutils.world.data.CustomWorldData;
 
 @Mod(modid = Constants.MOD_ID,
         name = Constants.NAME,
@@ -21,6 +21,7 @@ public class NetherUtils {
 
     @Mod.Instance(Constants.MOD_ID)
     public static NetherUtils INSTANCE;
+
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -46,5 +47,21 @@ public class NetherUtils {
         proxy.postInit(event);
 
         ModFeatures.initWorlds();
+    }
+
+    @Mod.EventHandler
+    public void worldUnload(FMLServerStoppingEvent event) {
+        IWorldData data = CustomWorldData.get(FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld());
+        if (data != null) {
+            data.hasRead(false);
+        }
+    }
+
+    @Mod.EventHandler()
+    public void startedServer(FMLServerStartedEvent event) {
+        IWorldData data = CustomWorldData.get(FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld());
+        if (data != null) {
+            data.hasRead(true);
+        }
     }
 }

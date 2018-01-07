@@ -1,6 +1,9 @@
 package terrails.netherutils.api.world;
 
 import net.minecraft.util.math.BlockPos;
+import terrails.netherutils.api.portal.IPortalMaster;
+
+import java.util.List;
 
 public interface IWorldData {
 
@@ -24,5 +27,12 @@ public interface IWorldData {
      * @return the boolean value
      */
     boolean hasSpawnPoint();
+
+    boolean hasRead();
+    void hasRead(boolean dataRead);
+
+//    List<IPortalMaster> getPortals();
+//    void setPortals(List<IPortalMaster> list);
+
 }
 

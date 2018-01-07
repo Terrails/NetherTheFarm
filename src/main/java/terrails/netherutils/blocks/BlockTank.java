@@ -3,6 +3,7 @@ package terrails.netherutils.blocks;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -10,25 +11,22 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -36,21 +34,16 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import terrails.netherutils.Constants;
 import terrails.netherutils.client.render.TESRTank;
+import terrails.netherutils.config.ConfigHandler;
 import terrails.netherutils.tileentity.TileEntityTank;
-import terrails.terracore.block.BlockBase;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
-@ParametersAreNonnullByDefault
-public class BlockTank extends BlockBase {
+public class BlockTank extends BlockTileEntity<TileEntityTank> {
 
     public BlockTank(String name) {
         super(Material.IRON, name);
-        setDefaultState(this.blockState.getBaseState().withProperty(HAS_WATER, false));
+        setDefaultState(this.blockState.getBaseState().withProperty(LEVEL, 8));
         setHarvestLevel("pickaxe", 1);
         setHardness(5.0F);
         setTickRandomly(true);
@@ -59,11 +52,81 @@ public class BlockTank extends BlockBase {
         GameRegistry.registerTileEntity(TileEntityTank.class, name);
     }
 
-    @SideOnly(Side.CLIENT)
-    public void initModel() {
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(Objects.requireNonNull(getRegistryName()), "inventory"));
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTank.class, new TESRTank());
+    @Override
+    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
+        ItemStack stack = new ItemStack(this);
+
+        if (ConfigHandler.tankKeepContent) {
+            IFluidHandler fluidHandler = getFluidHandler(world, pos);
+            IFluidHandlerItem fluidHandlerItem = FluidUtil.getFluidHandler(stack);
+            if (fluidHandler != null && fluidHandlerItem != null) {
+                fluidHandlerItem.fill(fluidHandler.drain(Integer.MAX_VALUE, false), true);
+            }
+        }
+        drops.add(stack);
     }
+
+    @Override
+    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
+        ItemStack stack = new ItemStack(this);
+        if (ConfigHandler.tankKeepContent) {
+            IFluidHandler fluidHandler = getFluidHandler(world, pos);
+            IFluidHandlerItem fluidHandlerItem = FluidUtil.getFluidHandler(stack);
+
+            if (fluidHandler != null && fluidHandlerItem != null) {
+                fluidHandlerItem.fill(fluidHandler.drain(Integer.MAX_VALUE, false), true);
+            }
+        }
+        return stack;
+    }
+
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+        if (world.isRemote || !ConfigHandler.tankKeepContent) {
+            return;
+        }
+
+        IFluidHandler fluidHandler = getFluidHandler(world, pos);
+        IFluidHandlerItem fluidHandlerItem = FluidUtil.getFluidHandler(stack);
+
+        if (fluidHandler != null && fluidHandlerItem != null) {
+            fluidHandler.fill(fluidHandlerItem.drain(Integer.MAX_VALUE, false), true);
+        }
+    }
+
+    @Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        IFluidHandler fluidHandler = getFluidHandler(worldIn, pos);
+
+        if (fluidHandler != null) {
+
+            FluidUtil.interactWithFluidHandler(player, hand, worldIn, pos, facing);
+
+            if (!worldIn.isRemote && player.isSneaking() && hand == EnumHand.MAIN_HAND) {
+                for (final IFluidTankProperties property : getTileEntity(worldIn, pos).getTank().getTankProperties()) {
+                    FluidStack fluidStack = property.getContents();
+
+                    String GREEN = TextFormatting.GREEN + "";
+                    String GOLD = TextFormatting.GOLD + "";
+
+                    if (fluidStack == null) {
+                        Constants.Log.playerMessage(player, GREEN + "0" + GOLD + "/" + GREEN + property.getCapacity());
+                    } else {
+                        String GRAY = TextFormatting.GRAY + "";
+                        String AQUA = TextFormatting.AQUA + "";
+                        Constants.Log.playerMessage(player, GREEN + fluidStack.amount + GOLD + "/" + GREEN + property.getCapacity() + GRAY + " (" + AQUA + fluidStack.getLocalizedName() + GRAY + ")");
+                    }
+                }
+            }
+
+            return player.getHeldItem(hand).hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
+        }
+
+        return false;
+    }
+
+
+    // == Basic & Rendering == \\
 
     @Override
     public boolean canRenderInLayer(IBlockState state, BlockRenderLayer layer) {
@@ -71,102 +134,8 @@ public class BlockTank extends BlockBase {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public int getComparatorInputOverride(IBlockState blockState, World world, BlockPos pos) {
-        TileEntity tileEntity = world.getTileEntity(pos);
-        return tileEntity instanceof TileEntityTank ? ((TileEntityTank) tileEntity).getComparatorStrength() : 0;
-    }
-    @Override
     public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
-        TileEntity tileEntity = world.getTileEntity(pos);
-        return tileEntity instanceof  TileEntityTank ? ((TileEntityTank) tileEntity).getLightLevel() : 0;
-    }
-
-    @Override
-    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-        ArrayList<ItemStack> items = new ArrayList<>();
-        TileEntityTank tile = getTileEntity(world, pos);
-
-        final IFluidHandler fluidHandler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
-
-        if (fluidHandler != null) {
-            final FluidActionResult fluidActionResult = FluidUtil.tryFillContainer(new ItemStack(this), fluidHandler, Integer.MAX_VALUE, null, true);
-
-            if (fluidActionResult.isSuccess()) {
-                drops.add(fluidActionResult.getResult());
-            }
-            /*
-            FluidTank tank = tile.getTank();
-            ItemStack stack = new ItemStack(state.getBlock());
-            if (tank != null && tank.getFluid() != null) {
-                stack.setTagCompound(tank.writeToNBT(new NBTTagCompound()));
-              //  if (stack.getTagCompound() != null) {
-                  //  stack.getTagCompound().setInteger("Capacity", tank.getCapacity());
-             //   }
-            }
-            items.add(stack);
-            */
-        }
-       // drops.addAll(items);
-    }
-
-    @Override
-    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
-        return willHarvest || super.removedByPlayer(state, world, pos, player, false);
-    }
-    @Override
-    public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, @Nullable TileEntity te, ItemStack tool) {
-        super.harvestBlock(world, player, pos, state, te, tool);
-        world.setBlockToAir(pos);
-    }
-
-    @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        TileEntityTank tile = (TileEntityTank) world.getTileEntity(pos);
-
-        if (tile != null) {
-            FluidTank tank = tile.getTank();
-            NBTTagCompound compound = stack.getTagCompound();
-            if (compound != null) {
-                tank.readFromNBT(compound);
-            }
-        }
-    }
-    @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        final TileEntityTank tileEntityTank = getTileEntity(worldIn, pos);
-
-        if (!worldIn.isRemote && hand == EnumHand.MAIN_HAND && FluidUtil.getFluidHandler(playerIn.getHeldItem(hand)) == null) {
-            getFluidDataForDisplay(tileEntityTank.getTank().getTankProperties()).forEach(playerIn::sendMessage);
-        }
-        return FluidUtil.interactWithFluidHandler(playerIn, hand, tileEntityTank.getTank()) || FluidUtil.getFluidHandler(playerIn.getHeldItem(hand)) != null;
-    }
-
-    public static final PropertyBool HAS_WATER = PropertyBool.create("has_water");
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public Material getMaterial(IBlockState state) {
-        if (state.getValue(HAS_WATER)) {
-            return Material.WATER;
-        }
-        return super.getMaterial(state);
-    }
-
-    @Override
-    protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, HAS_WATER);
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state) {
-        return state.getValue(HAS_WATER) ? 1 : 0;
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public IBlockState getStateFromMeta(int meta) {
-        return this.getDefaultState().withProperty(HAS_WATER, meta == 1);
+        return getTileEntity(world, pos) == null ? 0 : getTileEntity(world, pos).getLightLevel();
     }
 
     @Override
@@ -191,34 +160,62 @@ public class BlockTank extends BlockBase {
         return true;
     }
     @Override
-    public boolean hasTileEntity(IBlockState state) {
-        return true;
+    @SuppressWarnings("deprecation")
+    public int getComparatorInputOverride(IBlockState blockState, World world, BlockPos pos) {
+        return getTileEntity(world, pos) == null ? 0 : getTileEntity(world, pos).getComparatorStrength();
     }
+
+    @SideOnly(Side.CLIENT)
+    public void initModel() {
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(Objects.requireNonNull(getRegistryName()), "inventory"));
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTank.class, new TESRTank());
+    }
+
     @Override
     public TileEntity createTileEntity(World world, IBlockState state) {
         return new TileEntityTank();
     }
 
-    private static List<ITextComponent> getFluidDataForDisplay(IFluidTankProperties[] tankProperties) {
-        final List<ITextComponent> data = new ArrayList<>();
+    private IFluidHandler getFluidHandler(IBlockAccess world, BlockPos pos) {
+        return getTileEntity(world, pos).getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+    }
 
-        for (final IFluidTankProperties property : tankProperties) {
-            final FluidStack fluidStack = property.getContents();
+    // == End == \\
 
-            boolean hasFluid = false;
+    // == Hydration == \\
 
-            if (fluidStack != null) {
-                hasFluid = true;
-                data.add(new TextComponentString("[" + TextFormatting.RED + "NetherUtils" + TextFormatting.RESET + "] " + TextFormatting.GREEN + "" + fluidStack.amount + TextFormatting.GOLD + "/" + TextFormatting.GREEN + "" + property.getCapacity() + TextFormatting.GRAY + " (" + TextFormatting.AQUA + fluidStack.getLocalizedName() + TextFormatting.GRAY + ")"));
-            }
+    /* Current Issues */
+    // When placing down water source next to the block it makes the water flow after the source is removed
+    // Turns lava into cobblestone and obsidian, also turns itself into stone if lava is on it
+    // When using PropertyBool placing down a water block next to it makes it crash because it's searching for a IBlockState with PropertyInteger named level and with values from 0 to 15
+    // the fix is https://github.com/MinecraftForge/MinecraftForge/pull/4619, but needs to be merged
 
-            if (!hasFluid) {
-                data.add(new TextComponentString("[" + TextFormatting.RED + "NetherUtils" + TextFormatting.RESET + "] " + TextFormatting.GREEN + "0" + TextFormatting.GOLD + "/" + TextFormatting.GREEN + "" + property.getCapacity()));
-            }
+    public static final PropertyInteger LEVEL = PropertyInteger.create("level", 0, 15);
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public Material getMaterial(IBlockState state) {
+        if (state.getValue(LEVEL) > 0) {
+            return Material.WATER;
         }
-        return data;
+        return super.getMaterial(state);
     }
-    private TileEntityTank getTileEntity(IBlockAccess world, BlockPos pos) {
-        return (TileEntityTank) world.getTileEntity(pos);
+
+    @Override
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this, LEVEL);
     }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        return state.getValue(LEVEL) == 0 ? 1 : 0;
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public IBlockState getStateFromMeta(int meta) {
+        return this.getDefaultState().withProperty(LEVEL, meta == 1 ? 0 : 1);
+    }
+
+    // == End == \\
 }

@@ -9,8 +9,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
+import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -21,7 +21,6 @@ import terrails.netherutils.api.world.IWorldData;
 import terrails.netherutils.config.ConfigHandler;
 import terrails.netherutils.entity.capabilities.CapabilityFirstSpawn;
 import terrails.netherutils.entity.capabilities.CapabilityObelisk;
-import terrails.netherutils.tileentity.portal.PortalId;
 import terrails.netherutils.world.TeleporterNTF;
 import terrails.netherutils.world.data.CustomWorldData;
 
@@ -57,8 +56,6 @@ public class SpawnEvent {
             }
         }
     }
-
-
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void firstSpawn(PlayerEvent.PlayerLoggedInEvent event) {

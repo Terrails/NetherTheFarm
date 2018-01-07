@@ -33,7 +33,7 @@ public class CPacketInteger implements IMessage {
     }
 
     public CPacketInteger(int value, BlockPos pos) {
-        this(value, pos, 0);
+        this(value, pos, 1);
     }
 
     @Override
@@ -69,15 +69,16 @@ public class CPacketInteger implements IMessage {
 
                     if (tileEntity instanceof TileEntityPortalMaster) {
                         TileEntityPortalMaster tile =(TileEntityPortalMaster) tileEntity;
-                        if (message.option == 0) {
-                            if (tile.getTank().getFluid() != null)
-                                tile.getTank().setFluid(new FluidStack(tile.getTank().getFluid(), message.value));
-                            else tile.getTank().setFluid(null);
-                        } else if (message.option == 1) {
-                            tile.transferring = message.value;
+                        switch (message.option) {
+                            case 1:
+                                if (tile.getTank().getFluid() != null) {
+                                    tile.getTank().setFluid(new FluidStack(tile.getTank().getFluid(), message.value));
+                                } else tile.getTank().setFluid(null);
+                                break;
+                            case 2:
+                                tile.counterFluidTransfer.set(message.value);
+                                break;
                         }
-                        //tile.transferFuel = message.value;
-                        //   tile.setFuel(message.value);
                     }
                 }
             });
