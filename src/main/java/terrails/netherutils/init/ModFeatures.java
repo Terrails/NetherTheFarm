@@ -1,6 +1,5 @@
 package terrails.netherutils.init;
 
-import net.minecraft.world.WorldType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -10,9 +9,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import terrails.netherutils.Constants;
 import terrails.netherutils.NetherUtils;
 import terrails.netherutils.config.ConfigHandler;
-import terrails.netherutils.entity.capabilities.CapabilityFirstSpawn;
-import terrails.netherutils.entity.capabilities.CapabilityObelisk;
-import terrails.netherutils.entity.capabilities.CapabilityPortalItem;
+import terrails.netherutils.entity.capabilities.firstspawn.CapabilityFirstSpawn;
+import terrails.netherutils.entity.capabilities.obelisk.CapabilityObelisk;
+import terrails.netherutils.entity.capabilities.portalitem.CapabilityPortalItem;
 import terrails.netherutils.event.BlockEvent;
 import terrails.netherutils.event.EntityEvent;
 import terrails.netherutils.event.RegisterEvent;
@@ -21,7 +20,6 @@ import terrails.netherutils.network.CPacketBoolean;
 import terrails.netherutils.network.CPacketInteger;
 import terrails.netherutils.network.SPacketBoolean;
 import terrails.netherutils.network.SPacketInteger;
-import terrails.netherutils.world.WorldTypeNetherSurvival;
 import terrails.netherutils.world.data.CustomWorldData;
 import terrails.netherutils.world.nether.TreesGenerator;
 
@@ -67,13 +65,10 @@ public class ModFeatures {
     }
 
     public static void initWorlds() {
-        Worlds.NETHER_SURVIVAL = new WorldTypeNetherSurvival();
+     //   Worlds.NETHER_SURVIVAL = new WorldTypeNetherSurvival();
         GameRegistry.registerWorldGenerator(new TreesGenerator(), 0);
     }
 
-    public static class Worlds {
-        public static WorldType NETHER_SURVIVAL;
-    }
     public static class Network {
         private static int packetId = 0;
         public static SimpleNetworkWrapper WRAPPER = null;

@@ -5,8 +5,8 @@ generator.NetherSurvival=Nether Survival
 itemGroup.netherutils=Nether Utils
 
 // Blocks \\
-tile.portal.name=Portal
-tile.portal_slave.name=Portal Slave
+tile.nether_portal.name=Portal
+tile.nether_portal_slave.name=Portal Slave
 tile.obelisk.name=Obelisk
 tile.spawn_point.name=Spawn Point
 tile.tank.name=Tank
@@ -52,6 +52,10 @@ nu.config.features=Features
 nu.config.features.tooltip=Edit the features of the mod
 nu.config.features_portal=Portal
 nu.config.features_portal.tooltip=Configure the portal settings
+nu.config.features_nether_portal=Nether Portal
+nu.config.features_nether_portal.tooltip=Configure the nether portal settings
+nu.config.features_end_portal=End Portal
+nu.config.features_end_portal.tooltip=Configure the end portal settings
 nu.config.features_tank=Tank
 nu.config.features_tank.tooltip=Configure the tank settings
 nu.config.features_nether=Nether

@@ -1,0 +1,23 @@
+{
+  "display": {
+    "description": "Acquire the portal",
+    "icon": {
+      "item": "netherutils:nether_portal"
+    },
+    "title": "I'M GETTING OUT!"
+  },
+  "parent": "netherutils:pedestal",
+  "criteria": {
+    "tank": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "netherutils:nether_portal",
+            "data": 0
+          }
+        ]
+      }
+    }
+  }
+}

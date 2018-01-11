@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "result": {
-    "item": "netherutils:portal",
+    "item": "netherutils:nether_portal",
     "data": 0
   },
   "pattern": [

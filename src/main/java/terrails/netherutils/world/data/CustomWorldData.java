@@ -7,9 +7,8 @@ import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import terrails.netherutils.Constants;
-import terrails.netherutils.NetherUtils;
 import terrails.netherutils.api.world.IWorldData;
-import terrails.netherutils.tileentity.portal.PortalRegistry;
+import terrails.netherutils.blocks.portal.PortalRegistry;
 
 import javax.annotation.Nonnull;
 

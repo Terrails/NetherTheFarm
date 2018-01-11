@@ -15,8 +15,7 @@ import java.util.List;
 public class ConfigGUI extends GuiConfig {
 
     public ConfigGUI(GuiScreen parentScreen) {
-        super(parentScreen, getConfigElements(),
-                Constants.MOD_ID, false, false, "/" + Constants.MOD_ID + ".cfg");
+        super(parentScreen, getConfigElements(), Constants.MOD_ID, false, false, "/" + Constants.MOD_ID + ".cfg");
     }
 
     private static List<IConfigElement> getConfigElements() {
@@ -48,6 +47,8 @@ public class ConfigGUI extends GuiConfig {
 
         private static List<IConfigElement> getConfigElements() {
             ConfigHandler.config.getCategory(ConfigHandler.FEATURES_PORTAL).setLanguageKey("nu.config.features_portal");
+            ConfigHandler.config.getCategory(ConfigHandler.FEATURES_NETHER_PORTAL).setLanguageKey("nu.config.features_nether_portal");
+            ConfigHandler.config.getCategory(ConfigHandler.FEATURES_END_PORTAL).setLanguageKey("nu.config.features_end_portal");
             ConfigHandler.config.getCategory(ConfigHandler.FEATURES_TANK).setLanguageKey("nu.config.features_tank");
             ConfigHandler.config.getCategory(ConfigHandler.FEATURES_NETHER).setLanguageKey("nu.config.features_nether");
             return (new ConfigElement(ConfigHandler.config.getCategory(ConfigHandler.FEATURES)).getChildElements());

@@ -6,6 +6,9 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.boss.EntityWither;
+import net.minecraft.entity.projectile.EntityWitherSkull;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
@@ -13,6 +16,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import terrails.netherutils.api.world.IWorldData;
 import terrails.netherutils.config.ConfigHandler;
+import terrails.netherutils.init.ModBlocks;
 import terrails.netherutils.world.data.CustomWorldData;
 import terrails.terracore.block.BlockBase;
 

@@ -10,7 +10,6 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -19,8 +18,8 @@ import terrails.netherutils.api.capabilities.IFirstSpawn;
 import terrails.netherutils.api.capabilities.IObelisk;
 import terrails.netherutils.api.world.IWorldData;
 import terrails.netherutils.config.ConfigHandler;
-import terrails.netherutils.entity.capabilities.CapabilityFirstSpawn;
-import terrails.netherutils.entity.capabilities.CapabilityObelisk;
+import terrails.netherutils.entity.capabilities.firstspawn.CapabilityFirstSpawn;
+import terrails.netherutils.entity.capabilities.obelisk.CapabilityObelisk;
 import terrails.netherutils.world.TeleporterNTF;
 import terrails.netherutils.world.data.CustomWorldData;
 
@@ -49,10 +48,8 @@ public class SpawnEvent {
 
                 if (respawnPoint.equals(obelisk.getObeliskPos()))
                     TeleporterNTF.teleport(playerMP, obelisk.getObeliskDim(), respawnPoint.up(), false);
-                else if (isWorldType(world, "NetherSurvival") || isWorldType(world, "BIOMESOP")) {
-                    if (respawnPoint.equals(worldData.getPointPos()))
-                        TeleporterNTF.teleport(playerMP, -1, respawnPoint.up(), false);
-                }
+                else if (respawnPoint.equals(worldData.getPointPos()))
+                    TeleporterNTF.teleport(playerMP, -1, respawnPoint.up(), false);
             }
         }
     }
@@ -63,27 +60,21 @@ public class SpawnEvent {
         IWorldData worldData = CustomWorldData.get(player.getEntityWorld());
         IFirstSpawn firstSpawn = player.getCapability(CapabilityFirstSpawn.FIRST_SPAWN_CAPABILITY, null);
 
-        if (isWorldType(player.getEntityWorld(), "NetherSurvival") || isWorldType(player.getEntityWorld(), "BIOMESOP")) {
-            if (player.world.isRemote) return;
-            if (worldData != null && firstSpawn != null) {
-                if (ConfigHandler.pointRespawn) {
-                    if (!worldData.hasSpawnPoint()) {
-                        TeleporterNTF.teleport(player, -1, player.getServerWorld().getSpawnPoint(), true);
-                    }
-                    if (firstSpawn.isNew()) {
-                        TeleporterNTF.teleport(player, -1, worldData.getPointPos().up(), false);
-                        firstSpawn.isNew(false);
-                    }
+        if (player.world.isRemote) return;
+        if (worldData != null && firstSpawn != null) {
+            if (ConfigHandler.pointRespawn) {
+                if (!worldData.hasSpawnPoint()) {
+                    TeleporterNTF.teleport(player, -1, player.getServerWorld().getSpawnPoint(), true);
                 }
-                if (!firstSpawn.hasStartingItems() || !firstSpawn.hasStartingEffects()) {
-                    giveStartingItemsToPlayer(player);
+                if (firstSpawn.isNew()) {
+                    TeleporterNTF.teleport(player, -1, worldData.getPointPos().up(), false);
+                    firstSpawn.isNew(false);
                 }
             }
+            if (!firstSpawn.hasStartingItems() || !firstSpawn.hasStartingEffects()) {
+                giveStartingItemsToPlayer(player);
+            }
         }
-    }
-
-    private static boolean isWorldType(World world, String string) {
-        return world.getWorldType().getName().equals(string);
     }
 
     private static void giveStartingItemsToPlayer(EntityPlayer player) {

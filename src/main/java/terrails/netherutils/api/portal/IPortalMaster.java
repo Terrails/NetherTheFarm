@@ -12,4 +12,5 @@ public interface IPortalMaster {
     boolean isActive();
 
     BlockPos getBlockPos();
+    int getDimension();
 }

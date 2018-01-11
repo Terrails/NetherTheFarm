@@ -10,9 +10,9 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-import terrails.netherutils.tileentity.portal.PortalRegistry;
-import terrails.netherutils.tileentity.portal.TileEntityPortalMaster;
-import terrails.netherutils.tileentity.portal.TileEntityPortalSlave;
+import terrails.netherutils.blocks.portal.PortalRegistry;
+import terrails.netherutils.blocks.portal.nether.TileEntityPortalMaster;
+import terrails.netherutils.blocks.portal.nether.TileEntityPortalSlave;
 import terrails.terracore.item.ItemBase;
 
 import javax.annotation.Nullable;
@@ -34,7 +34,7 @@ public class ItemDebugTool extends ItemBase {
                 player.sendMessage(new TextComponentString("=====! Portal details !====="));
                 player.sendMessage(new TextComponentString("Amount in world: " + PortalRegistry.LIST.size()));
                 player.sendMessage(new TextComponentString("Slave Coords: " + "X: " + tile.getSlavePos().getX() + ", Y: " + tile.getSlavePos().getY() + ", Z: " + tile.getSlavePos().getZ()));
-                player.sendMessage(new TextComponentString("Current Fuel: " + tile.getFuelAmount() + "/" + tile.getTankCapacity()));
+                player.sendMessage(new TextComponentString("Current Fuel: " + tile.getFuelAmount() + "/" + tile.getFuelCapacity()));
                 player.sendMessage(new TextComponentString("Status: " + (tile.isActive() ? "Online" : "Offline")));
                 player.sendMessage(new TextComponentString("Has All Items: " + tile.hasRequiredItems()));
                 player.sendMessage(new TextComponentString("Has Pedestals: " + tile.hasRequiredBlocks()));

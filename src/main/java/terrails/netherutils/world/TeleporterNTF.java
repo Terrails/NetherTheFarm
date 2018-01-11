@@ -55,7 +55,7 @@ public class TeleporterNTF extends Teleporter {
         }
 
         if (usePointGen) {
-            if (isWorldType(player.getEntityWorld(), "NetherSurvival") || isWorldType(player.getEntityWorld(), "BIOMESOP")) {
+          //  if (isWorldType(player.getEntityWorld(), "NetherSurvival") || isWorldType(player.getEntityWorld(), "BIOMESOP")) {
                 if (data != null && !data.hasSpawnPoint() && ConfigHandler.pointRespawn) {
                     if (!(world.getBlockState(data.getPointPos()) == ModBlocks.SPAWN_POINT.getDefaultState())) {
                         genLavaPlatform(player, world, data);
@@ -67,7 +67,7 @@ public class TeleporterNTF extends Teleporter {
                         genLastResort(player, world, data);
                     }
                 }
-            }
+       //     }
         }
     }
 

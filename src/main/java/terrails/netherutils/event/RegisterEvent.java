@@ -7,11 +7,15 @@ import net.minecraft.item.ItemBlock;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import terrails.netherutils.blocks.*;
-import terrails.netherutils.blocks.item.*;
-import terrails.netherutils.blocks.wood.WoodType;
+import terrails.netherutils.blocks.obelisk.BlockObelisk;
+import terrails.netherutils.blocks.pedestal.BlockPedestal;
+import terrails.netherutils.blocks.portal.nether.BlockPortal;
+import terrails.netherutils.blocks.portal.nether.BlockPortalSlave;
+import terrails.netherutils.blocks.portal.nether.ItemBlockPortal;
+import terrails.netherutils.blocks.tank.BlockTank;
+import terrails.netherutils.blocks.tank.ItemBlockTank;
+import terrails.netherutils.blocks.wood.*;
 import terrails.netherutils.init.ModBlocks;
 import terrails.netherutils.init.ModItems;
 
@@ -23,12 +27,12 @@ public class RegisterEvent {
 
     @SubscribeEvent
     public void registerBlocks(RegistryEvent.Register<Block> event) {
-        event.getRegistry().registerAll(ModBlocks.getBlocks());
+        event.getRegistry().registerAll(ModBlocks.get());
     }
 
     @SubscribeEvent
     public void registerItems(RegistryEvent.Register<Item> event) {
-        for (Block block : ModBlocks.getList()) {
+        for (Block block : ModBlocks.get()) {
             if (TANK == block) event.getRegistry().register(new ItemBlockTank(block));
             else if (block == PLANKS) event.getRegistry().register(new ItemBlockPlanks(PLANKS).setRegistryName(Objects.requireNonNull(block.getRegistryName())));
             else if (block == LOG) event.getRegistry().register(new ItemBlockLog(LOG).setRegistryName(Objects.requireNonNull(block.getRegistryName())));
@@ -37,7 +41,7 @@ public class RegisterEvent {
             else if (block == PORTAL_MASTER) event.getRegistry().register(new ItemBlockPortal(PORTAL_MASTER));
             else event.getRegistry().register(new ItemBlock(block).setRegistryName(Objects.requireNonNull(block.getRegistryName())));
         }
-        event.getRegistry().registerAll(ModItems.getItems());
+        event.getRegistry().registerAll(ModItems.get());
     }
 
     @SubscribeEvent
@@ -52,13 +56,13 @@ public class RegisterEvent {
         WoodType.Init.initModel();
 
         // Default Models
-        for (Block block : ModBlocks.getList()) {
+        for (Block block : ModBlocks.get()) {
             if (block != PLANKS && block != LOG && block != LEAVES && block != SAPLING) {
                 ModelResourceLocation location = new ModelResourceLocation(Objects.requireNonNull(block.getRegistryName()), "inventory");
                 ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, location);
             }
         }
-        for (Item item : ModItems.getList()) {
+        for (Item item : ModItems.get()) {
             ModelResourceLocation location = new ModelResourceLocation(Objects.requireNonNull(item.getRegistryName()), "inventory");
             ModelLoader.setCustomModelResourceLocation(item, 0, location);
         }

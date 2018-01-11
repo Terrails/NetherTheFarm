@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import terrails.netherutils.NetherUtils;
-import terrails.netherutils.tileentity.portal.TileEntityPortalMaster;
+import terrails.netherutils.blocks.portal.nether.TileEntityPortalMaster;
 
 public class CPacketInteger implements IMessage {
 
