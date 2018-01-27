@@ -14,11 +14,34 @@ public class ConfigHandler {
     public static final String FIRST_SPAWN = "First Spawn";
     public static final String FEATURES = "Features";
     public static final String FEATURES_NETHER = FEATURES + "." + "Nether";
+    public static final String FEATURES_END = FEATURES + "." + "End";
     public static final String FEATURES_TANK = FEATURES + "." + "Tank";
     public static final String FEATURES_PORTAL = FEATURES + "." + "Portal";
     public static final String FEATURES_NETHER_PORTAL = FEATURES_PORTAL + "." + "Nether";
     public static final String FEATURES_END_PORTAL = FEATURES_PORTAL + "." + "End";
     public static final String GENERATION = "Generation";
+
+    /* == Nether Portal == */
+    public static String netherPortalFuel;
+    public static String netherPortalPedestalItem;
+    public static boolean vanillaPortal;
+    public static boolean netherPortalKeepFluid;
+    public static boolean netherPortalKeepInventory;
+    public static int netherPortalCapacity;
+    public static int netherPortalFuelUsage;
+    public static int netherPortalActivationFuelUsage;
+    public static String[] netherPortalItems;
+    
+    /* == End Portal == */
+    public static String endPortalFuel;
+    public static String endPortalPedestalItem;
+    public static boolean useVanillaEndPortal;
+    public static boolean endPortalKeepFluid;
+    public static boolean endPortalKeepInventory;
+    public static int endPortalCapacity;
+    public static int endPortalFuelUsage;
+    public static int endPortalActivationFuelUsage;
+    public static String[] endPortalItems;
 
     // Boolean
     public static boolean pointRespawn;
@@ -26,26 +49,17 @@ public class ConfigHandler {
     public static boolean generateAshWood;
     public static boolean generateSoulWood;
     public static boolean tankKeepContent;
-    public static boolean portalKeepFluid;
-    public static boolean portalKeepInventory;
-    public static boolean vanillaPortal;
     public static boolean portalDebugTool;
 
     // Integer
     public static int minTankWater;
-    public static int portalCapacity;
-    public static int portalFuelUsage;
-    public static int portalActivationFuelUsage;
 
     // String
-    public static String portalFuel;
-    public static String portalPedestalItem;
-    public static String itemToLeave;
+    public static String itemToLeaveNether;
 
     // Other
     public static String[] startingItems;
     public static String[] startingEffects;
-    public static String[] portalItems;
 
     public static void init(File dir) {
         config = new Configuration(new File(dir, Constants.MOD_ID + ".cfg"));
@@ -62,7 +76,9 @@ public class ConfigHandler {
     public static void syncConfig(){
         pointRespawn = config.get(FEATURES_NETHER, "Nether Spawn", true, "Disable if you don't want to spawn in the nether").getBoolean();
         vanillaPortal = config.get(FEATURES_NETHER, "Use Vanilla Portal", false, "Leave the vanilla portal as it is and don't disable it, Nether Spawn needs to be true for this to work").getBoolean();
-        itemToLeave = config.get(FEATURES_NETHER, "Item To Leave", "minecraft:beacon", "The item which needs to be made before being able to leave the nether (empty if nothing), Nether Spawn needs to be true for this to work").getString();
+        itemToLeaveNether = config.get(FEATURES_NETHER, "Item To Leave", "minecraft:beacon", "The item which needs to be made before being able to leave the nether (empty if nothing), Nether Spawn needs to be true for this to work").getString();
+
+        useVanillaEndPortal = config.get(FEATURES_END, "Use Vanilla Portal", false, "Leave the vanilla portal as it is and don't disable it").getBoolean();
 
         startingItems = config.getStringList("Starting Items", FIRST_SPAWN, DEFAULT_ITEMS, "The List of Starting Items");
         startingEffects = config.getStringList("Starting Effects", FIRST_SPAWN, DEFAULT_EFFECTS, "The List of Starting Effects");
@@ -74,15 +90,25 @@ public class ConfigHandler {
         minTankWater = config.get(FEATURES_TANK, "Min Tank Water", 3000, "The minimal amount of water in mB required for the fluid tank to turn into a block that hydrates land (0 to disable)", 0, 4000).getInt();
         tankKeepContent = config.get(FEATURES_TANK, "Keep Fluid", true, "Keep the fluid when tank is broken and put it in the block when placed again").getBoolean();
 
-        portalItems = config.getStringList("Items", FEATURES_NETHER_PORTAL, DEFAULT_PORTAL_ITEMS,"The items required to turn on the portal");
-        portalFuel = config.get(FEATURES_NETHER_PORTAL, "Fuel","water", "Liquid which is required for the portal to run").getString();
-        portalCapacity = config.get(FEATURES_NETHER_PORTAL, "Capacity", 5000, "Capacity of the portal in mB").getInt();
-        portalFuelUsage = config.get(FEATURES_NETHER_PORTAL, "Usage", 10, "The time after which the portal will use 1 mB of fuel (seconds)").getInt();
-        portalActivationFuelUsage = config.get(FEATURES_NETHER_PORTAL, "Activation Usage", 15, "The amount of fuel the portal will use each tick when activating (1 second = 20 ticks)").getInt();
-        portalKeepFluid = config.get(FEATURES_NETHER_PORTAL, "Keep Fluid", true, "Keep the fluid when portal is broken and put it in the block when placed again").getBoolean();
-        portalKeepInventory = config.get(FEATURES_NETHER_PORTAL, "Keep Inventory", true, "Keep the inventory when portal is broken and put it in the block when placed again").getBoolean();
-        portalPedestalItem = config.get(FEATURES_NETHER_PORTAL, "Pedestal Item", "minecraft:water_bucket", "The item which needs to be on four pedestals around the portal").getString();
-        portalDebugTool = config.get(FEATURES_NETHER_PORTAL, "Debug Tool", false, "Enable the debug tool to see additional portal data and amount of master portals in the world (Prints a message in chat when right clicking a portal)").getBoolean();
+        portalDebugTool = config.get(FEATURES_PORTAL, "Debug Tool", false, "Enable the debug tool to see additional portal data and amount of master portals in the world (Prints a message in chat when right clicking a portal)").getBoolean();
+
+        netherPortalItems = config.getStringList("Items", FEATURES_NETHER_PORTAL, DEFAULT_NETHER_PORTAL_ITEMS,"The items required to turn on the portal");
+        netherPortalFuel = config.get(FEATURES_NETHER_PORTAL, "Fuel","water", "Liquid which is required for the portal to run").getString();
+        netherPortalCapacity = config.get(FEATURES_NETHER_PORTAL, "Capacity", 5000, "Capacity of the portal in mB").getInt();
+        netherPortalFuelUsage = config.get(FEATURES_NETHER_PORTAL, "Usage", 10, "The time after which the portal will use 1 mB of fuel (seconds)").getInt();
+        netherPortalActivationFuelUsage = config.get(FEATURES_NETHER_PORTAL, "Activation Usage", 15, "The amount of fuel the portal will use each tick when activating (1 second = 20 ticks)").getInt();
+        netherPortalKeepFluid = config.get(FEATURES_NETHER_PORTAL, "Keep Fluid", true, "Keep the fluid when portal is broken and put it in the block when placed again").getBoolean();
+        netherPortalKeepInventory = config.get(FEATURES_NETHER_PORTAL, "Keep Inventory", true, "Keep the inventory when portal is broken and put it in the block when placed again").getBoolean();
+        netherPortalPedestalItem = config.get(FEATURES_NETHER_PORTAL, "Pedestal Item", "minecraft:water_bucket", "The item which needs to be on four pedestals around the portal").getString();
+
+        endPortalItems = config.getStringList("Items", FEATURES_END_PORTAL, DEFAULT_END_PORTAL_ITEMS,"The items required to turn on the portal");
+        endPortalFuel = config.get(FEATURES_END_PORTAL, "Fuel","water", "Liquid which is required for the portal to run").getString();
+        endPortalCapacity = config.get(FEATURES_END_PORTAL, "Capacity", 5000, "Capacity of the portal in mB").getInt();
+        endPortalFuelUsage = config.get(FEATURES_END_PORTAL, "Usage", 10, "The time after which the portal will use 1 mB of fuel (seconds)").getInt();
+        endPortalActivationFuelUsage = config.get(FEATURES_END_PORTAL, "Activation Usage", 15, "The amount of fuel the portal will use each tick when activating (1 second = 20 ticks)").getInt();
+        endPortalKeepFluid = config.get(FEATURES_END_PORTAL, "Keep Fluid", true, "Keep the fluid when portal is broken and put it in the block when placed again").getBoolean();
+        endPortalKeepInventory = config.get(FEATURES_END_PORTAL, "Keep Inventory", true, "Keep the inventory when portal is broken and put it in the block when placed again").getBoolean();
+        endPortalPedestalItem = config.get(FEATURES_END_PORTAL, "Pedestal Item", "minecraft:water_bucket", "The item which needs to be on four pedestals around the portal").getString();
 
         if (config.hasChanged()) {
             config.save();
@@ -95,7 +121,12 @@ public class ConfigHandler {
     private final static String[] DEFAULT_EFFECTS = {
             "minecraft:fire_resistance -time:150"
     };
-    private final static String[] DEFAULT_PORTAL_ITEMS = {
+    private final static String[] DEFAULT_NETHER_PORTAL_ITEMS = {
+            "minecraft:ender_pearl, minecraft:ender_eye, minecraft:ender_pearl",
+            "minecraft:blaze_rod, minecraft:enchanted_book, minecraft:blaze_rod",
+            "minecraft:ender_pearl, minecraft:ender_eye, minecraft:ender_pearl"
+    };
+    private final static String[] DEFAULT_END_PORTAL_ITEMS = {
             "minecraft:ender_pearl, minecraft:ender_eye, minecraft:ender_pearl",
             "minecraft:blaze_rod, minecraft:enchanted_book, minecraft:blaze_rod",
             "minecraft:ender_pearl, minecraft:ender_eye, minecraft:ender_pearl"

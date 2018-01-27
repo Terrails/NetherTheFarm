@@ -77,9 +77,15 @@ public class SPacketInteger implements IMessage {
                             } else portal.getTank().setFluid(null);
                             break;
                     }
-                } else if (tileEntity instanceof TileEntityPortalSlave) {
-                    TileEntityPortalSlave portal = (TileEntityPortalSlave) tileEntity;
-                 //   switch (message.option) {}
+                } else if (tileEntity instanceof terrails.netherutils.blocks.portal.end.TileEntityPortalMaster) {
+                    terrails.netherutils.blocks.portal.end.TileEntityPortalMaster portal = (terrails.netherutils.blocks.portal.end.TileEntityPortalMaster) tileEntity;
+                    switch (message.option) {
+                        case 1: // Send fuel amount to server and than to all players in the same dimension
+                            if (portal.getTank().getFluid() != null) {
+                                portal.getTank().setFluid(new FluidStack(portal.getTank().getFluid(), message.value));
+                            } else portal.getTank().setFluid(null);
+                            break;
+                    }
                 }
             });
             return null;

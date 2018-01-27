@@ -46,28 +46,28 @@ public class TeleporterNTF extends Teleporter {
             MinecraftForge.EVENT_BUS.post(event);
             if (!event.isCanceled()) {
                 playerList.transferPlayerToDimension(player, dimension, new TeleporterNTF(world, pos));
+                player.setPositionAndUpdate(x + .5, y, z + 0.5);
             }
         }
-     //   player.setPositionAndUpdate(x + 0.5, y, z + 0.5);
 
         if (oldDimension == 1) {
+            player.setPositionAndUpdate(x + .5, y, z + .5);
+            world.spawnEntity(player);
             world.updateEntityWithOptionalForce(player, false);
         }
 
         if (usePointGen) {
-          //  if (isWorldType(player.getEntityWorld(), "NetherSurvival") || isWorldType(player.getEntityWorld(), "BIOMESOP")) {
-                if (data != null && !data.hasSpawnPoint() && ConfigHandler.pointRespawn) {
-                    if (!(world.getBlockState(data.getPointPos()) == ModBlocks.SPAWN_POINT.getDefaultState())) {
-                        genLavaPlatform(player, world, data);
-                    }
-                    if (!(world.getBlockState(data.getPointPos()) == ModBlocks.SPAWN_POINT.getDefaultState())) {
-                        genSpot(player, world, data);
-                    }
-                    if (!(world.getBlockState(data.getPointPos()) == ModBlocks.SPAWN_POINT.getDefaultState())) {
-                        genLastResort(player, world, data);
-                    }
+            if (data != null && !data.hasSpawnPoint() && ConfigHandler.pointRespawn) {
+                if (!(world.getBlockState(data.getPointPos()) == ModBlocks.SPAWN_POINT.getDefaultState())) {
+                    genLavaPlatform(player, world, data);
                 }
-       //     }
+                if (!(world.getBlockState(data.getPointPos()) == ModBlocks.SPAWN_POINT.getDefaultState())) {
+                    genSpot(player, world, data);
+                }
+                if (!(world.getBlockState(data.getPointPos()) == ModBlocks.SPAWN_POINT.getDefaultState())) {
+                    genLastResort(player, world, data);
+                }
+            }
         }
     }
 

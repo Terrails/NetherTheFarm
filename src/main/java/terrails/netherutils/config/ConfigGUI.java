@@ -51,6 +51,7 @@ public class ConfigGUI extends GuiConfig {
             ConfigHandler.config.getCategory(ConfigHandler.FEATURES_END_PORTAL).setLanguageKey("nu.config.features_end_portal");
             ConfigHandler.config.getCategory(ConfigHandler.FEATURES_TANK).setLanguageKey("nu.config.features_tank");
             ConfigHandler.config.getCategory(ConfigHandler.FEATURES_NETHER).setLanguageKey("nu.config.features_nether");
+            ConfigHandler.config.getCategory(ConfigHandler.FEATURES_END).setLanguageKey("nu.config.features_end");
             return (new ConfigElement(ConfigHandler.config.getCategory(ConfigHandler.FEATURES)).getChildElements());
         }
     }

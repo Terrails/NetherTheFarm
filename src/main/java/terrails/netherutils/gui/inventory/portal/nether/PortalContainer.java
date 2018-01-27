@@ -1,4 +1,4 @@
-package terrails.netherutils.gui.inventory;
+package terrails.netherutils.gui.inventory.portal.nether;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;

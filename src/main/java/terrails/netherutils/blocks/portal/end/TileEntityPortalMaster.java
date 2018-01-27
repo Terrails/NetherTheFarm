@@ -1,4 +1,4 @@
-package terrails.netherutils.blocks.portal.nether;
+package terrails.netherutils.blocks.portal.end;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.collect.Lists;
@@ -14,31 +14,34 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import terrails.netherutils.api.capabilities.IPortal;
 import terrails.netherutils.api.portal.IPortalMaster;
-import terrails.netherutils.api.portal.IPortalSlave;
+import terrails.netherutils.api.world.IWorldData;
 import terrails.netherutils.blocks.pedestal.BlockPedestal;
+import terrails.netherutils.blocks.pedestal.TileEntityPedestal;
+import terrails.netherutils.blocks.portal.Counter;
 import terrails.netherutils.blocks.portal.PortalRegistry;
 import terrails.netherutils.config.ConfigHandler;
+import terrails.netherutils.entity.capabilities.portal.CapabilityPortal;
 import terrails.netherutils.init.ModBlocks;
 import terrails.netherutils.init.ModFeatures;
 import terrails.netherutils.network.CPacketBoolean;
 import terrails.netherutils.network.CPacketInteger;
 import terrails.netherutils.network.SPacketBoolean;
 import terrails.netherutils.network.SPacketInteger;
-import terrails.netherutils.blocks.pedestal.TileEntityPedestal;
-import terrails.netherutils.blocks.portal.Counter;
-import terrails.netherutils.world.TeleporterNTF;
 import terrails.netherutils.world.data.CustomWorldData;
 import terrails.terracore.block.tile.TileEntityBase;
 import terrails.terracore.block.tile.fluid.FluidTankCustom;
@@ -46,7 +49,6 @@ import terrails.terracore.helper.BlockHelper;
 
 import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.Random;
 
 public class TileEntityPortalMaster extends TileEntityBase implements ITickable, IPortalMaster {
 
@@ -54,7 +56,7 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
     private FluidTank tank;
 
     private boolean status;
-    private BlockPos slavePos = BlockPos.ORIGIN;
+ //   private BlockPos slavePos = BlockPos.ORIGIN;
 
     private int oldFuel;
     public boolean isActivating;
@@ -76,11 +78,11 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
     //--------------------------------------------------\\
 
     public TileEntityPortalMaster() {
-        this.tank = new FluidTankCustom(this, ConfigHandler.netherPortalCapacity) {
+        this.tank = new FluidTankCustom(this, ConfigHandler.endPortalCapacity) {
             @Override
             public boolean canFillFluidType(FluidStack fluid) {
-                if (!ConfigHandler.netherPortalFuel.isEmpty()) {
-                    if (fluid.getFluid().getName().toLowerCase().equals(ConfigHandler.netherPortalFuel.toLowerCase())) {
+                if (!ConfigHandler.endPortalFuel.isEmpty()) {
+                    if (fluid.getFluid().getName().toLowerCase().equals(ConfigHandler.endPortalFuel.toLowerCase())) {
                         return super.canFillFluidType(fluid);
                     }
                 }
@@ -96,7 +98,7 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-                ItemStack slotStack = PortalRegistry.getItemForSlot(ConfigHandler.netherPortalItems, ConfigHandler.netherPortalFuel, slot, stack);
+                ItemStack slotStack = PortalRegistry.getItemForSlot(ConfigHandler.endPortalItems, ConfigHandler.endPortalFuel, slot, stack);
                 if (!(slotStack.getItem().equals(stack.getItem()))) {
                     return stack;
                 }
@@ -107,78 +109,74 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
 
     @Override
     public void update() {
-        if (getWorld().isRemote)
-            return;
+        if (!getWorld().isRemote) {
 
-        if (isActive()) {
-            if (counterFuel.value() >= (ConfigHandler.netherPortalFuelUsage * 20)) {
-                setFuel(new FluidStack(getFuel(), getFuelAmount() - 1));
-                counterFuel.clear();
-            } else counterFuel.increment();
+            if (isActive()) {
+                if (counterFuel.value() >= (ConfigHandler.endPortalFuelUsage * 20)) {
+                    setFuel(new FluidStack(getFuel(), getFuelAmount() - 1));
+                    counterFuel.clear();
+                } else counterFuel.increment();
 
-            doTeleportation();
+                doTeleportation();
 
-            // If slave coords are set but it doesn't exist create a new one
-            if (!getSlavePos().equals(BlockPos.ORIGIN)) {
-                World overworld = DimensionManager.getWorld(0);
-                if (!(overworld.getTileEntity(getSlavePos()) instanceof TileEntityPortalSlave)) {
-                    overworld.setBlockState(getSlavePos(), ModBlocks.PORTAL_NETHER_SLAVE.getDefaultState());
-                    IPortalSlave slave = (IPortalSlave) overworld.getTileEntity(getSlavePos());
-                    if (slave != null) {
-                        slave.setMasterPos(getPos());
+                IWorldData worldData = CustomWorldData.get(getWorld());
+                if (!worldData.getEndSpawn().equals(BlockPos.ORIGIN)) {
+                    World end = DimensionManager.getWorld(1);
+                    if (end != null && !(end.getTileEntity(worldData.getEndSpawn()) instanceof terrails.netherutils.blocks.portal.end.TileEntityPortalSlave)) {
+                        end.setBlockState(worldData.getEndSpawn(), ModBlocks.PORTAL_END_SLAVE.getDefaultState());
                     }
                 }
             }
-        }
-        if (!hasFuel() || !hasRequiredBlocks() || !hasRequiredItems()) {
-            if (isActive()) {
-                isActive(false);
-            }
-            if (!hasFuel()) {
-                setFuel(null);
-            }
-            if (isActivating) {
-                isActivating = false;
-                sendActivation();
-            }
-        }
-
-        if (isActivating) {
-            if (isActivationDone) {
-                getWorld().createExplosion(null, getPos().getX() + 0.5, getPos().up().getY(), getPos().getZ() + 0.5, 1.0F, false);
-                getWorld().playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 2.5F, 1.0F);
-                getWorld().playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.ENTITY_LIGHTNING_THUNDER, SoundCategory.BLOCKS, 4.0F, 1.0F);
-                isActive(true);
-                isActivating = false;
-                isActivationDone = false;
-                sendActivation();
-                sendActivationDone();
-            }
-            setFuel(new FluidStack(getFuel().getFluid(), getFuelAmount() - ConfigHandler.netherPortalActivationFuelUsage));
-        }
-        updateFluidItem();
-
-        if (oldFuel != getFuelAmount()) {
-            sendFuel();
-            oldFuel = getFuelAmount();
-            world.markBlockRangeForRenderUpdate(pos, pos);
-            world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 3);
-            world.scheduleBlockUpdate(pos, this.getBlockType(), 0, 0);
-            markDirty();
-        } else if (oldActive != status) {
-            sendActive();
-            oldActive = status;
-            int index = 0;
-            for (IPortalMaster master : PortalRegistry.LIST) {
-                if (master.getBlockPos().equals(this.getPos()) && master.getDimension() == getDimension()) {
-                    master.isActive(status);
-                    PortalRegistry.LIST.set(index, master);
-                    CustomWorldData.get(getWorld()).markDirty();
-                    break;
+            if (!hasFuel() || !hasRequiredBlocks() || !hasRequiredItems()) {
+                if (isActive()) {
+                    isActive(false);
                 }
-                index++;
+                if (!hasFuel()) {
+                    setFuel(null);
+                }
+                if (isActivating) {
+                    isActivating = false;
+                    sendActivation();
+                }
             }
 
+            if (isActivating) {
+                if (isActivationDone) {
+                    getWorld().createExplosion(null, getPos().getX() + 0.5, getPos().up().getY(), getPos().getZ() + 0.5, 1.0F, false);
+                    getWorld().playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 2.5F, 1.0F);
+                    getWorld().playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.ENTITY_LIGHTNING_THUNDER, SoundCategory.BLOCKS, 4.0F, 1.0F);
+                    isActive(true);
+                    isActivating = false;
+                    isActivationDone = false;
+                    sendActivation();
+                    sendActivationDone();
+                }
+                setFuel(new FluidStack(getFuel().getFluid(), getFuelAmount() - ConfigHandler.endPortalActivationFuelUsage));
+            }
+
+            if (oldFuel != getFuelAmount()) {
+                sendFuel();
+                oldFuel = getFuelAmount();
+                world.markBlockRangeForRenderUpdate(pos, pos);
+                world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 3);
+                world.scheduleBlockUpdate(pos, this.getBlockType(), 0, 0);
+                markDirty();
+            } else if (oldActive != status) {
+                sendActive();
+                oldActive = status;
+                int index = 0;
+                for (IPortalMaster master : PortalRegistry.LIST) {
+                    if (master.getBlockPos().equals(this.getPos()) && master.getDimension() == getDimension()) {
+                        master.isActive(status);
+                        PortalRegistry.LIST.set(index, master);
+                        CustomWorldData.get(getWorld()).markDirty();
+                        break;
+                    }
+                    index++;
+                }
+
+            }
+            updateFluidItem();
         }
     }
 
@@ -231,14 +229,17 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
         return this.getPos();
     }
 
+    // SlavePos not used since its global,
+    // but needs to be implemented since it uses the same interface as the nether portal
     @Override
     public void setSlavePos(BlockPos pos) {
-        this.slavePos = pos;
+     //   this.slavePos = pos;
     }
 
     @Override
     public BlockPos getSlavePos() {
-        return this.slavePos;
+    //    return this.slavePos;
+        return BlockPos.ORIGIN;
     }
 
     @Override
@@ -324,63 +325,62 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
 
     }
     private void doTeleportation() {
-        if (getWorld().provider.getDimension() != -1)
+        if (getWorld().provider.getDimension() != 0)
             return;
         if (!getWorld().isRemote) {
             EntityPlayer player = getWorld().getClosestPlayer(getPos().getX() + 0.5, getPos().getY() + 0.75, getPos().getZ() + 0.5, 0.5, false);
             if (player != null && this.isReadyToTeleport && player instanceof EntityPlayerMP) {
 
-                if (getSlavePos().equals(BlockPos.ORIGIN)) {
-                    generatePortal();
+                IPortal portalItem = player.getCapability(CapabilityPortal.PORTAL_ITEM_CAPABILITY, null);
+                if (portalItem != null) {
+                    IWorldData worldData = CustomWorldData.get(getWorld());
+                    player.changeDimension(1);
+                    player.setPositionAndUpdate(player.getPosition().getX() + 0.5, player.getPosition().getY(), player.getPosition().getZ() + 0.5);
+
+                    if (worldData.getEndSpawn().equals(BlockPos.ORIGIN)) {
+                        generatePortal(player);
+                    }
+                    portalItem.setLastMasterPos(getPos());
+
+                    World end = player.getEntityWorld();
+                    if (!(end.getTileEntity(worldData.getEndSpawn()) instanceof terrails.netherutils.blocks.portal.end.TileEntityPortalSlave)) {
+                        end.setBlockState(worldData.getEndSpawn(), ModBlocks.PORTAL_END_SLAVE.getDefaultState());
+                    }
+
+                    this.isReadyToTeleport = false;
+                    ModFeatures.Network.WRAPPER.sendToDimension(new CPacketBoolean(isReadyToTeleport, getPos(), 4), getWorld().provider.getDimension());
                 }
-
-                TeleporterNTF.teleport((EntityPlayerMP) player, 0, getSlavePos().add(1, 0, 0), false);
-
-                this.isReadyToTeleport = false;
-                ModFeatures.Network.WRAPPER.sendToDimension(new CPacketBoolean(isReadyToTeleport, getPos(), 4), getWorld().provider.getDimension());
             }
         }
     }
-    private void generatePortal() {
-        World overworld = DimensionManager.getWorld(0); // Overworld
-        if (overworld != null && !(overworld.getTileEntity(getSlavePos()) instanceof TileEntityPortalSlave)) {
+    private void generatePortal(EntityPlayer player) {
+        World end = player.getEntityWorld();
+        IWorldData worldData = CustomWorldData.get(end);
+        if (end.provider.getDimension() != 1)
+            return;
+        //  World end = DimensionManager.getWorld(1); // End
+        TileEntity tileEntity = end.getTileEntity(worldData.getEndSpawn());
+        if (!(tileEntity instanceof TileEntityPortalSlave) || worldData.getEndSpawn().equals(BlockPos.ORIGIN)) {
 
-            Random random = new Random();
-            BlockPos pos = getPos().add(random.nextInt(201), 0, random.nextInt(201));
+            BlockPos pos = player.getPosition();
+            BlockPos centerPos = pos.north().west();
 
-            for (int i = overworld.getHeight(); i > 0; i--) {
-                BlockPos blockPos = new BlockPos(pos.getX(), i, pos.getZ());
-                IBlockState state = overworld.getBlockState(blockPos);
+            BlockHelper.fill(3, centerPos.down(), end, Blocks.OBSIDIAN.getDefaultState(), false, true);
+            BlockHelper.fill(3, centerPos, end, Blocks.AIR.getDefaultState(), false, true);
+            end.setBlockState(centerPos, ModBlocks.PORTAL_END_SLAVE.getDefaultState());
+            BlockHelper.fill(3, centerPos.up(), end, Blocks.AIR.getDefaultState(), false, true);
+            BlockHelper.fill(3, centerPos.up().up(), end, Blocks.AIR.getDefaultState(), false, true);
 
-                if (state.getBlock() != Blocks.AIR) {
-                    // If the pos is near another slave offset your coords and start from world height again
-                    if (BlockHelper.checkAny(6, blockPos, overworld, ModBlocks.PORTAL_NETHER_SLAVE.getDefaultState(), false, true)) {
-                        pos.add(20, 0, 20);
-                        i = overworld.getHeight();
-                    } else if (!overworld.getBlockState(blockPos).getBlock().isLeaves(state, getWorld(), blockPos) && !overworld.getBlockState(blockPos).getBlock().isFoliage(getWorld(), blockPos)) {
-                        pos = new BlockPos(blockPos.getX(), i, blockPos.getZ());
-                        break;
-                    }
-                }
-            }
-
-            BlockHelper.fill(2, pos, overworld, Blocks.STONEBRICK.getDefaultState(), false, true);
-            BlockHelper.fill(2, pos.up(), overworld, Blocks.AIR.getDefaultState(), false, true);
-            BlockHelper.fill(2, pos.up().up(), overworld, Blocks.AIR.getDefaultState(), false, true);
-            BlockHelper.fill(2, pos.up().up().up(), overworld, Blocks.AIR.getDefaultState(), false, true);
-
-            overworld.setBlockState(pos.up(), ModBlocks.PORTAL_NETHER_SLAVE.getDefaultState());
-            TileEntity te = overworld.getTileEntity(pos.up());
+            TileEntity te = end.getTileEntity(centerPos);
 
             if (te != null && te instanceof TileEntityPortalSlave) {
-                ((TileEntityPortalSlave) te).setMasterPos(getPos());
                 ((TileEntityPortalSlave) te).isActive(true);
-                setSlavePos(pos.up());
+                worldData.setEndSpawn(centerPos);
             }
             int index = 0;
             for (IPortalMaster master : PortalRegistry.LIST) {
-                if (master.getBlockPos().equals(this.getPos())) {
-                    master.setSlavePos(this.getSlavePos());
+                if (master.getBlockPos().equals(this.getPos()) && master.getDimension() == getDimension()) {
+                    master.setSlavePos(worldData.getEndSpawn());
                     PortalRegistry.LIST.set(index, master);
                     CustomWorldData.get(getWorld()).markDirty();
                     break;
@@ -413,12 +413,13 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
         for (BlockPos pos : positions) {
 
             IBlockState state = getWorld().getBlockState(pos);
-            if (state.getBlock() == ModBlocks.PEDESTAL && state.getValue(BlockPedestal.TYPE).getMetadata() == 0) {
+            if (state.getBlock() == ModBlocks.PEDESTAL && state.getValue(BlockPedestal.TYPE).getMetadata() == 1) {
 
                 TileEntity tileEntity = getWorld().getTileEntity(pos);
                 if (tileEntity instanceof TileEntityPedestal) {
+
                     TileEntityPedestal pedestal = (TileEntityPedestal) tileEntity;
-                    ItemStack stack = getStack(ConfigHandler.netherPortalPedestalItem);
+                    ItemStack stack = getStack(ConfigHandler.endPortalPedestalItem);
 
                     if (stack.isEmpty() || pedestal.getStack().isEmpty() || pedestal.getStack().getItem() != stack.getItem()) {
                         return false;
@@ -485,7 +486,7 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
     public void readFromNBT(NBTTagCompound compound) {
         tank = new FluidTankCustom(this, getFuelCapacity()).readFromNBT(compound);
         isActive(compound.getBoolean("Active"));
-        setSlavePos(new BlockPos(compound.getInteger("xSlave"), compound.getInteger("ySlave"), compound.getInteger("zSlave")));
+     //   setSlavePos(new BlockPos(compound.getInteger("xSlave"), compound.getInteger("ySlave"), compound.getInteger("zSlave")));
         inventory.deserializeNBT(compound.getCompoundTag("Inventory"));
         super.readFromNBT(compound);
     }
@@ -493,9 +494,9 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         tank.writeToNBT(compound);
         compound.setBoolean("Active", isActive());
-        compound.setInteger("xSlave", getSlavePos().getX());
-        compound.setInteger("ySlave", getSlavePos().getY());
-        compound.setInteger("zSlave", getSlavePos().getZ());
+  //      compound.setInteger("xSlave", getSlavePos().getX());
+  //      compound.setInteger("ySlave", getSlavePos().getY());
+  //      compound.setInteger("zSlave", getSlavePos().getZ());
         compound.setTag("Inventory", inventory.serializeNBT());
         return super.writeToNBT(compound);
     }

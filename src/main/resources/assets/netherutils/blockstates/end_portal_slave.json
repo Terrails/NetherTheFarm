@@ -1,0 +1,11 @@
+{
+  "variants": {
+    "normal": {
+      "model": "netherutils:end_portal"
+    },
+    "inventory": {
+      "model": "netherutils:end_portal",
+      "transform": "forge:default-block"
+    }
+  }
+}

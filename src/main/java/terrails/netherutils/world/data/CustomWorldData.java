@@ -34,6 +34,7 @@ public class CustomWorldData extends WorldSavedData implements IWorldData {
             PortalRegistry.LIST.addAll(PortalRegistry.deserializeNBT((NBTTagCompound) compound.getTag("Portal")));
             Constants.Log.info("Successfully loaded portal data from world!");
         }
+        setEndSpawn(new BlockPos(compound.getInteger("EndPosX"), compound.getInteger("EndPosY"), compound.getInteger("EndPosZ")));
         hasRead(true);
     }
 
@@ -44,19 +45,10 @@ public class CustomWorldData extends WorldSavedData implements IWorldData {
         compound.setInteger("PosZ", getPointPos().getZ());
         compound.setTag("Portal", PortalRegistry.serializeNBT());
         compound.setBoolean("DataRead", hasRead);
+        compound.setInteger("EndPosX", getEndSpawn().getX());
+        compound.setInteger("EndPosY", getEndSpawn().getY());
+        compound.setInteger("EndPosZ", getEndSpawn().getZ());
         return compound;
-    }
-
-    public static class Event {
-
-        @SubscribeEvent
-        public void worldUnload(WorldEvent.Save event) {
-            IWorldData data = CustomWorldData.get(event.getWorld());
-            if (data != null) {
-         //       PortalRegistry.LIST.clear();
-        //     data.hasRead(false);
-            }
-        }
     }
 
     public static CustomWorldData get(World world) {
@@ -70,6 +62,7 @@ public class CustomWorldData extends WorldSavedData implements IWorldData {
 
 
     private BlockPos pos = BlockPos.ORIGIN;
+    private BlockPos endPos = BlockPos.ORIGIN;
     private boolean hasRead;
 
     @Override
@@ -99,16 +92,14 @@ public class CustomWorldData extends WorldSavedData implements IWorldData {
         return !(getPointPos().equals(BlockPos.ORIGIN));
     }
 
+    @Override
+    public BlockPos getEndSpawn() {
+        return this.endPos;
+    }
 
-
-             /*
-            MapStorage storage = world.getMapStorage();
-            CustomWorldData instance = (CustomWorldData) storage.getOrLoadData(CustomWorldData.class, DATA_NAME);
-
-            if (instance == null) {
-                instance = new CustomWorldData(DATA_NAME);
-                storage.setData(DATA_NAME, instance);
-            }
-            return instance;
-            */
+    @Override
+    public void setEndSpawn(BlockPos pos) {
+        this.endPos = pos;
+        markDirty();
+    }
 }

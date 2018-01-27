@@ -1,7 +1,6 @@
 {
-  "forge_marker": 1,
   "variants": {
-    "normal": { "model": "netherutils:pedestal"},
-    "inventory": { "model": "netherutils:pedestal", "transform": "forge:default-block" }
+    "type=nether": {"model": "netherutils:pedestal_nether"},
+    "type=end": {"model": "netherutils:pedestal_end"}
   }
 }

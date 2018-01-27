@@ -15,7 +15,6 @@ import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import org.apache.commons.lang3.StringUtils;
 import terrails.netherutils.Constants;
 import terrails.netherutils.api.portal.IPortalMaster;
-import terrails.netherutils.config.ConfigHandler;
 import terrails.netherutils.world.data.CustomWorldData;
 
 import java.util.*;
@@ -63,7 +62,7 @@ public class PortalRegistry {
             IPortalMaster master = iterator.next();
 
             if (master.getDimension() == portal.getDimension()) {
-                if (master.getBlockPos().equals(portal.getBlockPos())/* || (portal.getSlavePos() != BlockPos.ORIGIN && portal.getSlavePos().equals(master.getBlockPos()))*/) {
+                if (master.getBlockPos().equals(portal.getBlockPos()) && master.getDimension() == portal.getDimension()) {
                     iterator.remove();
                     value = true;
                 }
@@ -144,16 +143,16 @@ public class PortalRegistry {
      * @param stack the stack used for the {@link IFluidHandler}
      * @return an {@link ItemStack} the slot requires, if null returns EMPTY
      */
-    public static ItemStack getItemForSlot(int slot, ItemStack stack) {
-        if (ConfigHandler.portalItems.length > 0) {
-            String string = StringUtils.join(ConfigHandler.portalItems, ",").replaceAll("\\s+", "");
+    public static ItemStack getItemForSlot(String[] items, String fuel, int slot, ItemStack stack) {
+        if (items.length > 0) {
+            String string = StringUtils.join(items, ",").replaceAll("\\s+", "");
 
             if (slot == 0) {
                 IFluidHandler fluidHandler = FluidUtil.getFluidHandler(stack);
                 if (fluidHandler != null) {
                     for (IFluidTankProperties properties : fluidHandler.getTankProperties()) {
                         if (properties.getContents() != null) {
-                            if (properties.getContents().getFluid().getName().toLowerCase().equals(ConfigHandler.portalFuel.toLowerCase())) {
+                            if (properties.getContents().getFluid().getName().toLowerCase().equals(fuel.toLowerCase())) {
                                 return stack;
                             }
                         }
@@ -194,6 +193,7 @@ public class PortalRegistry {
         }
         return ItemStack.EMPTY;
     }
+
     /**
      * Gets an {@link ItemStack} from a string
      *
@@ -213,7 +213,7 @@ public class PortalRegistry {
     }
 
     /**
-     * Class which implements IPortalMaster for deserialization
+     * Wrapper Class which implements IPortalMaster for deserialization
      */
     private static class PortalMaster implements IPortalMaster {
 

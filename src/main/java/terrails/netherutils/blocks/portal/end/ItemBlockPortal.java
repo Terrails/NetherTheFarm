@@ -1,4 +1,4 @@
-package terrails.netherutils.blocks.portal.nether;
+package terrails.netherutils.blocks.portal.end;
 
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
@@ -21,7 +21,9 @@ import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import terrails.netherutils.config.ConfigHandler;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Objects;
 
 public class ItemBlockPortal extends ItemBlock {
 
@@ -37,7 +39,7 @@ public class ItemBlockPortal extends ItemBlock {
         NBTTagCompound compound = inputStack.getTagCompound();
         boolean info = false;
 
-        if (ConfigHandler.netherPortalKeepFluid) {
+        if (ConfigHandler.endPortalKeepFluid) {
             IFluidHandlerItem fluidHandler = FluidUtil.getFluidHandler(inputStack);
             if (fluidHandler != null) {
                 IFluidTankProperties properties = fluidHandler.getTankProperties()[0];
@@ -56,7 +58,7 @@ public class ItemBlockPortal extends ItemBlock {
             }
         }
 
-        if (ConfigHandler.netherPortalKeepInventory) {
+        if (ConfigHandler.endPortalKeepInventory) {
             if (compound == null || !compound.hasKey("Inventory"))
                 return;
 
@@ -110,6 +112,6 @@ public class ItemBlockPortal extends ItemBlock {
     @Nullable
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable NBTTagCompound nbt) {
-        return new FluidHandlerItemStack(stack, ConfigHandler.netherPortalCapacity);
+        return new FluidHandlerItemStack(stack, ConfigHandler.endPortalCapacity);
     }
 }

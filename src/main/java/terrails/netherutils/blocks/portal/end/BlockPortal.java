@@ -1,4 +1,4 @@
-package terrails.netherutils.blocks.portal.nether;
+package terrails.netherutils.blocks.portal.end;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -28,10 +28,11 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import terrails.netherutils.Constants;
 import terrails.netherutils.NetherUtils;
-import terrails.terracore.block.BlockTileEntity;
-import terrails.netherutils.blocks.portal.nether.render.TESRPortal;
-import terrails.netherutils.config.ConfigHandler;
 import terrails.netherutils.blocks.portal.PortalRegistry;
+import terrails.netherutils.blocks.portal.end.TileEntityPortalMaster;
+import terrails.netherutils.blocks.portal.end.render.TESRPortal;
+import terrails.netherutils.config.ConfigHandler;
+import terrails.terracore.block.BlockTileEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -46,7 +47,7 @@ public class BlockPortal extends BlockTileEntity<TileEntityPortalMaster> {
         setHardness(4.0F);
         setResistance(12.0F);
         setHarvestLevel("pickaxe", 2);
-        GameRegistry.registerTileEntity(TileEntityPortalMaster.class, name);
+        GameRegistry.registerTileEntity(TileEntityPortalMaster.class, "end_portal_master");
     }
 
     @Override
@@ -60,15 +61,15 @@ public class BlockPortal extends BlockTileEntity<TileEntityPortalMaster> {
             return;
         }
 
-        if (world.provider.getDimension() != -1 && placer instanceof EntityPlayer) {
-            Constants.Log.playerMessage((EntityPlayer) placer, "Portal only works in the nether!");
+        if (world.provider.getDimension() != 0 && placer instanceof EntityPlayer) {
+            Constants.Log.playerMessage((EntityPlayer) placer, "Portal only works in overworld!");
         }
 
         TileEntityPortalMaster te = getTileEntity(world, pos);
         PortalRegistry.addPortal(te, world);
 
 
-        if (ConfigHandler.netherPortalKeepFluid) {
+        if (ConfigHandler.endPortalKeepFluid) {
             IFluidHandler fluidHandler = getFluidHandler(world, pos);
             IFluidHandlerItem fluidHandlerItem = FluidUtil.getFluidHandler(stack);
 
@@ -86,7 +87,7 @@ public class BlockPortal extends BlockTileEntity<TileEntityPortalMaster> {
         if (compound.getInteger("ySlave") != 0)
             te.setSlavePos(new BlockPos(compound.getInteger("xSlave"), compound.getInteger("ySlave"), compound.getInteger("zSlave")));
 
-        if (!ConfigHandler.netherPortalKeepInventory || !compound.hasKey("Inventory"))
+        if (!ConfigHandler.endPortalKeepInventory || !compound.hasKey("Inventory"))
             return;
 
         try {
@@ -99,7 +100,7 @@ public class BlockPortal extends BlockTileEntity<TileEntityPortalMaster> {
         ItemStack stack = new ItemStack(this);
         TileEntityPortalMaster te = getTileEntity(world, pos);
 
-        if (ConfigHandler.netherPortalKeepFluid) {
+        if (ConfigHandler.endPortalKeepFluid) {
             IFluidHandler fluidHandler = getFluidHandler(world, pos);
             IFluidHandlerItem fluidHandlerItem = FluidUtil.getFluidHandler(stack);
             if (fluidHandler != null && fluidHandlerItem != null) {
@@ -107,18 +108,19 @@ public class BlockPortal extends BlockTileEntity<TileEntityPortalMaster> {
             }
         }
 
-        if (!te.isInvEmpty() || !te.getSlavePos().equals(BlockPos.ORIGIN)) {
+        if (!te.isInvEmpty() /*|| !te.getSlavePos().equals(BlockPos.ORIGIN)*/) {
             if (stack.getTagCompound() == null || stack.isEmpty()) {
                 stack.setTagCompound(new NBTTagCompound());
             }
             NBTTagCompound compound = stack.getTagCompound();
-
+            /*
             if (!te.getSlavePos().equals(BlockPos.ORIGIN)) {
                 compound.setInteger("xSlave", te.getSlavePos().getX());
                 compound.setInteger("ySlave", te.getSlavePos().getY());
                 compound.setInteger("zSlave", te.getSlavePos().getZ());
             }
-            if (ConfigHandler.netherPortalKeepInventory && !te.isInvEmpty()) {
+            */
+            if (ConfigHandler.endPortalKeepInventory && !te.isInvEmpty()) {
                 compound.setTag("Inventory", te.inventory.serializeNBT());
             }
 
@@ -131,7 +133,7 @@ public class BlockPortal extends BlockTileEntity<TileEntityPortalMaster> {
         ItemStack stack = new ItemStack(this);
         TileEntityPortalMaster te = getTileEntity(world, pos);
 
-        if (ConfigHandler.netherPortalKeepFluid) {
+        if (ConfigHandler.endPortalKeepFluid) {
             IFluidHandler fluidHandler = getFluidHandler(world, pos);
             IFluidHandlerItem fluidHandlerItem = FluidUtil.getFluidHandler(stack);
 
@@ -140,18 +142,19 @@ public class BlockPortal extends BlockTileEntity<TileEntityPortalMaster> {
             }
         }
 
-        if (!te.isInvEmpty() || !te.getSlavePos().equals(BlockPos.ORIGIN)) {
+        if (!te.isInvEmpty() /*|| !te.getSlavePos().equals(BlockPos.ORIGIN)*/) {
             if (stack.getTagCompound() == null || stack.isEmpty()) {
                 stack.setTagCompound(new NBTTagCompound());
             }
             NBTTagCompound compound = stack.getTagCompound();
-
+            /*
             if (!te.getSlavePos().equals(BlockPos.ORIGIN)) {
                 compound.setInteger("xSlave", te.getSlavePos().getX());
                 compound.setInteger("ySlave", te.getSlavePos().getY());
                 compound.setInteger("zSlave", te.getSlavePos().getZ());
             }
-            if (ConfigHandler.netherPortalKeepInventory && !te.isInvEmpty()) {
+            */
+            if (ConfigHandler.endPortalKeepInventory && !te.isInvEmpty()) {
                 compound.setTag("Inventory", te.inventory.serializeNBT());
             }
         }
@@ -171,7 +174,7 @@ public class BlockPortal extends BlockTileEntity<TileEntityPortalMaster> {
         TileEntityPortalMaster tile = getTileEntity(world, pos);
         PortalRegistry.removePortal(tile, world);
 
-        if (!ConfigHandler.netherPortalKeepInventory) {
+        if (!ConfigHandler.endPortalKeepInventory) {
             for (int i = 0; i < tile.inventory.getSlots(); i++) {
                 if (!tile.inventory.getStackInSlot(i).isEmpty()) {
                     InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), tile.inventory.getStackInSlot(i));
@@ -182,6 +185,7 @@ public class BlockPortal extends BlockTileEntity<TileEntityPortalMaster> {
     }
 
     // == Basic & Rendering == \\
+
 
     @Override
     public void onBlockExploded(World world, BlockPos pos, Explosion explosion) {

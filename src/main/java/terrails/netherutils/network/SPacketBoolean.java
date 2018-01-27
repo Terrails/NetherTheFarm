@@ -88,8 +88,39 @@ public class SPacketBoolean implements IMessage {
                             ModFeatures.Network.WRAPPER.sendToDimension(new CPacketBoolean(message.value, pos, 4), world.provider.getDimension());
                             break;
                     }
+                } else if (tileEntity instanceof terrails.netherutils.blocks.portal.end.TileEntityPortalMaster) {
+                    terrails.netherutils.blocks.portal.end.TileEntityPortalMaster portal = (terrails.netherutils.blocks.portal.end.TileEntityPortalMaster) tileEntity;
+                    switch (message.option) {
+                        case 1: // Send status to server and than to all players in the same dimension
+                            portal.isActive(message.value);
+                            ModFeatures.Network.WRAPPER.sendToDimension(new CPacketBoolean(message.value, pos, 1), world.provider.getDimension());
+                            break;
+                        case 2: // Send is activating to server
+                            portal.isActivating = message.value;
+                            ModFeatures.Network.WRAPPER.sendToDimension(new CPacketBoolean(message.value, pos, 2), world.provider.getDimension());
+                            break;
+                        case 3: // Send is activation done to server
+                            portal.isActivationDone = message.value;
+                            ModFeatures.Network.WRAPPER.sendToDimension(new CPacketBoolean(message.value, pos, 3), world.provider.getDimension());
+                            break;
+                        case 4: // Send is ready to teleport to server
+                            portal.isReadyToTeleport = message.value;
+                            ModFeatures.Network.WRAPPER.sendToDimension(new CPacketBoolean(message.value, pos, 4), world.provider.getDimension());
+                            break;
+                    }
                 } else if (tileEntity instanceof TileEntityPortalSlave) {
                     TileEntityPortalSlave portal = (TileEntityPortalSlave) tileEntity;
+                    switch (message.option) {
+                        case 1: // Send status to server and than to all players in the same dimension
+                            portal.isActive(message.value);
+                            ModFeatures.Network.WRAPPER.sendToDimension(new CPacketBoolean(message.value, pos, 1), world.provider.getDimension());
+                            break;
+                        case 2: // Send is ready to teleport to server
+                            portal.isReadyToTeleport = message.value;
+                            break;
+                    }
+                } else if (tileEntity instanceof terrails.netherutils.blocks.portal.end.TileEntityPortalSlave) {
+                    terrails.netherutils.blocks.portal.end.TileEntityPortalSlave portal = (terrails.netherutils.blocks.portal.end.TileEntityPortalSlave) tileEntity;
                     switch (message.option) {
                         case 1: // Send status to server and than to all players in the same dimension
                             portal.isActive(message.value);

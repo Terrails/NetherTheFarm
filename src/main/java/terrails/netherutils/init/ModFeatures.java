@@ -11,7 +11,7 @@ import terrails.netherutils.NetherUtils;
 import terrails.netherutils.config.ConfigHandler;
 import terrails.netherutils.entity.capabilities.firstspawn.CapabilityFirstSpawn;
 import terrails.netherutils.entity.capabilities.obelisk.CapabilityObelisk;
-import terrails.netherutils.entity.capabilities.portalitem.CapabilityPortalItem;
+import terrails.netherutils.entity.capabilities.portal.CapabilityPortal;
 import terrails.netherutils.event.BlockEvent;
 import terrails.netherutils.event.EntityEvent;
 import terrails.netherutils.event.RegisterEvent;
@@ -20,7 +20,6 @@ import terrails.netherutils.network.CPacketBoolean;
 import terrails.netherutils.network.CPacketInteger;
 import terrails.netherutils.network.SPacketBoolean;
 import terrails.netherutils.network.SPacketInteger;
-import terrails.netherutils.world.data.CustomWorldData;
 import terrails.netherutils.world.nether.TreesGenerator;
 
 public class ModFeatures {
@@ -32,7 +31,7 @@ public class ModFeatures {
     public static void initCapabilities() {
         CapabilityFirstSpawn.register();
         CapabilityObelisk.register();
-        CapabilityPortalItem.register();
+        CapabilityPortal.register();
     }
 
     public static void initRegistry() {
@@ -44,9 +43,8 @@ public class ModFeatures {
 
     public static void initEvents() {
         MinecraftForge.EVENT_BUS.register(new ConfigHandler());
-        MinecraftForge.EVENT_BUS.register(new CustomWorldData.Event());
         MinecraftForge.EVENT_BUS.register(new CapabilityFirstSpawn.Handler());
-        MinecraftForge.EVENT_BUS.register(new CapabilityPortalItem.Handler());
+        MinecraftForge.EVENT_BUS.register(new CapabilityPortal.Handler());
         MinecraftForge.EVENT_BUS.register(new CapabilityObelisk.Handler());
         MinecraftForge.EVENT_BUS.register(new EntityEvent());
         MinecraftForge.EVENT_BUS.register(new SpawnEvent());
@@ -65,7 +63,6 @@ public class ModFeatures {
     }
 
     public static void initWorlds() {
-     //   Worlds.NETHER_SURVIVAL = new WorldTypeNetherSurvival();
         GameRegistry.registerWorldGenerator(new TreesGenerator(), 0);
     }
 

@@ -65,12 +65,13 @@ public class PortalItemTrigger implements ICriterionTrigger<PortalItemTrigger.In
 
     @Override
     public PortalItemTrigger.Instance deserializeInstance(JsonObject json, JsonDeserializationContext context) {
-        ItemStack stack = getStack(ConfigHandler.itemToLeave);
-        if (stack == ItemStack.EMPTY && !ConfigHandler.itemToLeave.isEmpty())
-            throw new NullPointerException("Unknown item '" + ConfigHandler.itemToLeave + "'");
+        ItemStack stack = getStack(ConfigHandler.itemToLeaveNether);
+        System.out.println(json);
+        if (stack == ItemStack.EMPTY && !ConfigHandler.itemToLeaveNether.isEmpty())
+            throw new NullPointerException("Unknown item '" + ConfigHandler.itemToLeaveNether + "'");
 
         boolean anyMeta = false;
-        if (!ConfigHandler.itemToLeave.contains("|") && stack != ItemStack.EMPTY)
+        if (!ConfigHandler.itemToLeaveNether.contains("|") && stack != ItemStack.EMPTY)
             anyMeta = true;
 
         return new PortalItemTrigger.Instance(stack, anyMeta);

@@ -83,8 +83,34 @@ public class CPacketBoolean implements IMessage {
                                 portal.isReadyToTeleport = message.value;
                                 break;
                         }
+                    } else if (tileEntity instanceof terrails.netherutils.blocks.portal.end.TileEntityPortalMaster) {
+                        terrails.netherutils.blocks.portal.end.TileEntityPortalMaster portal = (terrails.netherutils.blocks.portal.end.TileEntityPortalMaster) tileEntity;
+                        switch (message.option) {
+                            case 1:
+                                portal.isActive(message.value);
+                                break;
+                            case 2:
+                                portal.isActivating = message.value;
+                                break;
+                            case 3:
+                                portal.isActivationDone = message.value;
+                                break;
+                            case 4:
+                                portal.isReadyToTeleport = message.value;
+                                break;
+                        }
                     } else if (tileEntity instanceof TileEntityPortalSlave) {
                         TileEntityPortalSlave portal = (TileEntityPortalSlave) tileEntity;
+                        switch (message.option) {
+                            case 1:
+                                portal.isActive(message.value);
+                                break;
+                            case 2:
+                                portal.isReadyToTeleport = message.value;
+                                break;
+                        }
+                    } else if (tileEntity instanceof terrails.netherutils.blocks.portal.end.TileEntityPortalSlave) {
+                        terrails.netherutils.blocks.portal.end.TileEntityPortalSlave portal = (terrails.netherutils.blocks.portal.end.TileEntityPortalSlave) tileEntity;
                         switch (message.option) {
                             case 1:
                                 portal.isActive(message.value);

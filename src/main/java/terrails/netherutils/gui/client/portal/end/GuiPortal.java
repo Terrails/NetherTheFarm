@@ -1,4 +1,4 @@
-package terrails.netherutils.gui.client;
+package terrails.netherutils.gui.client.portal.end;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -11,8 +11,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentTranslation;
 import terrails.netherutils.Constants;
-import terrails.netherutils.gui.inventory.PortalContainer;
-import terrails.netherutils.blocks.portal.nether.TileEntityPortalMaster;
+import terrails.netherutils.blocks.portal.end.TileEntityPortalMaster;
+import terrails.netherutils.gui.inventory.portal.end.PortalContainer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,7 +126,7 @@ public class GuiPortal extends GuiContainer {
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        if (button.id == START && !tile.isActive() && tile.hasFuel() && tile.hasRequiredBlocks() && mc.world.provider.getDimension() == -1) {
+        if (button.id == START && !tile.isActive() && tile.hasFuel() && tile.hasRequiredBlocks() && mc.world.provider.getDimension() == 0) {
             this.tile.isActivating = true;
             this.tile.sendActivation();
         } else if (button.id == STOP && (tile.isActive() || tile.isActivating)) {

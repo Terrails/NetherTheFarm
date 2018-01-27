@@ -21,6 +21,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -31,6 +32,8 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
 import terrails.netherutils.Constants;
 import terrails.terracore.block.BlockTileEntity;
 import terrails.netherutils.config.ConfigHandler;
@@ -94,11 +97,28 @@ public class BlockTank extends BlockTileEntity<TileEntityTank> {
 
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        IFluidHandler fluidHandler = getFluidHandler(worldIn, pos);
+        ItemStack heldItem = player.getHeldItem(hand);
+        IFluidHandler handler = getFluidHandler(worldIn, pos);
 
-        if (fluidHandler != null) {
+        if (handler != null) {
 
-            FluidUtil.interactWithFluidHandler(player, hand, worldIn, pos, facing);
+            if (!heldItem.isEmpty() && heldItem.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)) {
+                IItemHandler playerInv = new InvWrapper(player.inventory);
+
+                FluidActionResult fillResult = FluidUtil.tryFillContainerAndStow(heldItem, handler, playerInv, Integer.MAX_VALUE, player);
+                if (fillResult.isSuccess()) {
+                    player.setHeldItem(hand, fillResult.getResult());
+                    return true;
+                }
+
+                FluidActionResult drainResult = FluidUtil.tryEmptyContainerAndStow(heldItem, handler, playerInv, Integer.MAX_VALUE, player);
+                if (drainResult.isSuccess()) {
+                    player.setHeldItem(hand, drainResult.getResult());
+                    return true;
+                }
+            }
+
+       //     FluidUtil.interactWithFluidHandler(player, hand, worldIn, pos, facing);
 
             if (!worldIn.isRemote && player.isSneaking() && hand == EnumHand.MAIN_HAND) {
                 for (final IFluidTankProperties property : getTileEntity(worldIn, pos).getTank().getTankProperties()) {

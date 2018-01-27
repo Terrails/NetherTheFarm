@@ -24,10 +24,10 @@ public class EntityEvent {
 
     @SubscribeEvent
     public void inventoryChanged(TickEvent.PlayerTickEvent event) {
-        if (!ConfigHandler.itemToLeave.isEmpty() && ConfigHandler.pointRespawn) {
+        if (!ConfigHandler.itemToLeaveNether.isEmpty() && ConfigHandler.pointRespawn) {
             if (event.phase == TickEvent.Phase.START && event.side == Side.SERVER) {
                 for (ItemStack stack : event.player.inventory.mainInventory) {
-                    if (stack.getItem() == getStack(ConfigHandler.itemToLeave).getItem() && (!ConfigHandler.itemToLeave.contains("|") || stack.getMetadata() == getStack(ConfigHandler.itemToLeave).getMetadata())) {
+                    if (stack.getItem() == getStack(ConfigHandler.itemToLeaveNether).getItem() && (!ConfigHandler.itemToLeaveNether.contains("|") || stack.getMetadata() == getStack(ConfigHandler.itemToLeaveNether).getMetadata())) {
                         ModAdvancements.PORTAL_ITEM_TRIGGER.trigger((EntityPlayerMP) event.player, stack);
                     }
                 }
@@ -39,37 +39,35 @@ public class EntityEvent {
     public void playerChangeDim(EntityTravelToDimensionEvent event) {
         if (!(event.getEntity() instanceof EntityPlayer))
             return;
-        if (event.getEntity().dimension != -1)
-            return;
-        if (!ConfigHandler.pointRespawn)
-            return;
 
         EntityPlayerMP player = (EntityPlayerMP) event.getEntity();
         boolean cancel = false;
 
-        if (!ConfigHandler.vanillaPortal) {
-            boolean anyPortal = BlockHelper.checkAny(1, player.getPosition(), player.getEntityWorld(), Blocks.PORTAL.getDefaultState(), false, true);
-            boolean anyObsidian = BlockHelper.checkAny(1, player.getPosition(), player.getEntityWorld(), Blocks.OBSIDIAN.getDefaultState(), false, true);
-            if (anyObsidian || anyPortal) {
-                cancel = true;
-            }
-        }
+        if (ConfigHandler.pointRespawn && event.getEntity().dimension == -1) {
 
-        if (player.getServer() != null && !ConfigHandler.itemToLeave.isEmpty() && !cancel) {
-            Advancement advancement = player.getServer().getAdvancementManager().getAdvancement(new ResourceLocation(Constants.MOD_ID, "portal_item"));
-            if (advancement != null && !player.getAdvancements().getProgress(advancement).isDone()) {
-                cancel = true;
+            if (!ConfigHandler.vanillaPortal) {
+                boolean anyPortal = BlockHelper.checkAny(1, player.getPosition(), player.getEntityWorld(), Blocks.PORTAL.getDefaultState(), false, true);
+                boolean anyObsidian = BlockHelper.checkAny(1, player.getPosition(), player.getEntityWorld(), Blocks.OBSIDIAN.getDefaultState(), false, true);
+                if (anyObsidian || anyPortal) {
+                    cancel = true;
+                }
+            }
+            
+            if (player.getServer() != null && !ConfigHandler.itemToLeaveNether.isEmpty() && !cancel) {
+                Advancement advancement = player.getServer().getAdvancementManager().getAdvancement(new ResourceLocation(Constants.MOD_ID, "portal_item"));
+                if (advancement != null && !player.getAdvancements().getProgress(advancement).isDone()) {
+                    cancel = true;
+                }
+
             }
         }
 
         if (cancel) {
-            player.sendMessage(new TextComponentString("You're not allowed to leave the nether!"));
+            String message = event.getEntity().dimension == -1 ? "leave the nether!" : "";
+            player.sendMessage(new TextComponentString("You're not allowed to " + message));
             event.setCanceled(true);
         }
     }
-
-
-
 
     private static ItemStack getStack(String string) {
         int meta = 0;

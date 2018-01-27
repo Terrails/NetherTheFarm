@@ -1,4 +1,4 @@
-package terrails.netherutils.blocks.portal.nether;
+package terrails.netherutils.blocks.portal.end;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -20,18 +20,21 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import terrails.netherutils.blocks.portal.nether.render.TESRPortalSlave;
+import terrails.netherutils.blocks.portal.end.BlockPortal;
+import terrails.netherutils.blocks.portal.end.TileEntityPortalSlave;
+import terrails.netherutils.blocks.portal.end.render.TESRPortalSlave;
 import terrails.terracore.block.BlockBase;
+import terrails.terracore.block.BlockTileEntity;
 
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public class BlockPortalSlave extends BlockBase {
+public class BlockPortalSlave extends BlockTileEntity<TileEntityPortalSlave> {
 
     public BlockPortalSlave(String name) {
         super(Material.ROCK, name);
         setBlockUnbreakable();
-        GameRegistry.registerTileEntity(TileEntityPortalSlave.class, name);
+        GameRegistry.registerTileEntity(TileEntityPortalSlave.class, "end_portal_slave");
     }
 
     @Override
@@ -50,8 +53,10 @@ public class BlockPortalSlave extends BlockBase {
         return BlockPortal.BOUNDING_BOX;
     }
 
+    /*
     @Override
     public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+
         TileEntity tileEntity = worldIn.getTileEntity(pos);
         if (tileEntity != null && tileEntity instanceof TileEntityPortalSlave) {
             TileEntityPortalSlave te = (TileEntityPortalSlave) tileEntity;
@@ -59,12 +64,13 @@ public class BlockPortalSlave extends BlockBase {
             if (stack.hasTagCompound()) {
                 NBTTagCompound compound = stack.getTagCompound();
                 if (compound != null) {
-                    
-                    if (compound.getInteger("yMaster") != 0)
-                        te.setMasterPos(new BlockPos(compound.getInteger("xMaster"), compound.getInteger("yMaster"), compound.getInteger("zMaster")));
+
+               //     if (compound.getInteger("yMaster") != 0)
+               //         te.setMasterPos(new BlockPos(compound.getInteger("xMaster"), compound.getInteger("yMaster"), compound.getInteger("zMaster")));
                 }
             }
         }
+
     }
 
     @Override
@@ -88,9 +94,11 @@ public class BlockPortalSlave extends BlockBase {
                 compound.setInteger("yMaster", te.getMasterPos().getY());
                 compound.setInteger("zMaster", te.getMasterPos().getZ());
             }
+
             drops.add(stack);
         }
     }
+
 
     @Override
     public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
@@ -101,6 +109,7 @@ public class BlockPortalSlave extends BlockBase {
         super.harvestBlock(world, player, pos, state, te, tool);
         world.setBlockToAir(pos);
     }
+    */
 
     @Override
     public void onBlockExploded(World world, BlockPos pos, Explosion explosion) {}
@@ -113,11 +122,6 @@ public class BlockPortalSlave extends BlockBase {
     @Override
     public int quantityDropped(Random random) {
         return 0;
-    }
-
-    @Override
-    public boolean hasTileEntity(IBlockState state) {
-        return true;
     }
 
     @Nullable

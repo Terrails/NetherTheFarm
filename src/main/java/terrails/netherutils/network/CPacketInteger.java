@@ -79,6 +79,18 @@ public class CPacketInteger implements IMessage {
                                 tile.counterFluidTransfer.set(message.value);
                                 break;
                         }
+                    } else if (tileEntity instanceof terrails.netherutils.blocks.portal.end.TileEntityPortalMaster) {
+                        terrails.netherutils.blocks.portal.end.TileEntityPortalMaster tile =(terrails.netherutils.blocks.portal.end.TileEntityPortalMaster) tileEntity;
+                        switch (message.option) {
+                            case 1:
+                                if (tile.getTank().getFluid() != null) {
+                                    tile.getTank().setFluid(new FluidStack(tile.getTank().getFluid(), message.value));
+                                } else tile.getTank().setFluid(null);
+                                break;
+                            case 2:
+                                tile.counterFluidTransfer.set(message.value);
+                                break;
+                        }
                     }
                 }
             });

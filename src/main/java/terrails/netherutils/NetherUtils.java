@@ -1,5 +1,6 @@
 package terrails.netherutils;
 
+import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -26,6 +27,8 @@ public class NetherUtils {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         proxy.preInit(event);
+        ForgeChunkManager.setForcedChunkLoadingCallback(NetherUtils.INSTANCE, null);
+
 
         ModFeatures.init(event);
 

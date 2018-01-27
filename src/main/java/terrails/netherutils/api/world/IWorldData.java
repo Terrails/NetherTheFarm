@@ -31,8 +31,7 @@ public interface IWorldData {
     boolean hasRead();
     void hasRead(boolean dataRead);
 
-//    List<IPortalMaster> getPortals();
-//    void setPortals(List<IPortalMaster> list);
-
+    BlockPos getEndSpawn();
+    void setEndSpawn(BlockPos pos);
 }
 

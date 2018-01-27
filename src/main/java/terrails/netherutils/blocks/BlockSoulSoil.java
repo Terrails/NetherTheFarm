@@ -2,6 +2,7 @@ package terrails.netherutils.blocks;
 
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockFaceShape;
@@ -43,6 +44,7 @@ public class BlockSoulSoil extends BlockBase {
         this.setDefaultState(this.blockState.getBaseState().withProperty(MOISTURE, false));
         this.setTickRandomly(true);
         setCreativeTab(Constants.CreativeTab.NetherUtils);
+        this.setSoundType(SoundType.SAND);
         this.setLightOpacity(255);
         this.setHardness(0.6F);
         this.setHarvestLevel("shovel", 0);
