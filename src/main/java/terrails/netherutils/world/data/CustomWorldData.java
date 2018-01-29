@@ -32,7 +32,7 @@ public class CustomWorldData extends WorldSavedData implements IWorldData {
                 PortalRegistry.LIST.clear();
             }
             PortalRegistry.LIST.addAll(PortalRegistry.deserializeNBT((NBTTagCompound) compound.getTag("Portal")));
-            Constants.Log.info("Successfully loaded portal data from world!");
+            Constants.Log.getLogger().info("Successfully loaded portal data from world!");
         }
         setEndSpawn(new BlockPos(compound.getInteger("EndPosX"), compound.getInteger("EndPosY"), compound.getInteger("EndPosZ")));
         hasRead(true);

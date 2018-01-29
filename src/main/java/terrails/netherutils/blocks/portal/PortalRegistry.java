@@ -187,7 +187,7 @@ public class PortalRegistry {
             if (!string.contains(",")) {
                 ItemStack itemStack = getStack(string);
                 if (itemStack.equals(ItemStack.EMPTY)) {
-                    Constants.Log.info(string + ", does not exist");
+                    Constants.Log.getLogger("NetherUtils_Portal-Items").info(string + ", does not exist");
                 } else return itemStack;
             }
         }
@@ -201,15 +201,18 @@ public class PortalRegistry {
      * @return the {@link ItemStack} which is in the string, EMPTY if null
      */
     private static ItemStack getStack(String string) {
-        int meta = 0;
+        int meta = -1;
         if (string.contains("|")) {
-            string = string.substring(string.indexOf("|") + 1);
-            meta = Integer.parseInt(CharMatcher.digit().retainFrom(string));
+            String number = string.substring(string.indexOf("|") + 1);
+            meta = Integer.parseInt(CharMatcher.digit().retainFrom(number));
         }
         Item item = Item.getByNameOrId(string.contains("|") ? string.substring(0, string.indexOf("|")) : string);
         if (item != null) {
-            return new ItemStack(item, 1, meta);
-        } else return ItemStack.EMPTY;
+            return new ItemStack(item, meta == -1 ? 1 : 2, meta == -1 ? 0 : meta);
+        } else {
+            Constants.Log.getLogger().debug("Portal Item '" + string + "', doesn't exist");
+            return ItemStack.EMPTY;
+        }
     }
 
     /**

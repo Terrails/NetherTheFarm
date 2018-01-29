@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityEndPortal;
 import net.minecraft.util.ResourceLocation;
@@ -13,6 +14,7 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.oredict.OreDictionary;
 import terrails.netherutils.blocks.obelisk.BlockObelisk;
 import terrails.netherutils.blocks.pedestal.BlockPedestal;
 import terrails.netherutils.blocks.pedestal.ItemBlockPedestal;
@@ -51,6 +53,11 @@ public class RegisterEvent {
             else if (!(block instanceof BlockPortalOverride)) event.getRegistry().register(new ItemBlock(block).setRegistryName(Objects.requireNonNull(block.getRegistryName())));
         }
         event.getRegistry().registerAll(ModItems.get());
+
+        OreDictionary.registerOre("treeLeaves", new ItemStack(ModBlocks.LEAVES, 1, OreDictionary.WILDCARD_VALUE));
+        OreDictionary.registerOre("treeWood", new ItemStack(ModBlocks.LOG, 1, OreDictionary.WILDCARD_VALUE));
+        OreDictionary.registerOre("treeSapling", new ItemStack(ModBlocks.SAPLING, 1, OreDictionary.WILDCARD_VALUE));
+        OreDictionary.registerOre("plankWood", new ItemStack(ModBlocks.PLANKS, 1, OreDictionary.WILDCARD_VALUE));
     }
 
     @SubscribeEvent

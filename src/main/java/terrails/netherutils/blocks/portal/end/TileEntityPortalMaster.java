@@ -99,7 +99,9 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
                 ItemStack slotStack = PortalRegistry.getItemForSlot(ConfigHandler.endPortalItems, ConfigHandler.endPortalFuel, slot, stack);
-                if (!(slotStack.getItem().equals(stack.getItem()))) {
+                boolean i = !(slotStack.getItem().equals(stack.getItem()));
+                boolean j = (slotStack.getCount() == 2 && slotStack.getMetadata() != stack.getMetadata());
+                if (i || j) {
                     return stack;
                 }
                 return super.insertItem(slot, stack, simulate);

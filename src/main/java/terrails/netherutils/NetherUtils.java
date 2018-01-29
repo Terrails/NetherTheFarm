@@ -1,6 +1,5 @@
 package terrails.netherutils;
 
-import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -23,20 +22,14 @@ public class NetherUtils {
     @Mod.Instance(Constants.MOD_ID)
     public static NetherUtils INSTANCE;
 
-
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         proxy.preInit(event);
-        ForgeChunkManager.setForcedChunkLoadingCallback(NetherUtils.INSTANCE, null);
-
 
         ModFeatures.init(event);
-
         ModFeatures.initRegistry();
-
         ModFeatures.initCapabilities();
         ModFeatures.initEvents();
-
         ModFeatures.initNetwork();
     }
 
@@ -48,12 +41,11 @@ public class NetherUtils {
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         proxy.postInit(event);
-
         ModFeatures.initWorlds();
     }
 
     @Mod.EventHandler
-    public void worldUnload(FMLServerStoppingEvent event) {
+    public void serverStopping(FMLServerStoppingEvent event) {
         IWorldData data = CustomWorldData.get(FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld());
         if (data != null) {
             data.hasRead(false);
@@ -61,7 +53,7 @@ public class NetherUtils {
     }
 
     @Mod.EventHandler()
-    public void startedServer(FMLServerStartedEvent event) {
+    public void serverStarted(FMLServerStartedEvent event) {
         IWorldData data = CustomWorldData.get(FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld());
         if (data != null) {
             data.hasRead(true);

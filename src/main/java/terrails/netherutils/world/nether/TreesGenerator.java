@@ -21,9 +21,9 @@ import java.util.Random;
 
 public class TreesGenerator implements IWorldGenerator {
 
-    WorldGeneratorHellwood HELL_WOOD;
-    WorldGeneratorAshwood ASH_WOOD;
-    WorldGeneratorSoulwood SOUL_WOOD;
+    private WorldGeneratorHellwood HELL_WOOD;
+    private WorldGeneratorAshwood ASH_WOOD;
+    private WorldGeneratorSoulwood SOUL_WOOD;
 
     public static IBlockState[] blockStates;
 
@@ -49,7 +49,7 @@ public class TreesGenerator implements IWorldGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    public void generateTree(Random random, int chunkX, int chunkZ, World world) {
+    private void generateTree(Random random, int chunkX, int chunkZ, World world) {
         int xSpawn, ySpawn, zSpawn;
 
         int xPos = chunkX * 16 + 8;
@@ -62,9 +62,7 @@ public class TreesGenerator implements IWorldGenerator {
         Biome biome = world.getChunkFromBlockCoords(chunkPos).getBiome(chunkPos, world.getBiomeProvider());
 
         if (biome == null)
-        {
             return;
-        }
 
         if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.NETHER) || world.provider.getDimension() == -1) {
             if (ConfigHandler.generateHellWood && random.nextInt(1) == 0) {
