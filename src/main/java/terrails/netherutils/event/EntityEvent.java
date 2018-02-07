@@ -43,28 +43,25 @@ public class EntityEvent {
         EntityPlayerMP player = (EntityPlayerMP) event.getEntity();
         boolean cancel = false;
 
-        if (ConfigHandler.pointRespawn && event.getEntity().dimension == -1) {
+        if (ConfigHandler.pointRespawn) {
 
             if (!ConfigHandler.vanillaPortal) {
-                boolean anyPortal = BlockHelper.checkAny(1, player.getPosition(), player.getEntityWorld(), Blocks.PORTAL.getDefaultState(), false, true);
-                boolean anyObsidian = BlockHelper.checkAny(1, player.getPosition(), player.getEntityWorld(), Blocks.OBSIDIAN.getDefaultState(), false, true);
-                if (anyObsidian || anyPortal) {
+                boolean anyPortal = BlockHelper.checkAny(2, player.getPosition(), player.getEntityWorld(), Blocks.PORTAL.getDefaultState(), false, true);
+                if (anyPortal) {
                     cancel = true;
                 }
             }
-            
-            if (player.getServer() != null && !ConfigHandler.itemToLeaveNether.isEmpty() && !cancel) {
+
+            if (event.getEntity().dimension == -1 && player.getServer() != null && !ConfigHandler.itemToLeaveNether.isEmpty() && !cancel) {
                 Advancement advancement = player.getServer().getAdvancementManager().getAdvancement(new ResourceLocation(Constants.MOD_ID, "portal_item"));
                 if (advancement != null && !player.getAdvancements().getProgress(advancement).isDone()) {
                     cancel = true;
                 }
-
             }
         }
 
         if (cancel) {
-            String message = event.getEntity().dimension == -1 ? "leave the nether!" : "";
-            player.sendMessage(new TextComponentString("You're not allowed to " + message));
+            player.sendMessage(new TextComponentString("You're not allowed to do this!"));
             event.setCanceled(true);
         }
     }
