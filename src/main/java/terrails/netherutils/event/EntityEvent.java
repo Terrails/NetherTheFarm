@@ -10,6 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.DimensionType;
 import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -41,7 +42,7 @@ public class EntityEvent {
                 }
             }
 
-            if (player.isEntityAlive() && player.dimension == -1 && ConfigHandler.maxYNether != 0) {
+            if (player.isEntityAlive() && player.world.provider.getDimensionType().getName().equalsIgnoreCase(DimensionType.NETHER.getName()) && ConfigHandler.maxYNether != 0) {
                 //Constants.Log.getLogger().info("Side: " + event.side.name() + ", Phase: " + event.phase.name() + ", Time: " + event.player.getEntityWorld().getWorldTime());
                 IDeathZone deathZone = player.getCapability(CapabilityDeathZone.DEATH_ZONE_CAPABILITY, null);
                 if (deathZone == null)
