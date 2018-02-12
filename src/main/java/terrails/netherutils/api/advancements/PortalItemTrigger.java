@@ -66,7 +66,6 @@ public class PortalItemTrigger implements ICriterionTrigger<PortalItemTrigger.In
     @Override
     public PortalItemTrigger.Instance deserializeInstance(JsonObject json, JsonDeserializationContext context) {
         ItemStack stack = getStack(ConfigHandler.itemToLeaveNether);
-        System.out.println(json);
         if (stack == ItemStack.EMPTY && !ConfigHandler.itemToLeaveNether.isEmpty())
             throw new NullPointerException("Unknown item '" + ConfigHandler.itemToLeaveNether + "'");
 

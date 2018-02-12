@@ -136,7 +136,7 @@ public class TileEntityPortalSlave extends TileEntityBase implements ITickable, 
         EntityPlayer player = getWorld().getClosestPlayer(getPos().getX() + 0.5, getPos().getY() + 0.75, getPos().getZ() + 0.5, 0.5, false);
         if (player instanceof EntityPlayerMP && isReadyToTeleport) {
 
-            IPortal portalItem = player.getCapability(CapabilityPortal.PORTAL_ITEM_CAPABILITY, null);
+            IPortal portalItem = player.getCapability(CapabilityPortal.PORTAL_CAPABILITY, null);
             if (portalItem != null) {
                 BlockPos pos = BlockPos.ORIGIN;
                 for (IPortalMaster master : PortalRegistry.LIST) {

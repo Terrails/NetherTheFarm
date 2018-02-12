@@ -2,9 +2,6 @@ package terrails.netherutils.init;
 
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockEndPortal;
-import net.minecraft.block.material.Material;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import terrails.netherutils.blocks.*;
 import terrails.netherutils.blocks.obelisk.BlockObelisk;

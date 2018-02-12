@@ -29,7 +29,7 @@ public class BlockEvent {
                 if (event.getWorld().isAirBlock(event.getPos().up())) {
                     boolean isWoodenHoe = event.getCurrent().getUnlocalizedName().toLowerCase().contains("wood");
                     if (!isWoodenHoe) {
-                        setBlock(event.getEntityPlayer(), event.getWorld(), event.getPos(), ModBlocks.SOUL_SOIL.getDefaultState().withProperty(MOISTURE, false));
+                        setBlock(event.getEntityPlayer(), event.getWorld(), event.getPos(), ModBlocks.SOUL_SOIL.getDefaultState().withProperty(MOISTURE, 0));
                         event.getCurrent().damageItem(1, event.getEntityPlayer());
                     } else if (!event.getWorld().isRemote) {
                         Constants.Log.playerMessage(event.getEntityPlayer(), "You cannot use a wooden hoe on soul sand!");

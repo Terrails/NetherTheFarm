@@ -16,6 +16,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.capabilities.Capability;
@@ -326,7 +327,7 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
 
     }
     private void doTeleportation() {
-        if (getWorld().provider.getDimension() != -1)
+        if (!getWorld().provider.getDimensionType().getName().equalsIgnoreCase(DimensionType.NETHER.getName()))
             return;
         if (!getWorld().isRemote) {
             EntityPlayer player = getWorld().getClosestPlayer(getPos().getX() + 0.5, getPos().getY() + 0.75, getPos().getZ() + 0.5, 0.5, false);

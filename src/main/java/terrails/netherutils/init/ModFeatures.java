@@ -9,6 +9,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import terrails.netherutils.Constants;
 import terrails.netherutils.NetherUtils;
 import terrails.netherutils.config.ConfigHandler;
+import terrails.netherutils.entity.capabilities.deathzone.CapabilityDeathZone;
 import terrails.netherutils.entity.capabilities.firstspawn.CapabilityFirstSpawn;
 import terrails.netherutils.entity.capabilities.obelisk.CapabilityObelisk;
 import terrails.netherutils.entity.capabilities.portal.CapabilityPortal;
@@ -16,10 +17,7 @@ import terrails.netherutils.event.BlockEvent;
 import terrails.netherutils.event.EntityEvent;
 import terrails.netherutils.event.RegisterEvent;
 import terrails.netherutils.event.SpawnEvent;
-import terrails.netherutils.network.CPacketBoolean;
-import terrails.netherutils.network.CPacketInteger;
-import terrails.netherutils.network.SPacketBoolean;
-import terrails.netherutils.network.SPacketInteger;
+import terrails.netherutils.network.*;
 import terrails.netherutils.world.nether.TreesGenerator;
 
 public class ModFeatures {
@@ -32,6 +30,7 @@ public class ModFeatures {
         CapabilityFirstSpawn.register();
         CapabilityObelisk.register();
         CapabilityPortal.register();
+        CapabilityDeathZone.register();
     }
 
     public static void initRegistry() {
@@ -46,10 +45,10 @@ public class ModFeatures {
         MinecraftForge.EVENT_BUS.register(new CapabilityFirstSpawn.Handler());
         MinecraftForge.EVENT_BUS.register(new CapabilityPortal.Handler());
         MinecraftForge.EVENT_BUS.register(new CapabilityObelisk.Handler());
+        MinecraftForge.EVENT_BUS.register(new CapabilityDeathZone.Handler());
         MinecraftForge.EVENT_BUS.register(new EntityEvent());
         MinecraftForge.EVENT_BUS.register(new SpawnEvent());
         MinecraftForge.EVENT_BUS.register(new BlockEvent());
-        MinecraftForge.EVENT_BUS.register(new EntityEvent());
     }
 
     public static void initNetwork() {
@@ -60,6 +59,7 @@ public class ModFeatures {
         Network.WRAPPER.registerMessage(SPacketInteger.Handler.class, SPacketInteger.class, Network.nextID(), Side.SERVER);
         Network.WRAPPER.registerMessage(CPacketInteger.Handler.class, CPacketInteger.class, Network.nextID(), Side.CLIENT);
         Network.WRAPPER.registerMessage(CPacketBoolean.Handler.class, CPacketBoolean.class, Network.nextID(), Side.CLIENT);
+        Network.WRAPPER.registerMessage(CPacketTitle.Handler.class, CPacketTitle.class, Network.nextID(), Side.CLIENT);
     }
 
     public static void initWorlds() {

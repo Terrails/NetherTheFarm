@@ -53,9 +53,12 @@ public class ConfigHandler {
 
     // Integer
     public static int minTankWater;
+    public static int maxYNether;
+    public static int deathZoneTimer;
 
     // String
     public static String itemToLeaveNether;
+    public static String showWarningOnSec;
 
     // Other
     public static String[] startingItems;
@@ -77,6 +80,9 @@ public class ConfigHandler {
         pointRespawn = config.get(FEATURES_NETHER, "Nether Spawn", true, "Disable if you don't want to spawn in the nether").getBoolean();
         vanillaPortal = config.get(FEATURES_NETHER, "Use Vanilla Portal", false, "Leave the vanilla portal as it is and don't disable it, Nether Spawn needs to be true for this to work").getBoolean();
         itemToLeaveNether = config.get(FEATURES_NETHER, "Item To Leave", "minecraft:beacon", "The item which needs to be made before being able to leave the nether (empty if nothing), Nether Spawn needs to be true for this to work").getString();
+        maxYNether = config.get(FEATURES_NETHER, "Max Y", 100, "The max y a player can go to (everything above is death zone, 0 disables it)").getInt();
+        deathZoneTimer = config.get(FEATURES_NETHER, "Death Zone", 60, "The time in which the player will die in the death zone, in seconds").getInt();
+        showWarningOnSec = config.get(FEATURES_NETHER, "Death Zone Warning", "60,30,10,9,8,7,6,5,4,3,2,1", "The time when the death zone warning should display when counting down (make it blank so its disabled or 0 to make it display on each second)").getString();
 
         useVanillaEndPortal = config.get(FEATURES_END, "Use Vanilla Portal", false, "Leave the vanilla portal as it is and don't disable it").getBoolean();
 

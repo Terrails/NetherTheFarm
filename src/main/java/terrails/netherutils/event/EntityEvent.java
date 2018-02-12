@@ -1,8 +1,8 @@
 package terrails.netherutils.event;
 
 import com.google.common.base.CharMatcher;
+import com.google.common.collect.Lists;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -15,21 +15,74 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import terrails.netherutils.Constants;
+import terrails.netherutils.api.capabilities.IDeathZone;
 import terrails.netherutils.config.ConfigHandler;
+import terrails.netherutils.entity.capabilities.deathzone.CapabilityDeathZone;
 import terrails.netherutils.init.ModAdvancements;
-import terrails.netherutils.init.ModBlocks;
+import terrails.netherutils.init.ModFeatures;
+import terrails.netherutils.network.CPacketTitle;
 import terrails.terracore.helper.BlockHelper;
+
+import java.util.List;
 
 public class EntityEvent {
 
     @SubscribeEvent
-    public void inventoryChanged(TickEvent.PlayerTickEvent event) {
-        if (!ConfigHandler.itemToLeaveNether.isEmpty() && ConfigHandler.pointRespawn) {
-            if (event.phase == TickEvent.Phase.START && event.side == Side.SERVER) {
-                for (ItemStack stack : event.player.inventory.mainInventory) {
+    public void playerTick(TickEvent.PlayerTickEvent event) {
+        if (event.phase == TickEvent.Phase.START && event.side == Side.SERVER) {
+            EntityPlayer player = event.player;
+
+            if (!ConfigHandler.itemToLeaveNether.isEmpty() && ConfigHandler.pointRespawn) {
+                for (ItemStack stack : player.inventory.mainInventory) {
                     if (stack.getItem() == getStack(ConfigHandler.itemToLeaveNether).getItem() && (!ConfigHandler.itemToLeaveNether.contains("|") || stack.getMetadata() == getStack(ConfigHandler.itemToLeaveNether).getMetadata())) {
-                        ModAdvancements.PORTAL_ITEM_TRIGGER.trigger((EntityPlayerMP) event.player, stack);
+                        ModAdvancements.PORTAL_ITEM_TRIGGER.trigger((EntityPlayerMP) player, stack);
                     }
+
+                }
+            }
+
+            if (player.isEntityAlive() && player.dimension == -1 && ConfigHandler.maxYNether != 0) {
+                //Constants.Log.getLogger().info("Side: " + event.side.name() + ", Phase: " + event.phase.name() + ", Time: " + event.player.getEntityWorld().getWorldTime());
+                IDeathZone deathZone = player.getCapability(CapabilityDeathZone.DEATH_ZONE_CAPABILITY, null);
+                if (deathZone == null)
+                    return;
+
+                if (player.getPosition().getY() > ConfigHandler.maxYNether) {
+                    deathZone.tickCounter(deathZone.tickCounter() + 1);
+                    if (deathZone.tickCounter() % 20 == 0 && (deathZone.getDeathCounter() > -1)) {
+                        if (deathZone.getDeathCounter() > 0 && !ConfigHandler.showWarningOnSec.isEmpty()) {
+
+                            if (ConfigHandler.showWarningOnSec.equalsIgnoreCase("0")) {
+                                ModFeatures.Network.WRAPPER.sendTo(new CPacketTitle(deathZone.getDeathCounter()), (EntityPlayerMP) event.player);
+                            } else {
+                                String[] strings = ConfigHandler.showWarningOnSec.split(",");
+                                List<Integer> times = Lists.newArrayList();
+                                for (String string : strings) {
+                                    int i = Integer.parseInt(string);
+                                    times.add(i);
+                                }
+                                for (int time : times) {
+                                    if (deathZone.getDeathCounter() == time) {
+                                        ModFeatures.Network.WRAPPER.sendTo(new CPacketTitle(deathZone.getDeathCounter()), (EntityPlayerMP) event.player);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        deathZone.setDeathCounter(deathZone.getDeathCounter() - 1);
+                    }
+
+                    if (deathZone.getDeathCounter() == -2) {
+                        deathZone.setDeathCounter(ConfigHandler.deathZoneTimer);
+                    } else if (deathZone.getDeathCounter() == -1) {
+                        deathZone.setDeathCounter(-2);
+                        ModFeatures.Network.WRAPPER.sendTo(new CPacketTitle(-1), (EntityPlayerMP) event.player);
+                        player.onKillCommand();
+                        player.setDead();
+                    }
+                } else if (deathZone.getDeathCounter() != -2 || deathZone.tickCounter() != 0) {
+                    deathZone.setDeathCounter(-2);
+                    deathZone.tickCounter(0);
                 }
             }
         }

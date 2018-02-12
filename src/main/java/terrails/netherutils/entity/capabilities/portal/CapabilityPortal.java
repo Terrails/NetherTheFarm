@@ -20,7 +20,7 @@ import terrails.terracore.capabilities.CapabilitySerializable;
 public class CapabilityPortal {
 
     @CapabilityInject(IPortal.class)
-    public static final Capability<IPortal> PORTAL_ITEM_CAPABILITY;
+    public static final Capability<IPortal> PORTAL_CAPABILITY;
 
     public static void register() {
         CapabilityManager.INSTANCE.register(IPortal.class, new Capability.IStorage<IPortal>() {
@@ -46,15 +46,15 @@ public class CapabilityPortal {
         @SubscribeEvent
         public void attachCapabilities(AttachCapabilitiesEvent<Entity> event) {
             if (event.getObject() instanceof EntityPlayer) {
-                event.addCapability(new ResourceLocation(Constants.MOD_ID, "Portal"), new CapabilitySerializable<>(CapabilityPortal.PORTAL_ITEM_CAPABILITY));
+                event.addCapability(new ResourceLocation(Constants.MOD_ID, "Portal"), new CapabilitySerializable<>(CapabilityPortal.PORTAL_CAPABILITY));
             }
         }
 
         @SubscribeEvent
         public void playerClone(PlayerEvent.Clone event) {
             EntityPlayer player = event.getEntityPlayer();
-            IPortal portalItem = player.getCapability(CapabilityPortal.PORTAL_ITEM_CAPABILITY, null);
-            IPortal oldPortalItem = event.getOriginal().getCapability(CapabilityPortal.PORTAL_ITEM_CAPABILITY, null);
+            IPortal portalItem = player.getCapability(CapabilityPortal.PORTAL_CAPABILITY, null);
+            IPortal oldPortalItem = event.getOriginal().getCapability(CapabilityPortal.PORTAL_CAPABILITY, null);
             if (portalItem != null && oldPortalItem != null) {
                 portalItem.setLastMasterPos(oldPortalItem.lastMasterPos());
             }
@@ -62,6 +62,6 @@ public class CapabilityPortal {
     }
 
     static {
-        PORTAL_ITEM_CAPABILITY = null;
+        PORTAL_CAPABILITY = null;
     }
 }

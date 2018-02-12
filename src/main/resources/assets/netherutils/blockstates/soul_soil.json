@@ -1,7 +1,13 @@
 {
   "variants": {
-    "moisture=false": { "model": "netherutils:soul_soil/soul_soil_dry" },
-    "moisture=true": { "model": "netherutils:soul_soil/soul_soil_moist" },
+    "moisture=0": { "model": "netherutils:soul_soil/soul_soil_dry" },
+    "moisture=1": { "model": "netherutils:soul_soil/soul_soil_dry" },
+    "moisture=2": { "model": "netherutils:soul_soil/soul_soil_dry" },
+    "moisture=3": { "model": "netherutils:soul_soil/soul_soil_dry" },
+    "moisture=4": { "model": "netherutils:soul_soil/soul_soil_dry" },
+    "moisture=5": { "model": "netherutils:soul_soil/soul_soil_dry" },
+    "moisture=6": { "model": "netherutils:soul_soil/soul_soil_dry" },
+    "moisture=7": { "model": "netherutils:soul_soil/soul_soil_moist" },
     "inventory": { "model": "netherutils:soul_soil/soul_soil_dry", "transform": "forge:default-block" }
   }
 }

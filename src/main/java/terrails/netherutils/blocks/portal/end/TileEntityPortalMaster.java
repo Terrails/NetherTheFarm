@@ -333,7 +333,7 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
             EntityPlayer player = getWorld().getClosestPlayer(getPos().getX() + 0.5, getPos().getY() + 0.75, getPos().getZ() + 0.5, 0.5, false);
             if (player != null && this.isReadyToTeleport && player instanceof EntityPlayerMP) {
 
-                IPortal portalItem = player.getCapability(CapabilityPortal.PORTAL_ITEM_CAPABILITY, null);
+                IPortal portalItem = player.getCapability(CapabilityPortal.PORTAL_CAPABILITY, null);
                 if (portalItem != null) {
                     IWorldData worldData = CustomWorldData.get(getWorld());
                     player.changeDimension(1);

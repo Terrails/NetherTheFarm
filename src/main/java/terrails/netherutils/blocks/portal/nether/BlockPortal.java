@@ -15,6 +15,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -60,7 +61,7 @@ public class BlockPortal extends BlockTileEntity<TileEntityPortalMaster> {
             return;
         }
 
-        if (world.provider.getDimension() != -1 && placer instanceof EntityPlayer) {
+        if (!world.provider.getDimensionType().getName().equalsIgnoreCase(DimensionType.NETHER.getName()) && placer instanceof EntityPlayer) {
             Constants.Log.playerMessage((EntityPlayer) placer, "Portal only works in the nether!");
         }
 

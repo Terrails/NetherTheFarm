@@ -10,6 +10,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.DimensionType;
 import terrails.netherutils.Constants;
 import terrails.netherutils.gui.inventory.portal.nether.PortalContainer;
 import terrails.netherutils.blocks.portal.nether.TileEntityPortalMaster;
@@ -126,7 +127,7 @@ public class GuiPortal extends GuiContainer {
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        if (button.id == START && !tile.isActive() && tile.hasFuel() && tile.hasRequiredBlocks() && mc.world.provider.getDimension() == -1) {
+        if (button.id == START && !tile.isActive() && tile.hasFuel() && tile.hasRequiredBlocks() && mc.world.provider.getDimensionType().getName().equalsIgnoreCase(DimensionType.NETHER.getName())) {
             this.tile.isActivating = true;
             this.tile.sendActivation();
         } else if (button.id == STOP && (tile.isActive() || tile.isActivating)) {
