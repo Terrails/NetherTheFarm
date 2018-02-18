@@ -47,7 +47,7 @@ public class TileEntityPortalSlave extends TileEntityBase implements ITickable, 
 
         if (PortalRegistry.LIST.size() > 0) {
             for (IPortalMaster master : PortalRegistry.LIST) {
-                if (master.getDimension() == 0) {
+                if (master.getDimension() == 0 && !master.isNether()) {
                     hasMaster = true;
                     boolean bool = false;
                     for (IPortalMaster master1 : PortalRegistry.LIST) {
@@ -117,6 +117,11 @@ public class TileEntityPortalSlave extends TileEntityBase implements ITickable, 
     @Override
     public int getDimension() {
         return world.provider.getDimension();
+    }
+
+    @Override
+    public boolean isNether() {
+        return false;
     }
 
     // == End == \\

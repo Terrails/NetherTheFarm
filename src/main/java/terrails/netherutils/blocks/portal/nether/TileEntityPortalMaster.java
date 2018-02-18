@@ -10,6 +10,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -18,6 +19,9 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.*;
@@ -123,8 +127,8 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
 
             // If slave coords are set but it doesn't exist create a new one
             if (!getSlavePos().equals(BlockPos.ORIGIN)) {
-                World overworld = DimensionManager.getWorld(0);
-                if (!(overworld.getTileEntity(getSlavePos()) instanceof TileEntityPortalSlave)) {
+                World overworld = getSlaveWorld();//DimensionManager.getWorld(0);
+                if (overworld != null && !(overworld.getTileEntity(getSlavePos()) instanceof TileEntityPortalSlave)) {
                     overworld.setBlockState(getSlavePos(), ModBlocks.PORTAL_NETHER_SLAVE.getDefaultState());
                     IPortalSlave slave = (IPortalSlave) overworld.getTileEntity(getSlavePos());
                     if (slave != null) {
@@ -259,6 +263,11 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
         return world.provider.getDimension();
     }
 
+    @Override
+    public boolean isNether() {
+        return true;
+    }
+
     /* == End == */
 
 
@@ -267,6 +276,12 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
         return new AxisAlignedBB(getPos().add(-5, -5, -5), getPos().add(5, 5, 5));
+    }
+
+    private World getSlaveWorld() {
+        if (getDimension() == 0) {
+            return DimensionManager.getWorld(-1);
+        } else return DimensionManager.getWorld(0);
     }
 
     private void updateFluidItem() {
@@ -327,7 +342,7 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
 
     }
     private void doTeleportation() {
-        if (!getWorld().provider.getDimensionType().getName().equalsIgnoreCase(DimensionType.NETHER.getName()))
+        if (!getWorld().provider.getDimensionType().getName().equalsIgnoreCase(DimensionType.NETHER.getName()) && !getWorld().provider.getDimensionType().getName().equalsIgnoreCase(DimensionType.OVERWORLD.getName()))
             return;
         if (!getWorld().isRemote) {
             EntityPlayer player = getWorld().getClosestPlayer(getPos().getX() + 0.5, getPos().getY() + 0.75, getPos().getZ() + 0.5, 0.5, false);
@@ -337,7 +352,7 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
                     generatePortal();
                 }
 
-                TeleporterNTF.teleport((EntityPlayerMP) player, 0, getSlavePos().add(1, 0, 0), false);
+                TeleporterNTF.teleport((EntityPlayerMP) player, getDimension() == -1 ? 0 : -1, getSlavePos().add(1, 0, 0), false);
 
                 this.isReadyToTeleport = false;
                 ModFeatures.Network.WRAPPER.sendToDimension(new CPacketBoolean(isReadyToTeleport, getPos(), 4), getWorld().provider.getDimension());
@@ -345,35 +360,70 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
         }
     }
     private void generatePortal() {
-        World overworld = DimensionManager.getWorld(0); // Overworld
-        if (overworld != null && !(overworld.getTileEntity(getSlavePos()) instanceof TileEntityPortalSlave)) {
+       // World overworld = DimensionManager.getWorld(0); // Overworld
+        ChunkProviderServer providerServer = null;
+        WorldServer worldServerForDimension = null;
+
+        if (getDimension() == 0) {
+            MinecraftServer server = getWorld().getMinecraftServer();
+            if (server != null) {
+                worldServerForDimension = getWorld().getMinecraftServer().getWorld(-1);
+                providerServer = worldServerForDimension.getChunkProvider();
+                if (!providerServer.chunkExists(0, 0)) {
+                    providerServer.loadChunk(0, 0);
+                    worldServerForDimension.getBlockState(new BlockPos(1,1,1));
+                }
+            }
+        }
+
+        World slaveWorld = getSlaveWorld();
+
+        if (slaveWorld != null && !(slaveWorld.getTileEntity(getSlavePos()) instanceof TileEntityPortalSlave)) {
 
             Random random = new Random();
             BlockPos pos = getPos().add(random.nextInt(201), 0, random.nextInt(201));
 
-            for (int i = overworld.getHeight(); i > 0; i--) {
-                BlockPos blockPos = new BlockPos(pos.getX(), i, pos.getZ());
-                IBlockState state = overworld.getBlockState(blockPos);
+            if (getDimension() == -1) {
+                for (int i = slaveWorld.getHeight(); i > 0; i--) {
+                    BlockPos blockPos = new BlockPos(pos.getX(), i, pos.getZ());
+                    IBlockState state = slaveWorld.getBlockState(blockPos);
 
-                if (state.getBlock() != Blocks.AIR) {
-                    // If the pos is near another slave offset your coords and start from world height again
-                    if (BlockHelper.checkAny(6, blockPos, overworld, ModBlocks.PORTAL_NETHER_SLAVE.getDefaultState(), false, true)) {
-                        pos.add(20, 0, 20);
-                        i = overworld.getHeight();
-                    } else if (!overworld.getBlockState(blockPos).getBlock().isLeaves(state, getWorld(), blockPos) && !overworld.getBlockState(blockPos).getBlock().isFoliage(getWorld(), blockPos)) {
-                        pos = new BlockPos(blockPos.getX(), i, blockPos.getZ());
-                        break;
+                    if (state.getBlock() != Blocks.AIR) {
+                        // If the pos is near another slave offset your coords and start from world height again
+                        if (BlockHelper.checkAny(6, blockPos, slaveWorld, ModBlocks.PORTAL_NETHER_SLAVE.getDefaultState(), false, true)) {
+                            pos.add(20, 0, 20);
+                            i = slaveWorld.getHeight();
+                        } else if (!slaveWorld.getBlockState(blockPos).getBlock().isLeaves(state, getWorld(), blockPos) && !slaveWorld.getBlockState(blockPos).getBlock().isFoliage(getWorld(), blockPos)) {
+                            pos = new BlockPos(blockPos.getX(), i, blockPos.getZ());
+                            break;
+                        }
+                    }
+                }
+            } else {
+                for (int i = 90; i > 0; i--) {
+                    BlockPos blockPos = new BlockPos(pos.getX(), i, pos.getZ());
+                    IBlockState state = slaveWorld.getBlockState(blockPos);
+
+                    if (state.getBlock() != Blocks.AIR) {
+                        // If the pos is near another slave offset your coords and start from world height again
+                        if (BlockHelper.checkAny(6, blockPos, slaveWorld, ModBlocks.PORTAL_NETHER_SLAVE.getDefaultState(), false, true)) {
+                            pos.add(20, 0, 20);
+                            i = 90;
+                        } else if (!slaveWorld.getBlockState(blockPos).getBlock().isLeaves(state, getWorld(), blockPos) && !slaveWorld.getBlockState(blockPos).getBlock().isFoliage(getWorld(), blockPos)) {
+                            pos = new BlockPos(blockPos.getX(), i, blockPos.getZ());
+                            break;
+                        }
                     }
                 }
             }
 
-            BlockHelper.fill(2, pos, overworld, Blocks.STONEBRICK.getDefaultState(), false, true);
-            BlockHelper.fill(2, pos.up(), overworld, Blocks.AIR.getDefaultState(), false, true);
-            BlockHelper.fill(2, pos.up().up(), overworld, Blocks.AIR.getDefaultState(), false, true);
-            BlockHelper.fill(2, pos.up().up().up(), overworld, Blocks.AIR.getDefaultState(), false, true);
+            BlockHelper.fill(2, pos, slaveWorld, Blocks.STONEBRICK.getDefaultState(), false, true);
+            BlockHelper.fill(2, pos.up(), slaveWorld, Blocks.AIR.getDefaultState(), false, true);
+            BlockHelper.fill(2, pos.up().up(), slaveWorld, Blocks.AIR.getDefaultState(), false, true);
+            BlockHelper.fill(2, pos.up().up().up(), slaveWorld, Blocks.AIR.getDefaultState(), false, true);
 
-            overworld.setBlockState(pos.up(), ModBlocks.PORTAL_NETHER_SLAVE.getDefaultState());
-            TileEntity te = overworld.getTileEntity(pos.up());
+            slaveWorld.setBlockState(pos.up(), ModBlocks.PORTAL_NETHER_SLAVE.getDefaultState());
+            TileEntity te = slaveWorld.getTileEntity(pos.up());
 
             if (te != null && te instanceof TileEntityPortalSlave) {
                 ((TileEntityPortalSlave) te).setMasterPos(getPos());
@@ -390,6 +440,10 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
                 }
                 index++;
             }
+        }
+
+        if (getDimension() == 0 && providerServer != null) {
+            providerServer.queueUnload(new Chunk(worldServerForDimension, 0, 0));
         }
     }
 

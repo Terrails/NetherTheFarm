@@ -13,4 +13,6 @@ public interface IPortalMaster {
 
     BlockPos getBlockPos();
     int getDimension();
+
+    boolean isNether();
 }

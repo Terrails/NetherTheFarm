@@ -54,8 +54,8 @@ public class CPacketTitle implements IMessage {
                     String displayString = (minutes != 0 ? minutes + (minutes == 1 ? " minute" : " minutes") + (seconds != 0 ? " and " + seconds + (seconds == 1 ? " second" : " seconds") : "") : seconds + (seconds == 1 ? " second" : " seconds"));
 
                     if (message.deathCounter != -1) {
-                        minecraft.ingameGUI.displayTitle("DANGER!!", null, 1, 1, 1);
-                        minecraft.ingameGUI.displayTitle(null, "You're in the death zone, " + displayString + " until death!", 1, 1, 1);
+                        minecraft.ingameGUI.displayTitle("DEATH ZONE!!!", null, 1, 1, 1);
+                        minecraft.ingameGUI.displayTitle(null, displayString + " until death!", 1, 1, 1);
                     } else {
                         minecraft.ingameGUI.displayTitle(null, null, -1, -1, -1);
                     }

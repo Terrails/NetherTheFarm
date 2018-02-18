@@ -6,6 +6,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.DimensionType;
 import terrails.netherutils.api.portal.IPortalMaster;
 import terrails.netherutils.api.portal.IPortalSlave;
 import terrails.netherutils.blocks.portal.PortalRegistry;
@@ -45,7 +46,7 @@ public class TileEntityPortalSlave extends TileEntityBase implements ITickable, 
 
         if (PortalRegistry.LIST.size() > 0) {
             for (IPortalMaster master : PortalRegistry.LIST) {
-                if (master.getDimension() == -1 && master.getSlavePos().equals(getPos())) {
+                if (master.isNether() && master.getSlavePos().equals(getPos())) {
                     hasMaster = true;
                     isActive(master.isActive());
                     if (isActive()) {
@@ -110,6 +111,11 @@ public class TileEntityPortalSlave extends TileEntityBase implements ITickable, 
         return world.provider.getDimension();
     }
 
+    @Override
+    public boolean isNether() {
+        return true;
+    }
+
     // == End == \\
 
 
@@ -121,13 +127,17 @@ public class TileEntityPortalSlave extends TileEntityBase implements ITickable, 
     }
 
     private void doTeleportation() {
-        if (getWorld().provider.getDimension() != 0 || getWorld().isRemote)
+        String dimName = getWorld().provider.getDimensionType().getName();
+        if (!dimName.equalsIgnoreCase(DimensionType.OVERWORLD.getName()) && !dimName.equalsIgnoreCase(DimensionType.NETHER.getName()))
+            return;
+
+        if (getWorld().isRemote)
             return;
 
         EntityPlayer player = getWorld().getClosestPlayer(getPos().getX() + 0.5, getPos().getY() + 0.75, getPos().getZ() + 0.5, 0.5, false);
         if (player instanceof EntityPlayerMP && isReadyToTeleport) {
 
-            TeleporterNTF.teleport((EntityPlayerMP) player, -1, getMasterPos().add(1, 0, 0), false);
+            TeleporterNTF.teleport((EntityPlayerMP) player, getDimension() == 0 ? -1 : 0, getMasterPos().add(1, 0, 0), false);
 
             this.isReadyToTeleport = false;
             sendReadyToTeleport();

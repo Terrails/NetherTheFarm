@@ -259,6 +259,11 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
         return world.provider.getDimension();
     }
 
+    @Override
+    public boolean isNether() {
+        return false;
+    }
+
     /* == End == */
 
 

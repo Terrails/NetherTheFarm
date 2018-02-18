@@ -5,6 +5,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import terrails.netherutils.api.world.IWorldData;
+import terrails.netherutils.blocks.portal.PortalRegistry;
 import terrails.netherutils.init.ModFeatures;
 import terrails.netherutils.proxies.IProxy;
 import terrails.netherutils.world.data.CustomWorldData;

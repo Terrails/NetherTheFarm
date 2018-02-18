@@ -42,9 +42,8 @@ public class TeleporterNTF extends Teleporter {
 
         if (player.dimension != dimension) {
             // Compatibility with EntityTravelToDimensionEvent
-            EntityTravelToDimensionEvent event = new EntityTravelToDimensionEvent(player, dimension);
-            MinecraftForge.EVENT_BUS.post(event);
-            if (!event.isCanceled()) {
+            boolean isCanceled = MinecraftForge.EVENT_BUS.post(new EntityTravelToDimensionEvent(player, dimension));
+            if (!isCanceled) {
                 playerList.transferPlayerToDimension(player, dimension, new TeleporterNTF(world, pos));
                 player.setPositionAndUpdate(x + .5, y, z + 0.5);
             }
@@ -76,7 +75,7 @@ public class TeleporterNTF extends Teleporter {
         BlockPos netherTop = world.getTopSolidOrLiquidBlock(player.getPosition());
         for (int y = netherTop.getY(); y > 25; y--) {
             BlockPos blockPos = new BlockPos(netherTop.getX(), y, netherTop.getZ());
-            if (world.getBlockState(blockPos).equals(Blocks.LAVA.getDefaultState()) /*&& BlockHelper.check(1, 0, blockPos, world, Blocks.LAVA.getDefaultState(), false, false)*/) {
+            if (world.getBlockState(blockPos).equals(Blocks.LAVA.getDefaultState())) {
                 BlockHelper.fill(2, blockPos, world, Blocks.NETHER_BRICK.getDefaultState(), false, true);
 
                 BlockHelper.fill(2, blockPos.up(), world, Blocks.AIR.getDefaultState(), false, true);

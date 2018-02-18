@@ -35,7 +35,7 @@ public class CustomWorldData extends WorldSavedData implements IWorldData {
             Constants.Log.getLogger().info("Successfully loaded portal data from world!");
         }
         setEndSpawn(new BlockPos(compound.getInteger("EndPosX"), compound.getInteger("EndPosY"), compound.getInteger("EndPosZ")));
-        hasRead(true);
+        hasRead(compound.getBoolean("DataRead"));
     }
 
     @Override

@@ -51,58 +51,6 @@ public class BlockPortalSlave extends BlockBase {
     }
 
     @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        TileEntity tileEntity = worldIn.getTileEntity(pos);
-        if (tileEntity != null && tileEntity instanceof TileEntityPortalSlave) {
-            TileEntityPortalSlave te = (TileEntityPortalSlave) tileEntity;
-
-            if (stack.hasTagCompound()) {
-                NBTTagCompound compound = stack.getTagCompound();
-                if (compound != null) {
-                    
-                    if (compound.getInteger("yMaster") != 0)
-                        te.setMasterPos(new BlockPos(compound.getInteger("xMaster"), compound.getInteger("yMaster"), compound.getInteger("zMaster")));
-                }
-            }
-        }
-    }
-
-    @Override
-    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-        TileEntity tile = world.getTileEntity(pos);
-        if (tile != null && tile instanceof TileEntityPortalSlave) {
-            TileEntityPortalSlave te = (TileEntityPortalSlave) tile;
-
-            ItemStack stack = new ItemStack(state.getBlock());
-            if (!te.getMasterPos().equals(BlockPos.ORIGIN)) {
-                if (!stack.hasTagCompound()) {
-                    stack.setTagCompound(new NBTTagCompound());
-                }
-            }
-
-            NBTTagCompound compound = stack.getTagCompound();
-            assert compound != null;
-
-            if (!te.getMasterPos().equals(BlockPos.ORIGIN)) {
-                compound.setInteger("xMaster", te.getMasterPos().getX());
-                compound.setInteger("yMaster", te.getMasterPos().getY());
-                compound.setInteger("zMaster", te.getMasterPos().getZ());
-            }
-            drops.add(stack);
-        }
-    }
-
-    @Override
-    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
-        return willHarvest || super.removedByPlayer(state, world, pos, player, false);
-    }
-    @Override
-    public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, @Nullable TileEntity te, ItemStack tool) {
-        super.harvestBlock(world, player, pos, state, te, tool);
-        world.setBlockToAir(pos);
-    }
-
-    @Override
     public void onBlockExploded(World world, BlockPos pos, Explosion explosion) {}
 
     @Override

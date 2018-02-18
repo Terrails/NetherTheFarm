@@ -37,6 +37,13 @@ public class BlockSoulSoil extends BlockBase {
     }
 
     @Override
+    public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn) {
+        entityIn.motionX *= 0.4D;
+        entityIn.motionZ *= 0.4D;
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
         return FARMLAND_AABB;
     }
@@ -111,6 +118,7 @@ public class BlockSoulSoil extends BlockBase {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
         super.neighborChanged(state, worldIn, pos, blockIn, fromPos);
 
@@ -134,6 +142,7 @@ public class BlockSoulSoil extends BlockBase {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public IBlockState getStateFromMeta(int meta) {
         return this.getDefaultState().withProperty(MOISTURE, (meta & 7));
     }
@@ -149,8 +158,8 @@ public class BlockSoulSoil extends BlockBase {
     }
 
     @Override
-    public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face)
-    {
+    @SuppressWarnings("deprecation")
+    public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face) {
         return face == EnumFacing.DOWN ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
     }
 }

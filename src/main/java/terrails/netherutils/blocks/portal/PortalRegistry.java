@@ -91,6 +91,7 @@ public class PortalRegistry {
             nbtTag.setInteger("yPos", master.getBlockPos().getY());
             nbtTag.setInteger("zPos", master.getBlockPos().getZ());
             nbtTag.setInteger("Dimension", master.getDimension());
+            nbtTag.setBoolean("isNether", master.isNether());
             boolean shouldAdd = true;
             int index1 = 0;
             for (IPortalMaster master1 : LIST) {
@@ -119,6 +120,7 @@ public class PortalRegistry {
             NBTTagCompound nbtTag = tagList.getCompoundTagAt(i);
             boolean isActive = nbtTag.getBoolean("isActive");
             int dimension = nbtTag.getInteger("Dimension");
+            boolean isNether = nbtTag.getBoolean("isNether");
 
             BlockPos slavePos = BlockPos.ORIGIN;
             if (nbtTag.getInteger("ySlave") != 0) {
@@ -131,7 +133,7 @@ public class PortalRegistry {
             }
 
             if (blockPos != BlockPos.ORIGIN)
-                list.add(new PortalMaster(slavePos, blockPos, isActive, dimension));
+                list.add(new PortalMaster(slavePos, blockPos, isActive, dimension, isNether));
         }
         return list;
     }
@@ -224,12 +226,14 @@ public class PortalRegistry {
         BlockPos blockPos;
         boolean isActive;
         int dimension;
+        boolean isNether;
 
-        private PortalMaster(BlockPos slavePos, BlockPos blockPos, boolean isActive, int dimension) {
+        private PortalMaster(BlockPos slavePos, BlockPos blockPos, boolean isActive, int dimension, boolean isNether) {
             this.slavePos = slavePos;
             this.blockPos = blockPos;
             this.isActive = isActive;
             this.dimension = dimension;
+            this.isNether = isNether;
         }
 
         @Override
@@ -260,6 +264,11 @@ public class PortalRegistry {
         @Override
         public int getDimension() {
             return this.dimension;
+        }
+
+        @Override
+        public boolean isNether() {
+            return this.isNether;
         }
     }
 }

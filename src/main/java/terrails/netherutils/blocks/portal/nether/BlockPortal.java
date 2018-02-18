@@ -61,8 +61,10 @@ public class BlockPortal extends BlockTileEntity<TileEntityPortalMaster> {
             return;
         }
 
-        if (!world.provider.getDimensionType().getName().equalsIgnoreCase(DimensionType.NETHER.getName()) && placer instanceof EntityPlayer) {
-            Constants.Log.playerMessage((EntityPlayer) placer, "Portal only works in the nether!");
+        String dimensionName = world.provider.getDimensionType().getName();
+
+        if ((!dimensionName.equalsIgnoreCase(DimensionType.NETHER.getName()) && !dimensionName.equalsIgnoreCase(DimensionType.OVERWORLD.getName())) && placer instanceof EntityPlayer) {
+            Constants.Log.playerMessage((EntityPlayer) placer, "Portal only works in the nether and overworld!");
         }
 
         TileEntityPortalMaster te = getTileEntity(world, pos);

@@ -127,7 +127,7 @@ public class GuiPortal extends GuiContainer {
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        if (button.id == START && !tile.isActive() && tile.hasFuel() && tile.hasRequiredBlocks() && mc.world.provider.getDimensionType().getName().equalsIgnoreCase(DimensionType.NETHER.getName())) {
+        if (button.id == START && !tile.isActive() && tile.hasFuel() && tile.hasRequiredBlocks() && (mc.world.provider.getDimensionType().getName().equalsIgnoreCase(DimensionType.NETHER.getName()) || mc.world.provider.getDimensionType().getName().equalsIgnoreCase(DimensionType.OVERWORLD.getName()))) {
             this.tile.isActivating = true;
             this.tile.sendActivation();
         } else if (button.id == STOP && (tile.isActive() || tile.isActivating)) {
