@@ -73,6 +73,7 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
     public Counter counterActivation = new Counter();
     public Counter counterCircle = new Counter();
     public Counter counterTeleport = new Counter();
+    public Counter counterRotation = new Counter();
     public boolean isAtPosTopMiddleCircle;
     public boolean isAtPosSideCircles;
 
@@ -114,8 +115,10 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
 
     @Override
     public void update() {
-        if (getWorld().isRemote)
+        if (getWorld().isRemote) {
+            updateRendering();
             return;
+        }
 
         if (isActive()) {
             if (counterFuel.value() >= (ConfigHandler.netherPortalFuelUsage * 20)) {
@@ -276,6 +279,54 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
         return new AxisAlignedBB(getPos().add(-5, -5, -5), getPos().add(5, 5, 5));
+    }
+    private void updateRendering() {
+        boolean isPlayerInRange = getWorld().isAnyPlayerWithinRangeAt(this.getPos().getX() + 0.5, this.getPos().getY() + 0.75, this.getPos().getZ() + 0.5, 0.5);
+        if (this.isActivating) {
+            if (!this.isActivationDone) {
+                this.counterActivation.increment(1);
+
+                if (this.counterActivation.value() >= 200) {
+                    this.isActivationDone = true;
+                    this.sendActivationDone();
+                    this.counterActivation.clear();
+                }
+            }
+        } else if (this.isActive()) {
+            if (isPlayerInRange) {
+                this.counterCircle.increment(1);
+                this.counterTeleport.increment(1);
+
+                if (this.counterCircle.value() >= 300) {
+                    this.counterCircle.clear();
+                }
+
+                if (this.counterTeleport.value() >= 100) {
+                    if (this.isAtPosTopMiddleCircle) {
+                        this.isReadyToTeleport = true;
+                        this.sendReadyToTeleport();
+                    }
+                    this.isAtPosTopMiddleCircle = true;
+                    this.counterTeleport.clear();
+                }
+            } else {
+                this.counterCircle.clear();
+                this.counterTeleport.clear();
+                this.counterActivation.clear();
+                this.isAtPosSideCircles = false;
+                this.isAtPosTopMiddleCircle = false;
+            }
+        } else if (!this.isActive()) {
+            this.counterActivation.clear();
+            this.counterCircle.clear();
+            this.counterTeleport.clear();
+            this.isAtPosTopMiddleCircle = false;
+            this.isAtPosSideCircles = false;
+        }
+
+        if (this.counterRotation.value() >= 360) {
+            this.counterRotation.clear();
+        } else this.counterRotation.increment();
     }
 
     private World getSlaveWorld() {

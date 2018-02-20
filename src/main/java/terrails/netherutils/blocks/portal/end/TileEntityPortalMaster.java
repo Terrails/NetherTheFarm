@@ -27,6 +27,7 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import terrails.netherutils.NetherUtils;
 import terrails.netherutils.api.capabilities.IPortal;
 import terrails.netherutils.api.portal.IPortalMaster;
 import terrails.netherutils.api.world.IWorldData;
@@ -56,7 +57,7 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
     private FluidTank tank;
 
     private boolean status;
- //   private BlockPos slavePos = BlockPos.ORIGIN;
+    //   private BlockPos slavePos = BlockPos.ORIGIN;
 
     private int oldFuel;
     public boolean isActivating;
@@ -70,8 +71,10 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
     public Counter counterActivation = new Counter();
     public Counter counterCircle = new Counter();
     public Counter counterTeleport = new Counter();
+    public Counter counterRotation = new Counter();
     public boolean isAtPosTopMiddleCircle;
     public boolean isAtPosSideCircles;
+
 
     public boolean isActivationDone;
     public boolean isReadyToTeleport;
@@ -179,9 +182,8 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
 
             }
             updateFluidItem();
-        }
+        } else updateRendering();
     }
-
 
     // == Packets == \\
 
@@ -272,6 +274,54 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
         return new AxisAlignedBB(getPos().add(-5, -5, -5), getPos().add(5, 5, 5));
+    }
+    private void updateRendering() {
+        boolean isPlayerInRange = getWorld().isAnyPlayerWithinRangeAt(this.getPos().getX() + 0.5, this.getPos().getY() + 0.75, this.getPos().getZ() + 0.5, 0.5);
+        if (this.isActivating) {
+            if (!this.isActivationDone) {
+                this.counterActivation.increment(1);
+
+                if (this.counterActivation.value() >= 200) {
+                    this.isActivationDone = true;
+                    this.sendActivationDone();
+                    this.counterActivation.clear();
+                }
+            }
+        } else if (this.isActive()) {
+            if (isPlayerInRange) {
+                this.counterCircle.increment(1);
+                this.counterTeleport.increment(1);
+
+                if (this.counterCircle.value() >= 300) {
+                    this.counterCircle.clear();
+                }
+
+                if (this.counterTeleport.value() >= 100) {
+                    if (this.isAtPosTopMiddleCircle) {
+                        this.isReadyToTeleport = true;
+                        this.sendReadyToTeleport();
+                    }
+                    this.isAtPosTopMiddleCircle = true;
+                    this.counterTeleport.clear();
+                }
+            } else {
+                this.counterCircle.clear();
+                this.counterTeleport.clear();
+                this.counterActivation.clear();
+                this.isAtPosSideCircles = false;
+                this.isAtPosTopMiddleCircle = false;
+            }
+        } else if (!this.isActive()) {
+            this.counterActivation.clear();
+            this.counterCircle.clear();
+            this.counterTeleport.clear();
+            this.isAtPosTopMiddleCircle = false;
+            this.isAtPosSideCircles = false;
+        }
+
+        if (this.counterRotation.value() >= 360) {
+            this.counterRotation.clear();
+        } else this.counterRotation.increment();
     }
 
     private void updateFluidItem() {
@@ -365,7 +415,6 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
         IWorldData worldData = CustomWorldData.get(end);
         if (end.provider.getDimension() != 1)
             return;
-        //  World end = DimensionManager.getWorld(1); // End
         TileEntity tileEntity = end.getTileEntity(worldData.getEndSpawn());
         if (!(tileEntity instanceof TileEntityPortalSlave) || worldData.getEndSpawn().equals(BlockPos.ORIGIN)) {
 

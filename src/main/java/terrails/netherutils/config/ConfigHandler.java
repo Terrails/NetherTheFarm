@@ -102,7 +102,7 @@ public class ConfigHandler {
         netherPortalFuel = config.get(FEATURES_NETHER_PORTAL, "Fuel","water", "Liquid which is required for the portal to run").getString();
         netherPortalCapacity = config.get(FEATURES_NETHER_PORTAL, "Capacity", 5000, "Capacity of the portal in mB").getInt();
         netherPortalFuelUsage = config.get(FEATURES_NETHER_PORTAL, "Usage", 10, "The time after which the portal will use 1 mB of fuel (seconds)").getInt();
-        netherPortalActivationFuelUsage = config.get(FEATURES_NETHER_PORTAL, "Activation Usage", 15, "The amount of fuel the portal will use each tick when activating (1 second = 20 ticks)").getInt();
+        netherPortalActivationFuelUsage = config.get(FEATURES_NETHER_PORTAL, "Activation Usage", 15, "The amount of fuel the portal will use each tick when activating (1 second = 20 ticks, portal activation lasts 10 seconds)").getInt();
         netherPortalKeepFluid = config.get(FEATURES_NETHER_PORTAL, "Keep Fluid", true, "Keep the fluid when portal is broken and put it in the block when placed again").getBoolean();
         netherPortalKeepInventory = config.get(FEATURES_NETHER_PORTAL, "Keep Inventory", true, "Keep the inventory when portal is broken and put it in the block when placed again").getBoolean();
         netherPortalPedestalItem = config.get(FEATURES_NETHER_PORTAL, "Pedestal Item", "minecraft:water_bucket", "The item which needs to be on four pedestals around the portal").getString();
@@ -111,7 +111,7 @@ public class ConfigHandler {
         endPortalFuel = config.get(FEATURES_END_PORTAL, "Fuel","water", "Liquid which is required for the portal to run").getString();
         endPortalCapacity = config.get(FEATURES_END_PORTAL, "Capacity", 5000, "Capacity of the portal in mB").getInt();
         endPortalFuelUsage = config.get(FEATURES_END_PORTAL, "Usage", 10, "The time after which the portal will use 1 mB of fuel (seconds)").getInt();
-        endPortalActivationFuelUsage = config.get(FEATURES_END_PORTAL, "Activation Usage", 15, "The amount of fuel the portal will use each tick when activating (1 second = 20 ticks)").getInt();
+        endPortalActivationFuelUsage = config.get(FEATURES_END_PORTAL, "Activation Usage", 15, "The amount of fuel the portal will use each tick when activating (1 second = 20 ticks, portal activation lasts 10 seconds)").getInt();
         endPortalKeepFluid = config.get(FEATURES_END_PORTAL, "Keep Fluid", true, "Keep the fluid when portal is broken and put it in the block when placed again").getBoolean();
         endPortalKeepInventory = config.get(FEATURES_END_PORTAL, "Keep Inventory", true, "Keep the inventory when portal is broken and put it in the block when placed again").getBoolean();
         endPortalPedestalItem = config.get(FEATURES_END_PORTAL, "Pedestal Item", "minecraft:water_bucket", "The item which needs to be on four pedestals around the portal").getString();

@@ -27,6 +27,7 @@ public class TileEntityPortalSlave extends TileEntityBase implements ITickable, 
     //-----------TESR Counters and Booleans-------------\\
     public Counter counterCircle = new Counter();
     public Counter counterTeleport = new Counter();
+    public Counter counterRotation = new Counter();
     public boolean isAtPosTopMiddleCircle;
     public boolean isAtPosSideCircles;
 
@@ -35,8 +36,10 @@ public class TileEntityPortalSlave extends TileEntityBase implements ITickable, 
 
     @Override
     public void update() {
-        if (getWorld().isRemote)
+        if (getWorld().isRemote) {
+            updateRendering();
             return;
+        }
 
         boolean hasMaster = false;
 
@@ -124,6 +127,42 @@ public class TileEntityPortalSlave extends TileEntityBase implements ITickable, 
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
         return new AxisAlignedBB(getPos().add(-5, -5, -5), getPos().add(5, 5, 5));
+    }
+    private void updateRendering() {
+        boolean isPlayerInRange = getWorld().isAnyPlayerWithinRangeAt(this.getPos().getX() + 0.5, this.getPos().getY() + 0.75, this.getPos().getZ() + 0.5, 0.5);
+        if (this.isActive()) {
+            if (isPlayerInRange) {
+                this.counterCircle.increment(1);
+                this.counterTeleport.increment(1);
+
+                if (this.counterCircle.value() >= 300) {
+                    this.counterCircle.clear();
+                }
+
+                if (this.counterTeleport.value() >= 100) {
+                    if (this.isAtPosTopMiddleCircle) {
+                        this.isReadyToTeleport = true;
+                        this.sendReadyToTeleport();
+                    }
+                    this.isAtPosTopMiddleCircle = true;
+                    this.counterTeleport.clear();
+                }
+            } else {
+                this.counterCircle.clear();
+                this.counterTeleport.clear();
+                this.isAtPosSideCircles = false;
+                this.isAtPosTopMiddleCircle = false;
+            }
+        } else if (!this.isActive()) {
+            this.counterCircle.clear();
+            this.counterTeleport.clear();
+            this.isAtPosTopMiddleCircle = false;
+            this.isAtPosSideCircles = false;
+        }
+
+        if (this.counterRotation.value() >= 360) {
+            this.counterRotation.clear();
+        } else this.counterRotation.increment();
     }
 
     private void doTeleportation() {

@@ -1,6 +1,7 @@
 package terrails.netherutils.proxies;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -13,4 +14,5 @@ public interface IProxy {
     void postInit(FMLPostInitializationEvent event);
 
     EntityPlayer getPlayer();
+    boolean isGamePaused();
 }

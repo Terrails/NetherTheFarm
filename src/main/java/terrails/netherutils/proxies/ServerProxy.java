@@ -1,6 +1,7 @@
 package terrails.netherutils.proxies;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -27,5 +28,10 @@ public class ServerProxy implements IProxy {
     @Override
     public EntityPlayer getPlayer() {
         return null;
+    }
+
+    @Override
+    public boolean isGamePaused() {
+        return false;
     }
 }
