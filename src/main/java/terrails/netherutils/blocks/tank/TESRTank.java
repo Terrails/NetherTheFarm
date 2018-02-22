@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -19,35 +20,40 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class TESRTank extends TileEntitySpecialRenderer<TileEntityTank> {
 
-    public static TESRTank instance;
-
-    @Override
-    public void setRendererDispatcher(TileEntityRendererDispatcher rendererDispatcherIn) {
-        super.setRendererDispatcher(rendererDispatcherIn);
-        instance = this;
-    }
-
     @Override
     public void render(TileEntityTank te, double x, double y, double z, float partialTicks, int breakProgress, float alpha) {
         if (te.getTank().getFluid() != null) {
-            renderFluidCuboid(te.getTank().getFluid(), te.getPos(), x, y, z, 0.06, 0.06, 0.06, 1 - 0.04, 1 - 0.04, 1 - 0.04);
+            double i = 0.06 + ((1 - 0.04) - 0.06) * (te.getTank().getFluidAmount() / (4D * Fluid.BUCKET_VOLUME));
+            renderFluidCuboid(te.getTank().getFluid(), te.getPos(), x, y, z, 0.06, 0.06, 0.06, 1 - 0.04, i, 1 - 0.04);
         }
     }
 
-
-    private static Minecraft mc = Minecraft.getMinecraft();
     private static void renderFluidCuboid(FluidStack fluid, BlockPos pos, double x, double y, double z, double x1, double y1, double z1, double x2, double y2, double z2) {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder renderer = tessellator.getBuffer();
+        Minecraft mc = Minecraft.getMinecraft();
         renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
         mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         int color = fluid.getFluid().getColor(fluid);
         int brightness = Minecraft.getMinecraft().world.getCombinedLight(pos, fluid.getFluid().getLuminosity());
 
-        pre(x, y, z);
+        GlStateManager.pushMatrix();
+
+        GlStateManager.disableLighting();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+        if (Minecraft.isAmbientOcclusionEnabled()) {
+            GL11.glShadeModel(GL11.GL_SMOOTH);
+        } else {
+            GL11.glShadeModel(GL11.GL_FLAT);
+        }
+
+        GlStateManager.translate(x, y, z);
 
         TextureAtlasSprite still = mc.getTextureMapBlocks().getTextureExtry(fluid.getFluid().getStill(fluid).toString());
         TextureAtlasSprite flowing = mc.getTextureMapBlocks().getTextureExtry(fluid.getFluid().getFlowing(fluid).toString());
+
 
         // x/y/z2 - x/y/z1 is because we need the width/height/depth
         putTexturedQuad(renderer, still, x1, y1, z1, x2 - x1, y2 - y1, z2 - z1, EnumFacing.DOWN, color, brightness, false);
@@ -59,7 +65,9 @@ public class TESRTank extends TileEntitySpecialRenderer<TileEntityTank> {
 
         tessellator.draw();
 
-        post();
+        GlStateManager.disableBlend();
+        GlStateManager.enableLighting();
+        GlStateManager.popMatrix();
     }
     private static void putTexturedQuad(BufferBuilder renderer, TextureAtlasSprite sprite, double x, double y, double z, double w, double h, double d, EnumFacing face, int color, int brightness, boolean flowing) {
         int l1 = brightness >> 0x10 & 0xFFFF;
@@ -176,26 +184,6 @@ public class TESRTank extends TileEntitySpecialRenderer<TileEntityTank> {
                 renderer.pos(x2, y1, z2).color(r, g, b, a).tex(maxU, maxV).lightmap(light1, light2).endVertex();
                 break;
         }
-    }
-    private static void pre(double x, double y, double z) {
-        GlStateManager.pushMatrix();
-
-        GlStateManager.disableLighting();
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-        if (Minecraft.isAmbientOcclusionEnabled()) {
-            GL11.glShadeModel(GL11.GL_SMOOTH);
-        } else {
-            GL11.glShadeModel(GL11.GL_FLAT);
-        }
-
-        GlStateManager.translate(x, y, z);
-    }
-    private static void post() {
-        GlStateManager.disableBlend();
-        GlStateManager.enableLighting();
-        GlStateManager.popMatrix();
     }
 }
 

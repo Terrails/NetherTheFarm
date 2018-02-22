@@ -3,10 +3,13 @@ package terrails.netherutils.blocks.portal.nether;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DimensionType;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.gen.ChunkProviderServer;
 import terrails.netherutils.api.portal.IPortalMaster;
 import terrails.netherutils.api.portal.IPortalSlave;
 import terrails.netherutils.blocks.portal.PortalRegistry;
@@ -22,6 +25,7 @@ public class TileEntityPortalSlave extends TileEntityBase implements ITickable, 
     
     private boolean oldActive;
     private boolean status;
+    private int masterDim = Integer.MIN_VALUE;
     private BlockPos masterPos = BlockPos.ORIGIN;
 
     //-----------TESR Counters and Booleans-------------\\
@@ -119,6 +123,16 @@ public class TileEntityPortalSlave extends TileEntityBase implements ITickable, 
         return true;
     }
 
+    @Override
+    public void setMasterDimension(int dim) {
+        this.masterDim = dim;
+    }
+
+    @Override
+    public int getMasterDimension() {
+        return this.masterDim;
+    }
+
     // == End == \\
 
 
@@ -176,7 +190,14 @@ public class TileEntityPortalSlave extends TileEntityBase implements ITickable, 
         EntityPlayer player = getWorld().getClosestPlayer(getPos().getX() + 0.5, getPos().getY() + 0.75, getPos().getZ() + 0.5, 0.5, false);
         if (player instanceof EntityPlayerMP && isReadyToTeleport) {
 
-            TeleporterNTF.teleport((EntityPlayerMP) player, getDimension() == 0 ? -1 : 0, getMasterPos().add(1, 0, 0), false);
+            if (getMasterDimension() == getDimension()) {
+                for (IPortalMaster master : PortalRegistry.LIST) {
+                    if (master.isNether() && master.getSlavePos().equals(getPos()) && master.getDimension() != getDimension()) {
+                        setMasterDimension(master.getDimension());
+                    }
+                }
+            }
+            TeleporterNTF.teleport((EntityPlayerMP) player, getMasterDimension() != Integer.MIN_VALUE ? getMasterDimension() : getDimension() == 0 ? -1 : 0, getMasterPos().add(1, 0, 0), false);
 
             this.isReadyToTeleport = false;
             sendReadyToTeleport();
@@ -196,12 +217,14 @@ public class TileEntityPortalSlave extends TileEntityBase implements ITickable, 
     @Override
     public void readFromNBT(NBTTagCompound compound) {
         isActive(compound.getBoolean("Active"));
+        setMasterDimension(compound.getInteger("masterDim"));
         setMasterPos(new BlockPos(compound.getInteger("xMaster"), compound.getInteger("yMaster"), compound.getInteger("zMaster")));
         super.readFromNBT(compound);
     }
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         compound.setBoolean("Active", isActive());
+        compound.setInteger("masterDim", getMasterDimension());
         compound.setInteger("xMaster", getMasterPos().getX());
         compound.setInteger("yMaster", getMasterPos().getY());
         compound.setInteger("zMaster", getMasterPos().getZ());

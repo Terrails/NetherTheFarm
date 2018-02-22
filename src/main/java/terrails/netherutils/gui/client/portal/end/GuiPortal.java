@@ -66,19 +66,6 @@ public class GuiPortal extends GuiContainer {
             int i = this.tile.getFuelAmount() * 52 / this.tile.getFuelCapacity();
             drawTexturedModalRect(xPos + 7, yPos + 69 - i, sprite, 16, 16 - (16 - i));
         }
-
-        /*
-        mc.getTextureManager().bindTexture(GUI_TEXTURE);
-        float worldTimeCounter = (float) mc.world.getWorldTime() % 100;
-        if (worldTimeCounter <= 50) {
-            GlStateManager.color(10.0f, (255.0f + (worldTimeCounter -= 33.21f) * 3.0f + 50) / 255, (worldTimeCounter * 3.0f) / 255);
-        } else {
-            GlStateManager.color(3.0f, (255.0f + (worldTimeCounter -= 33.21f) * 3.0f) / 255, (worldTimeCounter * 3.0f) / 255);
-        }
-        mc.getTextureManager().bindTexture(GUI_TEXTURE);
-        int i = this.tile.getFuelAmount() * 53 / this.tile.getMaxFuel();
-        this.drawTexturedModalRect(xPos + 6, yPos + 69 - i, 177, 0, 17, i);
-        */
     }
 
     @Override

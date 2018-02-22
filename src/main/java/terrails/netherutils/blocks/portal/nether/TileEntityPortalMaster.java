@@ -136,6 +136,7 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
                     IPortalSlave slave = (IPortalSlave) overworld.getTileEntity(getSlavePos());
                     if (slave != null) {
                         slave.setMasterPos(getPos());
+                        slave.setMasterDimension(getDimension());
                     }
                 }
             }
@@ -403,7 +404,8 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
                     generatePortal();
                 }
 
-                TeleporterNTF.teleport((EntityPlayerMP) player, getDimension() == -1 ? 0 : -1, getSlavePos().add(1, 0, 0), false);
+                String dimName = getWorld().provider.getDimensionType().getName();
+                TeleporterNTF.teleport((EntityPlayerMP) player, dimName.equalsIgnoreCase(DimensionType.NETHER.getName()) ? 0 : -1, getSlavePos().add(1, 0, 0), false);
 
                 this.isReadyToTeleport = false;
                 ModFeatures.Network.WRAPPER.sendToDimension(new CPacketBoolean(isReadyToTeleport, getPos(), 4), getWorld().provider.getDimension());
@@ -479,6 +481,7 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
             if (te != null && te instanceof TileEntityPortalSlave) {
                 ((TileEntityPortalSlave) te).setMasterPos(getPos());
                 ((TileEntityPortalSlave) te).isActive(true);
+                ((TileEntityPortalSlave) te).setMasterDimension(getDimension());
                 setSlavePos(pos.up());
             }
             int index = 0;

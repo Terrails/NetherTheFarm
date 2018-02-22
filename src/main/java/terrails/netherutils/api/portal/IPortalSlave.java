@@ -7,6 +7,9 @@ public interface IPortalSlave {
     void setMasterPos(BlockPos pos);
     BlockPos getMasterPos();
 
+    void setMasterDimension(int dimension);
+    int getMasterDimension();
+
     BlockPos getBlockPos();
     int getDimension();
 

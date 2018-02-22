@@ -13,7 +13,7 @@ public class Constants {
 
     public static final String MOD_ID = "netherutils";
     public static final String NAME = "NetherUtils";
-    public static final String VERSION = "1.3.15";
+    public static final String VERSION = "1.3.17";
 
     public static final String MINECRAFT_VERSION = "1.12.2";
     public static final String TERRACORE_VERSION = "2.1.6";

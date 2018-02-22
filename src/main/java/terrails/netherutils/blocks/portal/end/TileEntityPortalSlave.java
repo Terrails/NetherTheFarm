@@ -123,6 +123,16 @@ public class TileEntityPortalSlave extends TileEntityBase implements ITickable, 
     }
 
     @Override
+    public void setMasterDimension(int dim) {
+
+    }
+
+    @Override
+    public int getMasterDimension() {
+        return 1;
+    }
+
+    @Override
     public boolean isNether() {
         return false;
     }
@@ -185,7 +195,7 @@ public class TileEntityPortalSlave extends TileEntityBase implements ITickable, 
             if (portalItem != null) {
                 BlockPos pos = BlockPos.ORIGIN;
                 for (IPortalMaster master : PortalRegistry.LIST) {
-                    if (master.getDimension() == 0) {
+                    if (master.getDimension() == 0 && !master.isNether()) {
                         if (master.getBlockPos().equals(portalItem.lastMasterPos())) {
                             pos = master.getBlockPos();
                             break;

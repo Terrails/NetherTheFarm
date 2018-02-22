@@ -225,15 +225,15 @@ public class PortalRegistry {
         BlockPos slavePos;
         BlockPos blockPos;
         boolean isActive;
-        int dimension;
         boolean isNether;
+        int dimension;
 
         private PortalMaster(BlockPos slavePos, BlockPos blockPos, boolean isActive, int dimension, boolean isNether) {
             this.slavePos = slavePos;
             this.blockPos = blockPos;
             this.isActive = isActive;
-            this.dimension = dimension;
             this.isNether = isNether;
+            this.dimension = dimension;
         }
 
         @Override
