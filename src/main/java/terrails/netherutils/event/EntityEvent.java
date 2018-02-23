@@ -3,15 +3,18 @@ package terrails.netherutils.event;
 import com.google.common.base.CharMatcher;
 import com.google.common.collect.Lists;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.command.ServerCommandManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.DimensionType;
 import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -96,7 +99,7 @@ public class EntityEvent {
 
         EntityPlayerMP player = (EntityPlayerMP) event.getEntity();
         boolean cancel = false;
-
+        boolean isAdvancement = false;
         if (ConfigHandler.pointRespawn) {
 
             if (!ConfigHandler.vanillaPortal) {
@@ -106,16 +109,23 @@ public class EntityEvent {
                 }
             }
 
-            if (event.getEntity().dimension == -1 && player.getServer() != null && !ConfigHandler.itemToLeaveNether.isEmpty() && !cancel) {
+            String dimName = event.getEntity().getEntityWorld().provider.getDimensionType().getName();
+            if (dimName.equalsIgnoreCase(DimensionType.NETHER.getName()) && player.getServer() != null && !ConfigHandler.itemToLeaveNether.isEmpty() && !cancel) {
                 Advancement advancement = player.getServer().getAdvancementManager().getAdvancement(new ResourceLocation(Constants.MOD_ID, "portal_item"));
                 if (advancement != null && !player.getAdvancements().getProgress(advancement).isDone()) {
                     cancel = true;
+                    isAdvancement = true;
                 }
+            }
+
+            if (dimName.equalsIgnoreCase(DimensionType.NETHER.getName()) && cancel && player.getServer() != null && player.canUseCommand(2, "")) {
+                cancel = false;
             }
         }
 
         if (cancel) {
-            player.sendMessage(new TextComponentString("You're not allowed to do this!"));
+            String message = isAdvancement ? "You can't leave the nether without the required item!" : "You're not allowed to do this!";
+            player.sendMessage(new TextComponentString(message));
             event.setCanceled(true);
         }
     }
