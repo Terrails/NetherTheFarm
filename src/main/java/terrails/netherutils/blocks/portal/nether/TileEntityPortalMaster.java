@@ -434,7 +434,7 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
         if (slaveWorld != null && !(slaveWorld.getTileEntity(getSlavePos()) instanceof TileEntityPortalSlave)) {
 
             Random random = new Random();
-            BlockPos pos = getPos().add(random.nextInt(201), 0, random.nextInt(201));
+            BlockPos pos = new BlockPos((getPos().getX() * 8) + random.nextInt(201), getPos().getY(), (getPos().getZ() * 8) + random.nextInt(201));
 
             if (getDimension() == -1) {
                 for (int i = slaveWorld.getHeight(); i > 0; i--) {
