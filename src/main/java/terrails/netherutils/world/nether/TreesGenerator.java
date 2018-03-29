@@ -1,9 +1,8 @@
 package terrails.netherutils.world.nether;
 
-import biomesoplenty.api.block.BOPBlocks;
-import biomesoplenty.common.block.BlockBOPGrass;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -12,11 +11,13 @@ import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import terrails.netherutils.config.ConfigHandler;
 import terrails.netherutils.world.nether.trees.WorldGeneratorHellwood;
 import terrails.netherutils.world.nether.trees.WorldGeneratorAshwood;
 import terrails.netherutils.world.nether.trees.WorldGeneratorSoulwood;
 
+import java.util.Objects;
 import java.util.Random;
 
 public class TreesGenerator implements IWorldGenerator {
@@ -27,12 +28,13 @@ public class TreesGenerator implements IWorldGenerator {
 
     public static IBlockState[] blockStates;
 
+    @SuppressWarnings("deprecation")
     public TreesGenerator() {
         if (Loader.isModLoaded("biomesoplenty")) {
             blockStates = new IBlockState[]{
                     Blocks.NETHERRACK.getDefaultState(),
-                    BOPBlocks.grass.getDefaultState().withProperty(BlockBOPGrass.VARIANT, BlockBOPGrass.BOPGrassType.MYCELIAL_NETHERRACK),
-                    BOPBlocks.grass.getDefaultState().withProperty(BlockBOPGrass.VARIANT, BlockBOPGrass.BOPGrassType.OVERGROWN_NETHERRACK)};
+                    Objects.requireNonNull(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("biomesoplenty", "grass"))).getStateFromMeta(6),
+                    Objects.requireNonNull(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("biomesoplenty", "grass"))).getStateFromMeta(8)};
             HELL_WOOD = new WorldGeneratorHellwood(false, blockStates);
             ASH_WOOD = new WorldGeneratorAshwood(false, blockStates);
             SOUL_WOOD = new WorldGeneratorSoulwood(false, blockStates);
@@ -48,7 +50,7 @@ public class TreesGenerator implements IWorldGenerator {
         this.generateTree(random, chunkX, chunkZ, world);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "ConstantConditions"})
     private void generateTree(Random random, int chunkX, int chunkZ, World world) {
         int xSpawn, ySpawn, zSpawn;
 

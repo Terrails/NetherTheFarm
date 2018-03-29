@@ -31,6 +31,7 @@ public class WorldGeneratorHellwood extends WorldGenAbstractTree {
         this.growBlock = replace;
     }
 
+    @SuppressWarnings("unchecked")
     public boolean generate(World worldIn, Random rand, BlockPos position) {
         int i = rand.nextInt(3) + 4;
         boolean flag = true;
@@ -121,6 +122,7 @@ public class WorldGeneratorHellwood extends WorldGenAbstractTree {
         return false;
     }
 
+    @SuppressWarnings("unchecked")
     public boolean isReplaceable(World world, BlockPos pos) {
         IBlockState state = world.getBlockState(pos);
         boolean isReplacable = false;
