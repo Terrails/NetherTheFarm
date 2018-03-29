@@ -13,10 +13,10 @@ public class Constants {
 
     public static final String MOD_ID = "netherutils";
     public static final String NAME = "NetherUtils";
-    public static final String VERSION = "1.3.18";
+    public static final String VERSION = "1.3.19";
 
     public static final String MINECRAFT_VERSION = "1.12.2";
-    public static final String TERRACORE_VERSION = "2.1.6";
+    public static final String TERRACORE_VERSION = "2.1.9";
 
     public static final String CLIENT_PROXY = "terrails.netherutils.proxies.ClientProxy";
     public static final String SERVER_PROXY = "terrails.netherutils.proxies.ServerProxy";
