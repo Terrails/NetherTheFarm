@@ -5,7 +5,6 @@ import net.minecraft.item.Item;
 import terrails.netherutils.config.ConfigHandler;
 import terrails.netherutils.items.ItemDebugTool;
 import terrails.netherutils.items.ItemForbiddenFruit;
-import terrails.terracore.registry.newest.ItemRegistry;
 
 import java.util.List;
 

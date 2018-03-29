@@ -92,7 +92,7 @@ public class SpawnEvent {
                     player.addItemStackToInventory(stack);
                     firstSpawn.hasStartingItems(true);
                 } else {
-                    Constants.Log.playerMessage(player, "Config Error with Starting Items: " + oneLine);
+                    Constants.Log.playerMessage(player, "config Error with Starting Items: " + oneLine);
                 }
             }
         }
@@ -105,7 +105,7 @@ public class SpawnEvent {
                     player.addPotionEffect(potionEffect);
                     Objects.requireNonNull(player.getCapability(CapabilityFirstSpawn.FIRST_SPAWN_CAPABILITY, null)).hasStartingEffects(true);
                 } else {
-                    Constants.Log.playerMessage(player, "Config Error with Starting Potion Effects: " + oneLine);
+                    Constants.Log.playerMessage(player, "config Error with Starting Potion Effects: " + oneLine);
                 }
             }
         }

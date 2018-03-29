@@ -11,10 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
@@ -43,7 +40,9 @@ import java.util.Objects;
 public class BlockTank extends BlockTileEntity<TileEntityTank> {
 
     public BlockTank(String name) {
-        super(Material.IRON, name);
+        super(Material.IRON, Constants.MOD_ID);
+        setRegistryName(new ResourceLocation(Constants.MOD_ID, name));
+        setUnlocalizedName(name);
         setDefaultState(this.blockState.getBaseState().withProperty(LEVEL, 8));
         setHarvestLevel("pickaxe", 1);
         setHardness(5.0F);

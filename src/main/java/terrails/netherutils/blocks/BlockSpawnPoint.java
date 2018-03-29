@@ -7,20 +7,17 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.boss.EntityDragon;
-import net.minecraft.entity.boss.EntityWither;
-import net.minecraft.entity.projectile.EntityWitherSkull;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import terrails.netherutils.Constants;
 import terrails.netherutils.api.world.IWorldData;
 import terrails.netherutils.config.ConfigHandler;
-import terrails.netherutils.init.ModBlocks;
 import terrails.netherutils.world.data.CustomWorldData;
 import terrails.terracore.block.BlockBase;
 
@@ -31,7 +28,9 @@ import java.util.Random;
 public class BlockSpawnPoint extends BlockBase {
 
     public BlockSpawnPoint(String name) {
-        super(Material.ROCK, name);
+        super(Material.ROCK, Constants.MOD_ID);
+        setRegistryName(new ResourceLocation(Constants.MOD_ID, name));
+        setUnlocalizedName(name);
         setBlockUnbreakable();
         setResistance(6000000.0F);
         setSoundType(SoundType.STONE);
@@ -77,7 +76,7 @@ public class BlockSpawnPoint extends BlockBase {
     @Override
     public void addInformation(ItemStack stack, @Nullable World player, List<String> tooltip, ITooltipFlag advanced) {
         if (!ConfigHandler.pointRespawn) {
-            tooltip.add(ChatFormatting.RED + "The Block is disabled in Config");
+            tooltip.add(ChatFormatting.RED + "The Block is disabled in config");
         }
     }
 

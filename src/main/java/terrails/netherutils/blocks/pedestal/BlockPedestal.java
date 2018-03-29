@@ -1,7 +1,6 @@
 package terrails.netherutils.blocks.pedestal;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -16,7 +15,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
@@ -36,11 +34,13 @@ public class BlockPedestal extends BlockTileEntity<TileEntityPedestal> {
     public static final PropertyEnum<Type> TYPE = PropertyEnum.create("type", Type.class);
 
     public BlockPedestal(String name) {
-        super(Material.ROCK, name);
+        super(Material.ROCK, Constants.MOD_ID);
         setCreativeTab(Constants.CreativeTab.NetherUtils);
         setHardness(2F);
         setResistance(3F);
         setHarvestLevel("pickaxe", 1);
+        setRegistryName(new ResourceLocation(Constants.MOD_ID, name));
+        setUnlocalizedName(name);
         this.setDefaultState(this.blockState.getBaseState().withProperty(TYPE, Type.NETHER));
         GameRegistry.registerTileEntity(TileEntityPedestal.class, name);
     }

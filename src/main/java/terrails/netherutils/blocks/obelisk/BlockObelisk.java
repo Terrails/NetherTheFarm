@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
@@ -36,7 +37,9 @@ public class BlockObelisk extends BlockBase {
     private static final AxisAlignedBB BOUNDING_BOX = new AxisAlignedBB(0.0625 * 0, 0, 0.0625 * 0, 0.0625 * 16, 0.0625 * 2, 0.0625 * 16);
 
     public BlockObelisk(String name) {
-        super(Material.ROCK, name);
+        super(Material.ROCK, Constants.MOD_ID);
+        setRegistryName(new ResourceLocation(Constants.MOD_ID, name));
+        setUnlocalizedName(name);
         setHardness(4.0F);
         setHarvestLevel("pickaxe", 2);
         setCreativeTab(Constants.CreativeTab.NetherUtils);

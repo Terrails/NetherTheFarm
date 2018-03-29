@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import terrails.netherutils.NetherUtils;
 import terrails.netherutils.blocks.portal.nether.TileEntityPortalMaster;
+import terrails.terracore.TerraCore;
 
 public class CPacketInteger implements IMessage {
 
@@ -62,7 +63,7 @@ public class CPacketInteger implements IMessage {
                 return null;
 
             FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> {
-                EntityPlayer player = NetherUtils.proxy.getPlayer();
+                EntityPlayer player = TerraCore.proxy.getEntityPlayer();
                 if (player != null) {
                     World world = player.getEntityWorld();
                     TileEntity tileEntity = world.getTileEntity(new BlockPos(message.x, message.y, message.z));

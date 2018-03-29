@@ -7,15 +7,17 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import terrails.netherutils.Constants;
 import terrails.terracore.block.BlockBase;
 
-public class BlockNTFPlanks extends BlockBase{
+public class BlockNTFPlanks extends BlockBase {
 
     public static final PropertyEnum<WoodType> VARIANT = PropertyEnum.create("variant", WoodType.class);
 
     public BlockNTFPlanks(String name) {
-        super(Material.WOOD, name);
+        super(Material.WOOD, Constants.MOD_ID);
+        this.setRegistryName(new ResourceLocation(Constants.MOD_ID, name));
         this.setCreativeTab(Constants.CreativeTab.NetherUtils);
         this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANT, WoodType.HELL));
     }

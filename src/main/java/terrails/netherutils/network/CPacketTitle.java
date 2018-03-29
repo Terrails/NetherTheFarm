@@ -2,19 +2,14 @@ package terrails.netherutils.network;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import terrails.netherutils.NetherUtils;
-import terrails.netherutils.api.capabilities.IDeathZone;
-import terrails.netherutils.config.ConfigHandler;
-
-import java.math.BigDecimal;
+import terrails.terracore.TerraCore;
 
 public class CPacketTitle implements IMessage {
 
@@ -44,7 +39,7 @@ public class CPacketTitle implements IMessage {
                 return null;
 
             FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> {
-                EntityPlayer player = NetherUtils.proxy.getPlayer();
+                EntityPlayer player = TerraCore.proxy.getEntityPlayer();
                 if (player != null) {
 
                     Minecraft minecraft = Minecraft.getMinecraft();

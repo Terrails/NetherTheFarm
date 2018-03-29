@@ -3,6 +3,7 @@ package terrails.netherutils.blocks.pedestal;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import terrails.netherutils.Constants;
 
 public class ItemBlockPedestal extends ItemBlock {
 
@@ -19,6 +20,6 @@ public class ItemBlockPedestal extends ItemBlock {
 
     @Override
     public String getUnlocalizedName(ItemStack stack) {
-        return "tile.pedestal_" + BlockPedestal.Type.byMetadata(stack.getMetadata());
+        return "tile." + Constants.MOD_ID + ".pedestal_" + BlockPedestal.Type.byMetadata(stack.getMetadata());
     }
 }

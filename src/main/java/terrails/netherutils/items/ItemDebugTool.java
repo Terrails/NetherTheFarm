@@ -7,9 +7,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
+import terrails.netherutils.Constants;
 import terrails.netherutils.blocks.portal.PortalRegistry;
 import terrails.netherutils.blocks.portal.nether.TileEntityPortalMaster;
 import terrails.netherutils.blocks.portal.nether.TileEntityPortalSlave;
@@ -21,7 +23,9 @@ import java.util.List;
 public class ItemDebugTool extends ItemBase {
 
     public ItemDebugTool(String name) {
-        super(name);
+        super(Constants.MOD_ID);
+        setRegistryName(new ResourceLocation(Constants.MOD_ID, name));
+        setUnlocalizedName(name);
         setMaxStackSize(1);
     }
 
@@ -53,6 +57,6 @@ public class ItemDebugTool extends ItemBase {
 
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        tooltip.add("Debugging data when right clicking the portal!");
+        tooltip.add("Debugging world when right clicking the portal!");
     }
 }

@@ -2,14 +2,10 @@ package terrails.netherutils.event;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityEndPortal;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
@@ -28,6 +24,7 @@ import terrails.netherutils.blocks.wood.*;
 import terrails.netherutils.init.ModBlocks;
 import terrails.netherutils.init.ModItems;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import static terrails.netherutils.init.ModBlocks.*;
@@ -41,6 +38,7 @@ public class RegisterEvent {
 
     @SubscribeEvent
     public void registerItems(RegistryEvent.Register<Item> event) {
+
         for (Block block : ModBlocks.get()) {
             if (TANK == block) event.getRegistry().register(new ItemBlockTank(block));
             else if (block == PLANKS) event.getRegistry().register(new ItemBlockPlanks(PLANKS).setRegistryName(Objects.requireNonNull(block.getRegistryName())));

@@ -27,7 +27,6 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import terrails.netherutils.NetherUtils;
 import terrails.netherutils.api.capabilities.IPortal;
 import terrails.netherutils.api.portal.IPortalMaster;
 import terrails.netherutils.api.world.IWorldData;
@@ -43,10 +42,10 @@ import terrails.netherutils.network.CPacketBoolean;
 import terrails.netherutils.network.CPacketInteger;
 import terrails.netherutils.network.SPacketBoolean;
 import terrails.netherutils.network.SPacketInteger;
+import terrails.netherutils.world.TeleporterNTF;
 import terrails.netherutils.world.data.CustomWorldData;
 import terrails.terracore.block.tile.TileEntityBase;
 import terrails.terracore.block.tile.fluid.FluidTankCustom;
-import terrails.terracore.helper.BlockHelper;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -421,11 +420,11 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
             BlockPos pos = player.getPosition();
             BlockPos centerPos = pos.north().west();
 
-            BlockHelper.fill(3, centerPos.down(), end, Blocks.OBSIDIAN.getDefaultState(), false, true);
-            BlockHelper.fill(3, centerPos, end, Blocks.AIR.getDefaultState(), false, true);
+            TeleporterNTF.fill(3, centerPos.down(), end, Blocks.OBSIDIAN.getDefaultState(), false, true);
+            TeleporterNTF.fill(3, centerPos, end, Blocks.AIR.getDefaultState(), false, true);
             end.setBlockState(centerPos, ModBlocks.PORTAL_END_SLAVE.getDefaultState());
-            BlockHelper.fill(3, centerPos.up(), end, Blocks.AIR.getDefaultState(), false, true);
-            BlockHelper.fill(3, centerPos.up().up(), end, Blocks.AIR.getDefaultState(), false, true);
+            TeleporterNTF.fill(3, centerPos.up(), end, Blocks.AIR.getDefaultState(), false, true);
+            TeleporterNTF.fill(3, centerPos.up().up(), end, Blocks.AIR.getDefaultState(), false, true);
 
             TileEntity te = end.getTileEntity(centerPos);
 

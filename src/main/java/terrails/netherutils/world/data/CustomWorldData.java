@@ -4,8 +4,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldSavedData;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import terrails.netherutils.Constants;
 import terrails.netherutils.api.world.IWorldData;
 import terrails.netherutils.blocks.portal.PortalRegistry;
@@ -32,7 +30,7 @@ public class CustomWorldData extends WorldSavedData implements IWorldData {
                 PortalRegistry.LIST.clear();
             }
             PortalRegistry.LIST.addAll(PortalRegistry.deserializeNBT((NBTTagCompound) compound.getTag("Portal")));
-            Constants.Log.getLogger().info("Successfully loaded portal data from world!");
+            Constants.Log.getLogger().info("Successfully loaded portal world from world!");
         }
         setEndSpawn(new BlockPos(compound.getInteger("EndPosX"), compound.getInteger("EndPosY"), compound.getInteger("EndPosZ")));
         hasRead(compound.getBoolean("DataRead"));

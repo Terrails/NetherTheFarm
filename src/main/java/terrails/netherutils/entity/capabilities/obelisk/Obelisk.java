@@ -3,8 +3,6 @@ package terrails.netherutils.entity.capabilities.obelisk;
 import net.minecraft.util.math.BlockPos;
 import terrails.netherutils.api.capabilities.IObelisk;
 
-import java.util.Optional;
-
 public class Obelisk implements IObelisk {
 
     private BlockPos pos;

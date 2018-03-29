@@ -3,14 +3,10 @@ package terrails.netherutils.blocks.portal.nether;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
@@ -20,16 +16,19 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import terrails.netherutils.Constants;
 import terrails.netherutils.blocks.portal.nether.render.TESRPortalSlave;
-import terrails.terracore.block.BlockBase;
+import terrails.terracore.block.BlockTileEntity;
 
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public class BlockPortalSlave extends BlockBase {
+public class BlockPortalSlave extends BlockTileEntity<TileEntityPortalSlave> {
 
     public BlockPortalSlave(String name) {
-        super(Material.ROCK, name);
+        super(Material.ROCK, Constants.MOD_ID);
+        setRegistryName(new ResourceLocation(Constants.MOD_ID, name));
+        setUnlocalizedName(name);
         setBlockUnbreakable();
         GameRegistry.registerTileEntity(TileEntityPortalSlave.class, name);
     }

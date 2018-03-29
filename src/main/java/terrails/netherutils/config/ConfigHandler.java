@@ -96,7 +96,7 @@ public class ConfigHandler {
         minTankWater = config.get(FEATURES_TANK, "Min Tank Water", 3000, "The minimal amount of water in mB required for the fluid tank to turn into a block that hydrates land (0 to disable)", 0, 4000).getInt();
         tankKeepContent = config.get(FEATURES_TANK, "Keep Fluid", true, "Keep the fluid when tank is broken and put it in the block when placed again").getBoolean();
 
-        portalDebugTool = config.get(FEATURES_PORTAL, "Debug Tool", false, "Enable the debug tool to see additional portal data and amount of master portals in the world (Prints a message in chat when right clicking a portal)").getBoolean();
+        portalDebugTool = config.get(FEATURES_PORTAL, "Debug Tool", false, "Enable the debug tool to see additional portal world and amount of master portals in the world (Prints a message in chat when right clicking a portal)").getBoolean();
 
         netherPortalItems = config.getStringList("Items", FEATURES_NETHER_PORTAL, DEFAULT_NETHER_PORTAL_ITEMS,"The items required to turn on the portal");
         netherPortalFuel = config.get(FEATURES_NETHER_PORTAL, "Fuel","water", "Liquid which is required for the portal to run").getString();

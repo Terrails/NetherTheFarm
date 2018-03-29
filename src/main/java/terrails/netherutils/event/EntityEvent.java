@@ -3,18 +3,15 @@ package terrails.netherutils.event;
 import com.google.common.base.CharMatcher;
 import com.google.common.collect.Lists;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.command.ServerCommandManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.DimensionType;
 import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -25,7 +22,7 @@ import terrails.netherutils.entity.capabilities.deathzone.CapabilityDeathZone;
 import terrails.netherutils.init.ModAdvancements;
 import terrails.netherutils.init.ModFeatures;
 import terrails.netherutils.network.CPacketTitle;
-import terrails.terracore.helper.BlockHelper;
+import terrails.netherutils.world.TeleporterNTF;
 
 import java.util.List;
 
@@ -103,7 +100,7 @@ public class EntityEvent {
         if (ConfigHandler.pointRespawn) {
 
             if (!ConfigHandler.vanillaPortal) {
-                boolean anyPortal = BlockHelper.checkAny(2, player.getPosition(), player.getEntityWorld(), Blocks.PORTAL.getDefaultState(), false, true);
+                boolean anyPortal = TeleporterNTF.checkAny(2, player.getPosition(), player.getEntityWorld(), Blocks.PORTAL.getDefaultState(), false, true);
                 if (anyPortal) {
                     cancel = true;
                 }

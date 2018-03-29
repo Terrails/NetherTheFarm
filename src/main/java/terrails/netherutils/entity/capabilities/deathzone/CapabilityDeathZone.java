@@ -2,7 +2,6 @@ package terrails.netherutils.entity.capabilities.deathzone;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -12,13 +11,8 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
 import terrails.netherutils.Constants;
 import terrails.netherutils.api.capabilities.IDeathZone;
-import terrails.netherutils.config.ConfigHandler;
-import terrails.netherutils.init.ModFeatures;
-import terrails.netherutils.network.CPacketTitle;
 import terrails.terracore.capabilities.CapabilitySerializable;
 
 public class CapabilityDeathZone {

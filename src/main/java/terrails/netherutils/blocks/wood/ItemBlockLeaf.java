@@ -3,6 +3,7 @@ package terrails.netherutils.blocks.wood;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import terrails.netherutils.Constants;
 import terrails.netherutils.blocks.wood.WoodType;
 
 public class ItemBlockLeaf extends ItemBlock {
@@ -20,6 +21,6 @@ public class ItemBlockLeaf extends ItemBlock {
 
     @Override
     public String getUnlocalizedName(ItemStack stack) {
-        return "tile.leaf_" + WoodType.byMetadata(stack.getMetadata());
+        return "tile." + Constants.MOD_ID + ".leaf_" + WoodType.byMetadata(stack.getMetadata());
     }
 }

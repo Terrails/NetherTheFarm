@@ -1,7 +1,6 @@
 package terrails.netherutils.api.portal;
 
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fluids.FluidStack;
 
 public interface IPortalMaster {
 

@@ -1,7 +1,6 @@
 package terrails.netherutils.blocks.wood;
 
 import net.minecraft.block.*;
-import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -10,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
@@ -25,6 +25,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import terrails.netherutils.Constants;
 import terrails.netherutils.init.ModBlocks;
 import terrails.netherutils.init.ModItems;
+import terrails.terracore.block.item.IItemBlock;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

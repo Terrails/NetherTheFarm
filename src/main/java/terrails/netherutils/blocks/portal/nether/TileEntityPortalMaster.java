@@ -47,7 +47,6 @@ import terrails.netherutils.world.TeleporterNTF;
 import terrails.netherutils.world.data.CustomWorldData;
 import terrails.terracore.block.tile.TileEntityBase;
 import terrails.terracore.block.tile.fluid.FluidTankCustom;
-import terrails.terracore.helper.BlockHelper;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -443,7 +442,7 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
 
                     if (state.getBlock() != Blocks.AIR) {
                         // If the pos is near another slave offset your coords and start from world height again
-                        if (BlockHelper.checkAny(6, blockPos, slaveWorld, ModBlocks.PORTAL_NETHER_SLAVE.getDefaultState(), false, true)) {
+                        if (TeleporterNTF.checkAny(6, blockPos, slaveWorld, ModBlocks.PORTAL_NETHER_SLAVE.getDefaultState(), false, true)) {
                             pos.add(20, 0, 20);
                             i = slaveWorld.getHeight();
                         } else if (!slaveWorld.getBlockState(blockPos).getBlock().isLeaves(state, getWorld(), blockPos) && !slaveWorld.getBlockState(blockPos).getBlock().isFoliage(getWorld(), blockPos)) {
@@ -459,7 +458,7 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
 
                     if (state.getBlock() != Blocks.AIR) {
                         // If the pos is near another slave offset your coords and start from world height again
-                        if (BlockHelper.checkAny(6, blockPos, slaveWorld, ModBlocks.PORTAL_NETHER_SLAVE.getDefaultState(), false, true)) {
+                        if (TeleporterNTF.checkAny(6, blockPos, slaveWorld, ModBlocks.PORTAL_NETHER_SLAVE.getDefaultState(), false, true)) {
                             pos.add(20, 0, 20);
                             i = 90;
                         } else if (!slaveWorld.getBlockState(blockPos).getBlock().isLeaves(state, getWorld(), blockPos) && !slaveWorld.getBlockState(blockPos).getBlock().isFoliage(getWorld(), blockPos)) {
@@ -470,10 +469,10 @@ public class TileEntityPortalMaster extends TileEntityBase implements ITickable,
                 }
             }
 
-            BlockHelper.fill(2, pos, slaveWorld, Blocks.STONEBRICK.getDefaultState(), false, true);
-            BlockHelper.fill(2, pos.up(), slaveWorld, Blocks.AIR.getDefaultState(), false, true);
-            BlockHelper.fill(2, pos.up().up(), slaveWorld, Blocks.AIR.getDefaultState(), false, true);
-            BlockHelper.fill(2, pos.up().up().up(), slaveWorld, Blocks.AIR.getDefaultState(), false, true);
+            TeleporterNTF.fill(2, pos, slaveWorld, Blocks.STONEBRICK.getDefaultState(), false, true);
+            TeleporterNTF.fill(2, pos.up(), slaveWorld, Blocks.AIR.getDefaultState(), false, true);
+            TeleporterNTF.fill(2, pos.up().up(), slaveWorld, Blocks.AIR.getDefaultState(), false, true);
+            TeleporterNTF.fill(2, pos.up().up().up(), slaveWorld, Blocks.AIR.getDefaultState(), false, true);
 
             slaveWorld.setBlockState(pos.up(), ModBlocks.PORTAL_NETHER_SLAVE.getDefaultState());
             TileEntity te = slaveWorld.getTileEntity(pos.up());

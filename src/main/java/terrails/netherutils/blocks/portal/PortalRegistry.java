@@ -24,7 +24,7 @@ public class PortalRegistry {
    public static List<IPortalMaster> LIST = Lists.newArrayList();
 
     /**
-     * Adds a portal to the list and marks the world data dirty
+     * Adds a portal to the list and marks the world world dirty
      *
      * @param portal the portal which is being added
      * @param world the world used to mark dirty

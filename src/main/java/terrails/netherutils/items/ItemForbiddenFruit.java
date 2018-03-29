@@ -7,6 +7,7 @@ import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -20,8 +21,8 @@ public class ItemForbiddenFruit extends ItemFood {
     public ItemForbiddenFruit(String name) {
         super(7, 1.5F, false);
         setCreativeTab(Constants.CreativeTab.NetherUtils);
-        setRegistryName(name);
-        setUnlocalizedName(name);
+        setRegistryName(new ResourceLocation(Constants.MOD_ID, name));
+        setUnlocalizedName(Constants.MOD_ID + "." + name);
     }
 
     @Override
@@ -39,10 +40,6 @@ public class ItemForbiddenFruit extends ItemFood {
     private void doStuff(World world, EntityLivingBase entity) {
         if (world.isRemote && world.rand.nextInt(6) == 3) {
             entity.playSound(SoundEvents.ENTITY_CREEPER_PRIMED, 10F, world.rand.nextFloat() * 0.4F + 0.8F);
-        }
-
-        if (!world.isRemote && world.rand.nextInt(5) == 3) {
-   //         world.createExplosion(entity, entity.posX, entity.posY, entity.posZ, 5F, false);
         }
 
         Potion nausea = Potion.getPotionFromResourceLocation("nausea");

@@ -6,7 +6,6 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
-import terrails.netherutils.NetherUtils;
 
 public class TESRPedestal extends TileEntitySpecialRenderer<TileEntityPedestal> {
 
