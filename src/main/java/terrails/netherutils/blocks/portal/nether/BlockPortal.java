@@ -2,10 +2,13 @@ package terrails.netherutils.blocks.portal.nether;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -20,6 +23,7 @@ import net.minecraft.world.DimensionType;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -34,23 +38,38 @@ import terrails.terracore.block.BlockTileEntity;
 import terrails.netherutils.blocks.portal.nether.render.TESRPortal;
 import terrails.netherutils.config.ConfigHandler;
 import terrails.netherutils.blocks.portal.PortalRegistry;
+import terrails.terracore.registry.IItemBlock;
+import terrails.terracore.registry.client.ICustomModel;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
 
-public class BlockPortal extends BlockTileEntity<TileEntityPortalMaster> {
+public class BlockPortal extends BlockTileEntity<TileEntityPortalMaster> implements IItemBlock, ICustomModel {
 
     public static final AxisAlignedBB BOUNDING_BOX = new AxisAlignedBB(0, 0, 0, 0.0625 * 16, 0.0625 * 8, 0.0625 * 16);
 
     public BlockPortal(String name) {
-        super(Material.ROCK, Constants.MOD_ID);
-        setRegistryName(new ResourceLocation(Constants.MOD_ID, name));
-        setUnlocalizedName(name);
-        setCreativeTab(Constants.CreativeTab.NetherUtils);
+        super(Material.ROCK);
+        setRegistryName(new ResourceLocation(NetherUtils.MOD_ID, name));
+        setUnlocalizedName(NetherUtils.MOD_ID + "." + name);
+        setCreativeTab(NetherUtils.TAB_NETHER_UTILS);
         setHardness(4.0F);
         setResistance(12.0F);
         setHarvestLevel("pickaxe", 2);
         GameRegistry.registerTileEntity(TileEntityPortalMaster.class, name);
+    }
+
+    @Override
+    public void initModel() {
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPortalMaster.class, new TESRPortal());
+        ModelResourceLocation location = new ModelResourceLocation(Objects.requireNonNull(this.getRegistryName()), "inventory");
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, location);
+    }
+
+    @Override
+    public ItemBlock getItemBlock() {
+        return new ItemBlockPortal(this);
     }
 
     @Override
@@ -199,11 +218,6 @@ public class BlockPortal extends BlockTileEntity<TileEntityPortalMaster> {
     @SuppressWarnings("deprecation")
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
         return BOUNDING_BOX;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public void initModel() {
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPortalMaster.class, new TESRPortal());
     }
 
     @Nullable

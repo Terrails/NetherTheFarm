@@ -12,6 +12,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import terrails.netherutils.Constants;
+import terrails.netherutils.NetherUtils;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
@@ -20,9 +21,9 @@ public class ItemForbiddenFruit extends ItemFood {
 
     public ItemForbiddenFruit(String name) {
         super(7, 1.5F, false);
-        setCreativeTab(Constants.CreativeTab.NetherUtils);
-        setRegistryName(new ResourceLocation(Constants.MOD_ID, name));
-        setUnlocalizedName(Constants.MOD_ID + "." + name);
+        this.setCreativeTab(NetherUtils.TAB_NETHER_UTILS);
+        this.setRegistryName(new ResourceLocation(NetherUtils.MOD_ID, name));
+        this.setUnlocalizedName(NetherUtils.MOD_ID + "." + name);
     }
 
     @Override

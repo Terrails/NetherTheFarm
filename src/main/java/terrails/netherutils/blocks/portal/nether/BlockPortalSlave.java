@@ -2,6 +2,7 @@ package terrails.netherutils.blocks.portal.nether;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -12,23 +13,27 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import terrails.netherutils.Constants;
+import terrails.netherutils.NetherUtils;
 import terrails.netherutils.blocks.portal.nether.render.TESRPortalSlave;
 import terrails.terracore.block.BlockTileEntity;
+import terrails.terracore.registry.client.ICustomModel;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.Random;
 
-public class BlockPortalSlave extends BlockTileEntity<TileEntityPortalSlave> {
+public class BlockPortalSlave extends BlockTileEntity<TileEntityPortalSlave> implements ICustomModel {
 
     public BlockPortalSlave(String name) {
-        super(Material.ROCK, Constants.MOD_ID);
-        setRegistryName(new ResourceLocation(Constants.MOD_ID, name));
-        setUnlocalizedName(name);
+        super(Material.ROCK);
+        setRegistryName(new ResourceLocation(NetherUtils.MOD_ID, name));
+        setUnlocalizedName(NetherUtils.MOD_ID + "." + name);
         setBlockUnbreakable();
         GameRegistry.registerTileEntity(TileEntityPortalSlave.class, name);
     }
@@ -38,9 +43,11 @@ public class BlockPortalSlave extends BlockTileEntity<TileEntityPortalSlave> {
         return false;
     }
 
-    @SideOnly(Side.CLIENT)
+    @Override
     public void initModel() {
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPortalSlave.class, new TESRPortalSlave());
+        ModelResourceLocation location = new ModelResourceLocation(Objects.requireNonNull(this.getRegistryName()), "inventory");
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, location);
     }
 
     @Override

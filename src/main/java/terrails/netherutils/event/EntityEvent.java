@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import terrails.netherutils.Constants;
+import terrails.netherutils.NetherUtils;
 import terrails.netherutils.api.capabilities.IDeathZone;
 import terrails.netherutils.config.ConfigHandler;
 import terrails.netherutils.entity.capabilities.deathzone.CapabilityDeathZone;
@@ -108,15 +109,11 @@ public class EntityEvent {
 
             String dimName = event.getEntity().getEntityWorld().provider.getDimensionType().getName();
             if (dimName.equalsIgnoreCase(DimensionType.NETHER.getName()) && player.getServer() != null && !ConfigHandler.itemToLeaveNether.isEmpty() && !cancel) {
-                Advancement advancement = player.getServer().getAdvancementManager().getAdvancement(new ResourceLocation(Constants.MOD_ID, "portal_item"));
+                Advancement advancement = player.getServer().getAdvancementManager().getAdvancement(new ResourceLocation(NetherUtils.MOD_ID, "portal_item"));
                 if (advancement != null && !player.getAdvancements().getProgress(advancement).isDone()) {
                     cancel = true;
                     isAdvancement = true;
                 }
-            }
-
-            if (dimName.equalsIgnoreCase(DimensionType.NETHER.getName()) && cancel && player.getServer() != null && player.canUseCommand(2, "")) {
-                cancel = false;
             }
         }
 

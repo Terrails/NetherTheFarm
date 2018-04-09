@@ -33,55 +33,15 @@ public class RegisterEvent {
 
     @SubscribeEvent
     public void registerBlocks(RegistryEvent.Register<Block> event) {
-        event.getRegistry().registerAll(ModBlocks.get());
+        event.getRegistry().register(ModBlocks.END_PORTAL_OVERRIDDEN);
     }
 
     @SubscribeEvent
     public void registerItems(RegistryEvent.Register<Item> event) {
-
-        for (Block block : ModBlocks.get()) {
-            if (TANK == block) event.getRegistry().register(new ItemBlockTank(block));
-            else if (block == PLANKS) event.getRegistry().register(new ItemBlockPlanks(PLANKS).setRegistryName(Objects.requireNonNull(block.getRegistryName())));
-            else if (block == LOG) event.getRegistry().register(new ItemBlockLog(LOG).setRegistryName(Objects.requireNonNull(block.getRegistryName())));
-            else if (block == LEAVES) event.getRegistry().register(new ItemBlockLeaf(LEAVES).setRegistryName(Objects.requireNonNull(block.getRegistryName())));
-            else if (block == SAPLING) event.getRegistry().register(new ItemBlockSapling(SAPLING).setRegistryName(Objects.requireNonNull(block.getRegistryName())));
-            else if (block == PEDESTAL) event.getRegistry().register(new ItemBlockPedestal(PEDESTAL).setRegistryName(Objects.requireNonNull(block.getRegistryName())));
-            else if (block == PORTAL_NETHER_MASTER) event.getRegistry().register(new ItemBlockPortal(PORTAL_NETHER_MASTER));
-            else if (block == PORTAL_END_MASTER) event.getRegistry().register(new terrails.netherutils.blocks.portal.end.ItemBlockPortal(PORTAL_END_MASTER));
-            else if (!(block instanceof BlockPortalOverride)) event.getRegistry().register(new ItemBlock(block).setRegistryName(Objects.requireNonNull(block.getRegistryName())));
-        }
-        event.getRegistry().registerAll(ModItems.get());
-
         OreDictionary.registerOre("treeLeaves", new ItemStack(ModBlocks.LEAVES, 1, OreDictionary.WILDCARD_VALUE));
         OreDictionary.registerOre("treeWood", new ItemStack(ModBlocks.LOG, 1, OreDictionary.WILDCARD_VALUE));
         OreDictionary.registerOre("treeSapling", new ItemStack(ModBlocks.SAPLING, 1, OreDictionary.WILDCARD_VALUE));
         OreDictionary.registerOre("plankWood", new ItemStack(ModBlocks.PLANKS, 1, OreDictionary.WILDCARD_VALUE));
-    }
-
-    @SubscribeEvent
-    public void registerModels(ModelRegistryEvent event) {
-        // Custom Models
-        ((BlockTank) TANK).initModel();
-        ((BlockObelisk) OBELISK).initModel();
-        ((BlockPortal) PORTAL_NETHER_MASTER).initModel();
-        ((BlockPortalSlave) PORTAL_NETHER_SLAVE).initModel();
-        ((terrails.netherutils.blocks.portal.end.BlockPortal) PORTAL_END_MASTER).initModel();
-        ((terrails.netherutils.blocks.portal.end.BlockPortalSlave) PORTAL_END_SLAVE).initModel();
-        ((BlockPedestal) PEDESTAL).initModel();
-
-        WoodType.Init.initModel();
-
-        // Default Models
-        for (Block block : ModBlocks.get()) {
-            if (block != PLANKS && block != LOG && block != LEAVES && block != SAPLING && block != PEDESTAL && !(block instanceof BlockPortalOverride)) {
-                ModelResourceLocation location = new ModelResourceLocation(Objects.requireNonNull(block.getRegistryName()), "inventory");
-                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, location);
-            }
-        }
-        for (Item item : ModItems.get()) {
-            ModelResourceLocation location = new ModelResourceLocation(Objects.requireNonNull(item.getRegistryName()), "inventory");
-            ModelLoader.setCustomModelResourceLocation(item, 0, location);
-        }
     }
 
     @SubscribeEvent

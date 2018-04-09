@@ -7,6 +7,7 @@ import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import terrails.netherutils.Constants;
+import terrails.netherutils.NetherUtils;
 import terrails.netherutils.init.ModBlocks;
 
 public enum WoodType implements IStringSerializable {
@@ -51,22 +52,24 @@ public enum WoodType implements IStringSerializable {
         }
     }
 
+    /*
     public static class Init {
 
         public static void initModel() {
             for (WoodType enumType : WoodType.values()) {
-                ModelBakery.registerItemVariants(Item.getItemFromBlock(ModBlocks.PLANKS), new ResourceLocation(Constants.MOD_ID, enumType.getName() + "_planks"));
-                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ModBlocks.PLANKS), enumType.getMetadata(), new ModelResourceLocation(new ResourceLocation(Constants.MOD_ID, enumType.getName() + "_planks"), "inventory"));
+                ModelBakery.registerItemVariants(Item.getItemFromBlock(ModBlocks.PLANKS), new ResourceLocation(NetherUtils.MOD_ID, enumType.getName() + "_planks"));
+                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ModBlocks.PLANKS), enumType.getMetadata(), new ModelResourceLocation(new ResourceLocation(NetherUtils.MOD_ID, enumType.getName() + "_planks"), "inventory"));
 
-                ModelBakery.registerItemVariants(Item.getItemFromBlock(ModBlocks.LOG), new ResourceLocation(Constants.MOD_ID, enumType.getName() + "_log"));
-                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ModBlocks.LOG), enumType.getMetadata(), new ModelResourceLocation(new ResourceLocation(Constants.MOD_ID, enumType.getName() + "_log"), "inventory"));
+                ModelBakery.registerItemVariants(Item.getItemFromBlock(ModBlocks.LOG), new ResourceLocation(NetherUtils.MOD_ID, enumType.getName() + "_log"));
+                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ModBlocks.LOG), enumType.getMetadata(), new ModelResourceLocation(new ResourceLocation(NetherUtils.MOD_ID, enumType.getName() + "_log"), "inventory"));
 
-                ModelBakery.registerItemVariants(Item.getItemFromBlock(ModBlocks.LEAVES), new ResourceLocation(Constants.MOD_ID, enumType.getName() + "_leaves"));
-                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ModBlocks.LEAVES), enumType.getMetadata(), new ModelResourceLocation(new ResourceLocation(Constants.MOD_ID, enumType.getName() + "_leaves"), "inventory"));
+                ModelBakery.registerItemVariants(Item.getItemFromBlock(ModBlocks.LEAVES), new ResourceLocation(NetherUtils.MOD_ID, enumType.getName() + "_leaves"));
+                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ModBlocks.LEAVES), enumType.getMetadata(), new ModelResourceLocation(new ResourceLocation(NetherUtils.MOD_ID, enumType.getName() + "_leaves"), "inventory"));
 
-                ModelBakery.registerItemVariants(Item.getItemFromBlock(ModBlocks.SAPLING), new ResourceLocation(Constants.MOD_ID, enumType.getName() + "_sapling"));
-                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ModBlocks.SAPLING), enumType.getMetadata(), new ModelResourceLocation(new ResourceLocation(Constants.MOD_ID, enumType.getName() + "_sapling"), "inventory"));
+                ModelBakery.registerItemVariants(Item.getItemFromBlock(ModBlocks.SAPLING), new ResourceLocation(NetherUtils.MOD_ID, enumType.getName() + "_sapling"));
+                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ModBlocks.SAPLING), enumType.getMetadata(), new ModelResourceLocation(new ResourceLocation(NetherUtils.MOD_ID, enumType.getName() + "_sapling"), "inventory"));
             }
         }
     }
+    */
 }

@@ -10,6 +10,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
@@ -23,26 +24,44 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import terrails.netherutils.Constants;
+import terrails.netherutils.NetherUtils;
 import terrails.netherutils.init.ModBlocks;
 import terrails.terracore.block.BlockTileEntity;
+import terrails.terracore.registry.IItemBlock;
+import terrails.terracore.registry.client.ICustomModel;
 
 import javax.annotation.Nullable;
 
-public class BlockPedestal extends BlockTileEntity<TileEntityPedestal> {
+public class BlockPedestal extends BlockTileEntity<TileEntityPedestal> implements IItemBlock, ICustomModel {
 
     private static final AxisAlignedBB BOUNDING_BOX = new AxisAlignedBB(0.0625 * 1, 0, 0.0625 * 1, 0.0625 * 15, 0.0625 * 16, 0.0625 * 15);
     public static final PropertyEnum<Type> TYPE = PropertyEnum.create("type", Type.class);
 
     public BlockPedestal(String name) {
-        super(Material.ROCK, Constants.MOD_ID);
-        setCreativeTab(Constants.CreativeTab.NetherUtils);
+        super(Material.ROCK);
+        setCreativeTab(NetherUtils.TAB_NETHER_UTILS);
         setHardness(2F);
         setResistance(3F);
         setHarvestLevel("pickaxe", 1);
-        setRegistryName(new ResourceLocation(Constants.MOD_ID, name));
-        setUnlocalizedName(name);
+        setRegistryName(new ResourceLocation(NetherUtils.MOD_ID, name));
+        setUnlocalizedName(NetherUtils.MOD_ID + "." + name);
         this.setDefaultState(this.blockState.getBaseState().withProperty(TYPE, Type.NETHER));
         GameRegistry.registerTileEntity(TileEntityPedestal.class, name);
+    }
+
+    @Override
+    public void initModel() {
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPedestal.class, new TESRPedestal());
+
+        for (Type enumType : Type.values()) {
+            ModelBakery.registerItemVariants(Item.getItemFromBlock(ModBlocks.PEDESTAL), new ResourceLocation(NetherUtils.MOD_ID, enumType.getName() + "_pedestal"));
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ModBlocks.PEDESTAL), enumType.getMetadata(), new ModelResourceLocation(new ResourceLocation(NetherUtils.MOD_ID, enumType.getName() + "_pedestal"), "inventory"));
+        }
+    }
+
+    @Override
+    public ItemBlock getItemBlock() {
+        return new ItemBlockPedestal(this);
     }
 
     @Override
@@ -77,16 +96,6 @@ public class BlockPedestal extends BlockTileEntity<TileEntityPedestal> {
     }
 
     // == Basic & Rendering == \\
-
-    @SideOnly(Side.CLIENT)
-    public void initModel() {
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPedestal.class, new TESRPedestal());
-
-        for (Type enumType : Type.values()) {
-            ModelBakery.registerItemVariants(Item.getItemFromBlock(ModBlocks.PEDESTAL), new ResourceLocation(Constants.MOD_ID, enumType.getName() + "_pedestal"));
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ModBlocks.PEDESTAL), enumType.getMetadata(), new ModelResourceLocation(new ResourceLocation(Constants.MOD_ID, enumType.getName() + "_pedestal"), "inventory"));
-        }
-    }
 
     @Override
     public int damageDropped(IBlockState state) {

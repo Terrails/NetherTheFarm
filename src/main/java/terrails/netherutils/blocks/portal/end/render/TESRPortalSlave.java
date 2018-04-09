@@ -10,11 +10,12 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import terrails.netherutils.Constants;
+import terrails.netherutils.NetherUtils;
 import terrails.netherutils.blocks.portal.end.TileEntityPortalSlave;
 
 public class TESRPortalSlave extends TileEntitySpecialRenderer<TileEntityPortalSlave> {
 
-    private final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(Constants.MOD_ID, "textures/magic/magic_circle.png");
+    private final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(NetherUtils.MOD_ID, "textures/magic/magic_circle.png");
 
     @Override
     public void render(TileEntityPortalSlave te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {

@@ -13,6 +13,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import terrails.netherutils.Constants;
+import terrails.netherutils.NetherUtils;
 import terrails.netherutils.api.capabilities.IFirstSpawn;
 import terrails.terracore.capabilities.CapabilitySerializable;
 
@@ -48,7 +49,7 @@ public class CapabilityFirstSpawn {
         @SubscribeEvent
         public void attachCapabilities(AttachCapabilitiesEvent<Entity> event) {
             if (event.getObject() instanceof EntityPlayer) {
-                event.addCapability(new ResourceLocation(Constants.MOD_ID, "FirstSpawn"), new CapabilitySerializable<>(CapabilityFirstSpawn.FIRST_SPAWN_CAPABILITY));
+                event.addCapability(new ResourceLocation(NetherUtils.MOD_ID, "FirstSpawn"), new CapabilitySerializable<>(CapabilityFirstSpawn.FIRST_SPAWN_CAPABILITY));
             }
         }
 

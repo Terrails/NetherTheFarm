@@ -39,7 +39,7 @@ public class CPacketTitle implements IMessage {
                 return null;
 
             FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> {
-                EntityPlayer player = TerraCore.proxy.getEntityPlayer();
+                EntityPlayer player = NetherUtils.proxy.getEntityPlayer();
                 if (player != null) {
 
                     Minecraft minecraft = Minecraft.getMinecraft();

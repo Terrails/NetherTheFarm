@@ -8,6 +8,7 @@ import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.fml.client.config.GuiConfigEntries;
 import net.minecraftforge.fml.client.config.IConfigElement;
 import terrails.netherutils.Constants;
+import terrails.netherutils.NetherUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 public class ConfigGUI extends GuiConfig {
 
     public ConfigGUI(GuiScreen parentScreen) {
-        super(parentScreen, getConfigElements(), Constants.MOD_ID, false, false, "/" + Constants.MOD_ID + ".cfg");
+        super(parentScreen, getConfigElements(), NetherUtils.MOD_ID, false, false, "/" + NetherUtils.MOD_ID + ".cfg");
     }
 
     private static List<IConfigElement> getConfigElements() {
@@ -32,7 +33,7 @@ public class ConfigGUI extends GuiConfig {
 
         @Override
         protected GuiScreen buildChildScreen() {
-            return new GuiConfig(owningScreen, new ConfigElement(ConfigHandler.config.getCategory(ConfigHandler.FIRST_SPAWN)).getChildElements(), owningScreen.modID, false, false, "/" + Constants.MOD_ID + ".cfg");
+            return new GuiConfig(owningScreen, new ConfigElement(ConfigHandler.config.getCategory(ConfigHandler.FIRST_SPAWN)).getChildElements(), owningScreen.modID, false, false, "/" + NetherUtils.MOD_ID + ".cfg");
         }
     }
     public static class Features extends GuiConfigEntries.CategoryEntry {
@@ -42,7 +43,7 @@ public class ConfigGUI extends GuiConfig {
 
         @Override
         protected GuiScreen buildChildScreen() {
-            return new GuiConfig(owningScreen, getConfigElements(), owningScreen.modID, false, false, "/" + Constants.MOD_ID + ".cfg");
+            return new GuiConfig(owningScreen, getConfigElements(), owningScreen.modID, false, false, "/" + NetherUtils.MOD_ID + ".cfg");
         }
 
         private static List<IConfigElement> getConfigElements() {
@@ -62,7 +63,7 @@ public class ConfigGUI extends GuiConfig {
 
         @Override
         protected GuiScreen buildChildScreen() {
-            return new GuiConfig(owningScreen, new ConfigElement(ConfigHandler.config.getCategory(ConfigHandler.GENERATION)).getChildElements(), owningScreen.modID, false, false, "/" + Constants.MOD_ID + ".cfg");
+            return new GuiConfig(owningScreen, new ConfigElement(ConfigHandler.config.getCategory(ConfigHandler.GENERATION)).getChildElements(), owningScreen.modID, false, false, "/" + NetherUtils.MOD_ID + ".cfg");
         }
     }
 }

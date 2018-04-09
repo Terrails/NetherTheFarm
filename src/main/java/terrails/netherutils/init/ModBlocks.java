@@ -19,31 +19,31 @@ import java.util.List;
 
 public class ModBlocks {
 
-    private static List<Block> blocks = Lists.newArrayList();
+    public static List<Block> blocks = Lists.newArrayList();
 
-    public static Block SPAWN_POINT;
-    public static Block OBELISK;
-    public static Block TANK;
-    public static Block SOUL_SOIL;
+    public static final Block SPAWN_POINT;
+    public static final Block OBELISK;
+    public static final Block TANK;
+    public static final Block SOUL_SOIL;
 
-    public static Block PLANKS;
-    public static Block LOG;
-    public static Block LEAVES;
-    public static Block SAPLING;
+    public static final Block PLANKS;
+    public static final Block LOG;
+    public static final Block LEAVES;
+    public static final Block SAPLING;
 
     @GameRegistry.ObjectHolder("netherutils:nether_portal")
-    public static Block PORTAL_NETHER_MASTER;
-    public static Block PORTAL_NETHER_SLAVE;
+    public static final Block PORTAL_NETHER_MASTER;
+    public static final Block PORTAL_NETHER_SLAVE;
 
     @GameRegistry.ObjectHolder("netherutils:end_portal")
-    public static Block PORTAL_END_MASTER;
-    public static Block PORTAL_END_SLAVE;
+    public static final Block PORTAL_END_MASTER;
+    public static final Block PORTAL_END_SLAVE;
 
-    public static Block PEDESTAL;
+    public static final Block PEDESTAL;
 
-    public static Block END_PORTAL_OVERRIDDEN;
+    public static final Block END_PORTAL_OVERRIDDEN;
 
-    protected static void init() {
+    static {
         SPAWN_POINT = add(new BlockSpawnPoint("spawn_point"));
         TANK = add(new BlockTank("tank"));
         OBELISK = add(new BlockObelisk("obelisk"));
@@ -57,7 +57,7 @@ public class ModBlocks {
 
         PEDESTAL = add(new BlockPedestal("pedestal"));
 
-        END_PORTAL_OVERRIDDEN = add(new BlockPortalOverride());
+        END_PORTAL_OVERRIDDEN = new BlockPortalOverride();
 
         PLANKS = add(new BlockNTFPlanks("planks"));
         LOG = add(new BlockNTFLog("log"));
@@ -68,9 +68,5 @@ public class ModBlocks {
     public static <T extends Block> T add(T block) {
         blocks.add(block);
         return block;
-    }
-
-    public static Block[] get() {
-        return blocks.toArray(new Block[blocks.size()]);
     }
 }

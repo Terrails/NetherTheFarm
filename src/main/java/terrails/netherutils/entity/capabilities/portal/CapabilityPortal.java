@@ -14,6 +14,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import terrails.netherutils.Constants;
+import terrails.netherutils.NetherUtils;
 import terrails.netherutils.api.capabilities.IPortal;
 import terrails.terracore.capabilities.CapabilitySerializable;
 
@@ -46,7 +47,7 @@ public class CapabilityPortal {
         @SubscribeEvent
         public void attachCapabilities(AttachCapabilitiesEvent<Entity> event) {
             if (event.getObject() instanceof EntityPlayer) {
-                event.addCapability(new ResourceLocation(Constants.MOD_ID, "Portal"), new CapabilitySerializable<>(CapabilityPortal.PORTAL_CAPABILITY));
+                event.addCapability(new ResourceLocation(NetherUtils.MOD_ID, "Portal"), new CapabilitySerializable<>(CapabilityPortal.PORTAL_CAPABILITY));
             }
         }
 

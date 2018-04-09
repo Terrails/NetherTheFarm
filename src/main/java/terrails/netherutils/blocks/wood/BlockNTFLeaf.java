@@ -4,6 +4,8 @@ import net.minecraft.block.*;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -13,26 +15,26 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import terrails.netherutils.Constants;
+import terrails.netherutils.NetherUtils;
 import terrails.netherutils.init.ModBlocks;
 import terrails.netherutils.init.ModItems;
-import terrails.terracore.block.item.IItemBlock;
+import terrails.terracore.registry.IItemBlock;
+import terrails.terracore.registry.client.ICustomModel;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
-public class BlockNTFLeaf extends BlockLeaves {
+public class BlockNTFLeaf extends BlockLeaves implements IItemBlock, ICustomModel {
 
     public static final PropertyEnum<WoodType> VARIANT = PropertyEnum.create("variant", WoodType.class, predicate -> {
         assert predicate != null;
@@ -40,10 +42,23 @@ public class BlockNTFLeaf extends BlockLeaves {
     });
 
     public BlockNTFLeaf(String name) {
-        setRegistryName(name);
-        this.setCreativeTab(Constants.CreativeTab.NetherUtils);
+        this.setRegistryName(name);
+        this.setCreativeTab(NetherUtils.TAB_NETHER_UTILS);
         this.setTickRandomly(true);
         this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANT, WoodType.HELL).withProperty(CHECK_DECAY, true).withProperty(DECAYABLE, true));
+    }
+
+    @Override
+    public void initModel() {
+        for (WoodType enumType : WoodType.values()) {
+            ModelBakery.registerItemVariants(Item.getItemFromBlock(ModBlocks.LEAVES), new ResourceLocation(NetherUtils.MOD_ID, enumType.getName() + "_leaves"));
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ModBlocks.LEAVES), enumType.getMetadata(), new ModelResourceLocation(new ResourceLocation(NetherUtils.MOD_ID, enumType.getName() + "_leaves"), "inventory"));
+        }
+    }
+
+    @Override
+    public ItemBlock getItemBlock() {
+        return new ItemBlockLeaf(this);
     }
 
     private static int tick;

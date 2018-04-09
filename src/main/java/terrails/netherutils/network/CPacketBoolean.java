@@ -63,7 +63,7 @@ public class CPacketBoolean implements IMessage {
                 return null;
 
             FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> {
-                EntityPlayer player = TerraCore.proxy.getEntityPlayer();
+                EntityPlayer player = NetherUtils.proxy.getEntityPlayer();
                 if (player != null) {
                     World world = player.getEntityWorld();
                     TileEntity tileEntity = world.getTileEntity(new BlockPos(message.x, message.y, message.z));

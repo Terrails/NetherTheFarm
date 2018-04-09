@@ -11,6 +11,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentTranslation;
 import terrails.netherutils.Constants;
+import terrails.netherutils.NetherUtils;
 import terrails.netherutils.blocks.portal.end.TileEntityPortalMaster;
 import terrails.netherutils.gui.inventory.portal.end.PortalContainer;
 
@@ -24,7 +25,7 @@ public class GuiPortal extends GuiContainer {
     private final int STOP = 1;
 
     private static final String PATH = "textures/gui/";
-    private static final ResourceLocation GUI_TEXTURE = new ResourceLocation(Constants.MOD_ID, PATH + "container/portal_container.png");
+    private static final ResourceLocation GUI_TEXTURE = new ResourceLocation(NetherUtils.MOD_ID, PATH + "container/portal_container.png");
 
     public GuiPortal(IInventory playerInv, TileEntityPortalMaster tile) {
         super(new PortalContainer(playerInv, tile));
@@ -47,7 +48,7 @@ public class GuiPortal extends GuiContainer {
             drawTexturedModalRect(xPos + 31 - i, yPos + 29, 2, 167, i, 4);
         }
 
-        mc.getTextureManager().bindTexture(new ResourceLocation(Constants.MOD_ID, PATH + "widgets.png"));
+        mc.getTextureManager().bindTexture(new ResourceLocation(NetherUtils.MOD_ID, PATH + "widgets.png"));
         if (tile.isActivating) {
             this.drawTexturedModalRect(xPos + 143, yPos + 37, 40, 24, 24, 12);
         } else if (tile.isActive()) {
@@ -101,7 +102,7 @@ public class GuiPortal extends GuiContainer {
         int xPos = (this.width - this.xSize) / 2;
         int yPos = (this.height - this.ySize) / 2;
 
-        ResourceLocation BUTTON_TEXTURE = new ResourceLocation(Constants.MOD_ID, PATH + "widgets.png");
+        ResourceLocation BUTTON_TEXTURE = new ResourceLocation(NetherUtils.MOD_ID, PATH + "widgets.png");
         CustomButton START_BUTTON = new CustomButton(BUTTON_TEXTURE, START, xPos + 118, yPos + 18, 0, 0);
         CustomButton STOP_BUTTON = new CustomButton(BUTTON_TEXTURE, STOP, xPos + 118, yPos + 48, 20, 0);
 

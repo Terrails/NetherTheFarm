@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
@@ -32,24 +33,38 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import terrails.netherutils.Constants;
+import terrails.netherutils.NetherUtils;
 import terrails.terracore.block.BlockTileEntity;
 import terrails.netherutils.config.ConfigHandler;
+import terrails.terracore.registry.IItemBlock;
+import terrails.terracore.registry.client.ICustomModel;
 
 import java.util.Objects;
 
-public class BlockTank extends BlockTileEntity<TileEntityTank> {
+public class BlockTank extends BlockTileEntity<TileEntityTank> implements IItemBlock, ICustomModel {
 
     public BlockTank(String name) {
-        super(Material.IRON, Constants.MOD_ID);
-        setRegistryName(new ResourceLocation(Constants.MOD_ID, name));
-        setUnlocalizedName(name);
+        super(Material.IRON);
+        setRegistryName(new ResourceLocation(NetherUtils.MOD_ID, name));
+        setUnlocalizedName(NetherUtils.MOD_ID + "." + name);
         setDefaultState(this.blockState.getBaseState().withProperty(LEVEL, 8));
         setHarvestLevel("pickaxe", 1);
         setHardness(5.0F);
         setTickRandomly(true);
         setResistance(5.0F);
-        setCreativeTab(Constants.CreativeTab.NetherUtils);
+        setCreativeTab(NetherUtils.TAB_NETHER_UTILS);
         GameRegistry.registerTileEntity(TileEntityTank.class, name);
+    }
+
+    @Override
+    public ItemBlock getItemBlock() {
+        return new ItemBlockTank(this);
+    }
+
+    @Override
+    public void initModel() {
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(Objects.requireNonNull(getRegistryName()), "inventory"));
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTank.class, new TESRTank());
     }
 
     @Override
@@ -175,12 +190,6 @@ public class BlockTank extends BlockTileEntity<TileEntityTank> {
     @SuppressWarnings("deprecation")
     public int getComparatorInputOverride(IBlockState blockState, World world, BlockPos pos) {
         return getTileEntity(world, pos) == null ? 0 : getTileEntity(world, pos).getComparatorStrength();
-    }
-
-    @SideOnly(Side.CLIENT)
-    public void initModel() {
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(Objects.requireNonNull(getRegistryName()), "inventory"));
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTank.class, new TESRTank());
     }
 
     @Override

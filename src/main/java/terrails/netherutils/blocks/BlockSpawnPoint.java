@@ -16,6 +16,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import terrails.netherutils.Constants;
+import terrails.netherutils.NetherUtils;
 import terrails.netherutils.api.world.IWorldData;
 import terrails.netherutils.config.ConfigHandler;
 import terrails.netherutils.world.data.CustomWorldData;
@@ -28,9 +29,9 @@ import java.util.Random;
 public class BlockSpawnPoint extends BlockBase {
 
     public BlockSpawnPoint(String name) {
-        super(Material.ROCK, Constants.MOD_ID);
-        setRegistryName(new ResourceLocation(Constants.MOD_ID, name));
-        setUnlocalizedName(name);
+        super(Material.ROCK);
+        setRegistryName(new ResourceLocation(NetherUtils.MOD_ID, name));
+        setUnlocalizedName(NetherUtils.MOD_ID + "." + name);
         setBlockUnbreakable();
         setResistance(6000000.0F);
         setSoundType(SoundType.STONE);

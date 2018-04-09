@@ -8,25 +8,35 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.Loader;
 import terrails.netherutils.Constants;
+import terrails.netherutils.NetherUtils;
+import terrails.netherutils.init.ModBlocks;
 import terrails.netherutils.world.nether.TreesGenerator;
 import terrails.netherutils.world.nether.trees.WorldGeneratorAshwood;
 import terrails.netherutils.world.nether.trees.WorldGeneratorHellwood;
 import terrails.netherutils.world.nether.trees.WorldGeneratorSoulwood;
+import terrails.terracore.registry.IItemBlock;
+import terrails.terracore.registry.client.ICustomModel;
 
 import java.util.Random;
 
-public class BlockNTFSapling extends BlockBush implements IGrowable {
+public class BlockNTFSapling extends BlockBush implements IGrowable, IItemBlock, ICustomModel {
 
     public static final PropertyEnum<WoodType> VARIANT = PropertyEnum.create("variant", WoodType.class);
     public static final PropertyInteger STAGE = PropertyInteger.create("stage", 0, 1);
@@ -35,9 +45,22 @@ public class BlockNTFSapling extends BlockBush implements IGrowable {
 
     public BlockNTFSapling(String name) {
         setRegistryName(name);
-        setCreativeTab(Constants.CreativeTab.NetherUtils);
+        setCreativeTab(NetherUtils.TAB_NETHER_UTILS);
         setSoundType(SoundType.PLANT);
         this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANT, WoodType.HELL).withProperty(STAGE, Integer.valueOf(0)));
+    }
+
+    @Override
+    public void initModel() {
+        for (WoodType enumType : WoodType.values()) {
+            ModelBakery.registerItemVariants(Item.getItemFromBlock(this), new ResourceLocation(NetherUtils.MOD_ID, enumType.getName() + "_sapling"));
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), enumType.getMetadata(), new ModelResourceLocation(new ResourceLocation(NetherUtils.MOD_ID, enumType.getName() + "_sapling"), "inventory"));
+        }
+    }
+
+    @Override
+    public ItemBlock getItemBlock() {
+        return new ItemBlockSapling(this);
     }
 
     @Override

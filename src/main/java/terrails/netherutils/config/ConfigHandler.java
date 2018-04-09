@@ -4,6 +4,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import terrails.netherutils.Constants;
+import terrails.netherutils.NetherUtils;
 
 import java.io.File;
 
@@ -65,13 +66,13 @@ public class ConfigHandler {
     public static String[] startingEffects;
 
     public static void init(File dir) {
-        config = new Configuration(new File(dir, Constants.MOD_ID + ".cfg"));
+        config = new Configuration(new File(dir, NetherUtils.MOD_ID + ".cfg"));
         syncConfig();
     }
 
     @SubscribeEvent
     public void configChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
-        if (event.getModID().equals(Constants.MOD_ID)) {
+        if (event.getModID().equals(NetherUtils.MOD_ID)) {
             syncConfig();
         }
     }

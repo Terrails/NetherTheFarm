@@ -19,6 +19,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.IPlantable;
 import terrails.netherutils.Constants;
+import terrails.netherutils.NetherUtils;
 import terrails.terracore.block.BlockBase;
 
 import java.util.Random;
@@ -29,9 +30,9 @@ public class BlockSoulSoil extends BlockBase {
     private static final AxisAlignedBB FARMLAND_AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.9375D, 1.0D);
 
     public BlockSoulSoil(String name) {
-        super(Material.GROUND, Constants.MOD_ID);
-        setRegistryName(new ResourceLocation(Constants.MOD_ID, name));
-        setUnlocalizedName(name);
+        super(Material.GROUND);
+        setRegistryName(new ResourceLocation(NetherUtils.MOD_ID, name));
+        setUnlocalizedName(NetherUtils.MOD_ID + "." + name);
         this.setDefaultState(this.blockState.getBaseState().withProperty(MOISTURE, 0));
         this.setTickRandomly(true);
         this.setLightOpacity(255);

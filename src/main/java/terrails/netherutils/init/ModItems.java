@@ -10,12 +10,12 @@ import java.util.List;
 
 public class ModItems {
 
-    private static List<Item> items = Lists.newArrayList();
+    public static List<Item> items = Lists.newArrayList();
 
-    public static Item FORBIDDEN_FRUIT;
+    public static final Item FORBIDDEN_FRUIT;
     public static Item DEBUG_TOOL;
 
-    public static void init() {
+    static {
         FORBIDDEN_FRUIT = add(new ItemForbiddenFruit("forbidden_fruit"));
         if (ConfigHandler.portalDebugTool) {
             DEBUG_TOOL = add(new ItemDebugTool("debug_tool"));
@@ -25,10 +25,6 @@ public class ModItems {
     public static <T extends Item> T add(T item) {
         items.add(item);
         return item;
-    }
-
-    public static Item[] get() {
-        return items.toArray(new Item[items.size()]);
     }
 
 }

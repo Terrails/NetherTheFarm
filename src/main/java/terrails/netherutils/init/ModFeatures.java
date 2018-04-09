@@ -34,8 +34,6 @@ public class ModFeatures {
     }
 
     public static void initRegistry() {
-        ModBlocks.init();
-        ModItems.init();
         ModAdvancements.init();
         MinecraftForge.EVENT_BUS.register(new RegisterEvent());
     }
@@ -52,7 +50,7 @@ public class ModFeatures {
     }
 
     public static void initNetwork() {
-        Network.WRAPPER = NetworkRegistry.INSTANCE.newSimpleChannel(Constants.MOD_ID);
+        Network.WRAPPER = NetworkRegistry.INSTANCE.newSimpleChannel(NetherUtils.MOD_ID);
 
         NetworkRegistry.INSTANCE.registerGuiHandler(NetherUtils.INSTANCE, new ModGUIs());
         Network.WRAPPER.registerMessage(SPacketBoolean.Handler.class, SPacketBoolean.class, Network.nextID(), Side.SERVER);

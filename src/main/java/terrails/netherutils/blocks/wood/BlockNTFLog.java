@@ -4,13 +4,22 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.ModelLoader;
 import terrails.netherutils.Constants;
+import terrails.netherutils.NetherUtils;
+import terrails.netherutils.init.ModBlocks;
+import terrails.terracore.registry.IItemBlock;
+import terrails.terracore.registry.client.ICustomModel;
 
-public class BlockNTFLog extends net.minecraft.block.BlockLog {
+public class BlockNTFLog extends net.minecraft.block.BlockLog implements IItemBlock, ICustomModel {
 
     public static final PropertyEnum<WoodType> VARIANT = PropertyEnum.create("variant", WoodType.class, predicate -> {
         assert predicate != null;
@@ -19,8 +28,21 @@ public class BlockNTFLog extends net.minecraft.block.BlockLog {
 
     public BlockNTFLog(String name) {
         setRegistryName(name);
-        this.setCreativeTab(Constants.CreativeTab.NetherUtils);
+        this.setCreativeTab(NetherUtils.TAB_NETHER_UTILS);
         this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANT, WoodType.HELL).withProperty(LOG_AXIS, EnumAxis.Y));
+    }
+
+    @Override
+    public void initModel() {
+        for (WoodType enumType : WoodType.values()) {
+            ModelBakery.registerItemVariants(Item.getItemFromBlock(this), new ResourceLocation(NetherUtils.MOD_ID, enumType.getName() + "_log"));
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), enumType.getMetadata(), new ModelResourceLocation(new ResourceLocation(NetherUtils.MOD_ID, enumType.getName() + "_log"), "inventory"));
+        }
+    }
+
+    @Override
+    public ItemBlock getItemBlock() {
+        return new ItemBlockLog(this);
     }
 
     @Override

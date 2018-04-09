@@ -24,30 +24,32 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import terrails.netherutils.Constants;
+import terrails.netherutils.NetherUtils;
 import terrails.netherutils.api.capabilities.IObelisk;
 import terrails.netherutils.entity.capabilities.obelisk.CapabilityObelisk;
 import terrails.terracore.block.BlockBase;
+import terrails.terracore.registry.client.ICustomModel;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-public class BlockObelisk extends BlockBase {
+public class BlockObelisk extends BlockBase implements ICustomModel {
 
     public static final PropertyBool HAS_TESR = PropertyBool.create("has_tesr");
     private static final AxisAlignedBB BOUNDING_BOX = new AxisAlignedBB(0.0625 * 0, 0, 0.0625 * 0, 0.0625 * 16, 0.0625 * 2, 0.0625 * 16);
 
     public BlockObelisk(String name) {
-        super(Material.ROCK, Constants.MOD_ID);
-        setRegistryName(new ResourceLocation(Constants.MOD_ID, name));
-        setUnlocalizedName(name);
-        setHardness(4.0F);
-        setHarvestLevel("pickaxe", 2);
-        setCreativeTab(Constants.CreativeTab.NetherUtils);
-        setDefaultState(this.blockState.getBaseState().withProperty(HAS_TESR, false));
+        super(Material.ROCK);
+        this.setRegistryName(new ResourceLocation(NetherUtils.MOD_ID, name));
+        this.setUnlocalizedName(NetherUtils.MOD_ID + "." + name);
+        this.setHardness(4.0F);
+        this.setHarvestLevel("pickaxe", 2);
+        this.setCreativeTab(NetherUtils.TAB_NETHER_UTILS);
+        this.setDefaultState(this.blockState.getBaseState().withProperty(HAS_TESR, false));
         GameRegistry.registerTileEntity(TileEntityObelisk.class, "obelisk");
     }
 
-    @SideOnly(Side.CLIENT)
+    @Override
     public void initModel() {
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(Objects.requireNonNull(getRegistryName()), "inventory"));
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityObelisk.class, new TESRObelisk());

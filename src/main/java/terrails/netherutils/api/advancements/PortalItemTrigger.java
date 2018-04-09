@@ -14,6 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import terrails.netherutils.Constants;
+import terrails.netherutils.NetherUtils;
 import terrails.netherutils.config.ConfigHandler;
 
 import javax.annotation.Nullable;
@@ -23,7 +24,7 @@ import java.util.Set;
 
 public class PortalItemTrigger implements ICriterionTrigger<PortalItemTrigger.Instance> {
 
-    private static final ResourceLocation ID = new ResourceLocation(Constants.MOD_ID, "portal_item");
+    private static final ResourceLocation ID = new ResourceLocation(NetherUtils.MOD_ID, "portal_item");
     private final Map<PlayerAdvancements, Listeners> listeners = Maps.newHashMap();
 
     @Override

@@ -12,6 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import terrails.netherutils.Constants;
+import terrails.netherutils.NetherUtils;
 import terrails.netherutils.blocks.portal.PortalRegistry;
 import terrails.netherutils.blocks.portal.nether.TileEntityPortalMaster;
 import terrails.netherutils.blocks.portal.nether.TileEntityPortalSlave;
@@ -23,9 +24,9 @@ import java.util.List;
 public class ItemDebugTool extends ItemBase {
 
     public ItemDebugTool(String name) {
-        super(Constants.MOD_ID);
-        setRegistryName(new ResourceLocation(Constants.MOD_ID, name));
-        setUnlocalizedName(name);
+        super();
+        setRegistryName(new ResourceLocation(NetherUtils.MOD_ID, name));
+        setUnlocalizedName(NetherUtils.MOD_ID + "." + name);
         setMaxStackSize(1);
     }
 

@@ -4,12 +4,16 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import terrails.netherutils.Constants;
+import terrails.netherutils.NetherUtils;
 import terrails.netherutils.blocks.wood.WoodType;
+
+import java.util.Objects;
 
 public class ItemBlockLeaf extends ItemBlock {
 
     public ItemBlockLeaf(Block block) {
         super(block);
+        setRegistryName(Objects.requireNonNull(block.getRegistryName()));
         setHasSubtypes(true);
         setMaxDamage(0);
     }
@@ -21,6 +25,6 @@ public class ItemBlockLeaf extends ItemBlock {
 
     @Override
     public String getUnlocalizedName(ItemStack stack) {
-        return "tile." + Constants.MOD_ID + ".leaf_" + WoodType.byMetadata(stack.getMetadata());
+        return "tile." + NetherUtils.MOD_ID + ".leaf_" + WoodType.byMetadata(stack.getMetadata());
     }
 }

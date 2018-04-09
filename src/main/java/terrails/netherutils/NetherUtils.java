@@ -1,31 +1,64 @@
 package terrails.netherutils;
 
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import terrails.netherutils.api.world.IWorldData;
+import terrails.netherutils.init.ModBlocks;
 import terrails.netherutils.init.ModFeatures;
-import terrails.netherutils.proxies.IProxy;
+import terrails.netherutils.init.ModItems;
 import terrails.netherutils.world.data.CustomWorldData;
+import terrails.terracore.base.MainModClass;
+import terrails.terracore.base.proxies.ProxyBase;
+import terrails.terracore.base.registry.RegistryList;
 
-@Mod(modid = Constants.MOD_ID,
-        name = Constants.NAME,
-        version = Constants.VERSION,
-        acceptedMinecraftVersions = Constants.MINECRAFT_VERSION,
-        guiFactory = Constants.GUI_FACTORY,
-        dependencies = "required-after:terracore@[" + Constants.TERRACORE_VERSION + ",);")
-public class NetherUtils {
-    @SidedProxy(clientSide = Constants.CLIENT_PROXY, serverSide = Constants.SERVER_PROXY)
-    public static IProxy proxy;
+@Mod(modid = NetherUtils.MOD_ID,
+        name = NetherUtils.NAME,
+        version = NetherUtils.VERSION,
+        guiFactory = NetherUtils.GUI_FACTORY,
+        dependencies = "required-after:terracore@[0.0.0,);")
+public class NetherUtils extends MainModClass<NetherUtils> {
 
-    @Mod.Instance(Constants.MOD_ID)
+    public static final String MOD_ID = "netherutils";
+    public static final String NAME = "NetherUtils";
+    public static final String VERSION = "@VERSION@";
+    public static final String GUI_FACTORY = "terrails.netherutils.config.ConfigFactoryGUI";
+
+    public static CreativeTabs TAB_NETHER_UTILS = new CreativeTabs(MOD_ID) {
+      @Override
+      public ItemStack getTabIconItem() {
+          return new ItemStack(ModBlocks.OBELISK);
+      }
+  };
+    public static ProxyBase proxy;
+
+    @Mod.Instance(NetherUtils.MOD_ID)
     public static NetherUtils INSTANCE;
 
-    @Mod.EventHandler
-    public void preInit(FMLPreInitializationEvent event) {
-        proxy.preInit(event);
+    public NetherUtils() {
+        super(MOD_ID, NAME, VERSION);
+        NetherUtils.proxy = getProxy();
+    }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public void registerForgeEntries(RegistryList list) {
+        switch (list.getType()) {
+            case BLOCK:
+                list.addAll(ModBlocks.blocks);
+                break;
+            case ITEM:
+                list.addAll(ModItems.items);
+                break;
+        }
+    }
+
+    @Mod.EventHandler
+    @Override
+    public void preInit(FMLPreInitializationEvent event) {
+        super.preInit(event);
         ModFeatures.init(event);
         ModFeatures.initRegistry();
         ModFeatures.initCapabilities();
@@ -34,13 +67,15 @@ public class NetherUtils {
     }
 
     @Mod.EventHandler
+    @Override
     public void init(FMLInitializationEvent event) {
-        proxy.init(event);
+        super.init(event);
     }
 
     @Mod.EventHandler
+    @Override
     public void postInit(FMLPostInitializationEvent event) {
-        proxy.postInit(event);
+        super.postInit(event);
         ModFeatures.initWorlds();
     }
 
@@ -58,5 +93,10 @@ public class NetherUtils {
         if (data != null) {
             data.hasRead(true);
         }
+    }
+
+    @Override
+    public NetherUtils getInstance() {
+        return this;
     }
 }

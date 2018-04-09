@@ -12,6 +12,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import terrails.netherutils.Constants;
+import terrails.netherutils.NetherUtils;
 import terrails.netherutils.api.capabilities.IDeathZone;
 import terrails.terracore.capabilities.CapabilitySerializable;
 
@@ -44,7 +45,7 @@ public class CapabilityDeathZone {
         @SubscribeEvent
         public void attachCapabilities(AttachCapabilitiesEvent<Entity> event) {
             if (event.getObject() instanceof EntityPlayer) {
-                event.addCapability(new ResourceLocation(Constants.MOD_ID, "DeathZone"), new CapabilitySerializable<>(CapabilityDeathZone.DEATH_ZONE_CAPABILITY));
+                event.addCapability(new ResourceLocation(NetherUtils.MOD_ID, "DeathZone"), new CapabilitySerializable<>(CapabilityDeathZone.DEATH_ZONE_CAPABILITY));
             }
         }
     }
