@@ -13,7 +13,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 import terrails.netherutils.init.ModBlocks;
 
-@SideOnly(Side.CLIENT)
 public class TESRObelisk extends TileEntitySpecialRenderer<TileEntityObelisk> {
 
     @Override

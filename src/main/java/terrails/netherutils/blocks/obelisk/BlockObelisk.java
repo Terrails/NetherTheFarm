@@ -50,10 +50,13 @@ public class BlockObelisk extends BlockBase implements ICustomModel {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void initModel() {
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(Objects.requireNonNull(getRegistryName()), "inventory"));
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityObelisk.class, new TESRObelisk());
     }
+
+
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {

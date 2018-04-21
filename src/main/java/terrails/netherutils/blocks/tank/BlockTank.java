@@ -62,6 +62,7 @@ public class BlockTank extends BlockTileEntity<TileEntityTank> implements IItemB
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void initModel() {
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(Objects.requireNonNull(getRegistryName()), "inventory"));
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTank.class, new TESRTank());

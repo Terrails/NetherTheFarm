@@ -11,7 +11,6 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import terrails.netherutils.Constants;
 import terrails.netherutils.NetherUtils;
 import terrails.netherutils.api.capabilities.IDeathZone;
 import terrails.terracore.capabilities.CapabilitySerializable;

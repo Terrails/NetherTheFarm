@@ -46,10 +46,11 @@ public class BlockPortalSlave extends BlockTileEntity<TileEntityPortalSlave> imp
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void initModel() {
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPortalSlave.class, new TESRPortalSlave());
         ModelResourceLocation location = new ModelResourceLocation(Objects.requireNonNull(this.getRegistryName()), "inventory");
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, location);
+        ClientRegistry.bindTileEntitySpecialRenderer(terrails.netherutils.blocks.portal.end.TileEntityPortalSlave.class, new terrails.netherutils.blocks.portal.end.render.TESRPortalSlave());
     }
 
     @Override

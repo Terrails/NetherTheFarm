@@ -34,8 +34,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import terrails.netherutils.Constants;
 import terrails.netherutils.NetherUtils;
-import terrails.terracore.block.BlockTileEntity;
 import terrails.netherutils.blocks.portal.nether.render.TESRPortal;
+import terrails.terracore.block.BlockTileEntity;
 import terrails.netherutils.config.ConfigHandler;
 import terrails.netherutils.blocks.portal.PortalRegistry;
 import terrails.terracore.registry.IItemBlock;
@@ -61,10 +61,11 @@ public class BlockPortal extends BlockTileEntity<TileEntityPortalMaster> impleme
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void initModel() {
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPortalMaster.class, new TESRPortal());
         ModelResourceLocation location = new ModelResourceLocation(Objects.requireNonNull(this.getRegistryName()), "inventory");
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, location);
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPortalMaster.class, new TESRPortal());
     }
 
     @Override

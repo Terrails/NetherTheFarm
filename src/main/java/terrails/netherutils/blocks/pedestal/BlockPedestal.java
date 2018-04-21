@@ -50,13 +50,13 @@ public class BlockPedestal extends BlockTileEntity<TileEntityPedestal> implement
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void initModel() {
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPedestal.class, new TESRPedestal());
-
         for (Type enumType : Type.values()) {
             ModelBakery.registerItemVariants(Item.getItemFromBlock(ModBlocks.PEDESTAL), new ResourceLocation(NetherUtils.MOD_ID, enumType.getName() + "_pedestal"));
             ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ModBlocks.PEDESTAL), enumType.getMetadata(), new ModelResourceLocation(new ResourceLocation(NetherUtils.MOD_ID, enumType.getName() + "_pedestal"), "inventory"));
         }
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPedestal.class, new TESRPedestal());
     }
 
     @Override
