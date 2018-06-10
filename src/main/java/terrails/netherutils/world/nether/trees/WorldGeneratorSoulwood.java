@@ -44,9 +44,10 @@ public class WorldGeneratorSoulwood extends WorldGenAbstractTree {
             for (IBlockState blockState : growBlock) {
                 if (!blockState.getPropertyKeys().isEmpty() || !state.getPropertyKeys().isEmpty()){
                     for (IProperty property : state.getPropertyKeys()) {
-                        for (IProperty property1 : blockState.getPropertyKeys())
-                        if (state.getValue(property) == blockState.getValue(property1)) {
-                            isSoil = true;
+                        for (IProperty property1 : blockState.getPropertyKeys()) {
+                            if (state.getValue(property) == blockState.getValue(property1)) {
+                                isSoil = true;
+                            }
                         }
                     }
                 } else if (state.getPropertyKeys().isEmpty() || blockState.getPropertyKeys().isEmpty()) {

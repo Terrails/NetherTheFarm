@@ -18,7 +18,7 @@ import terrails.terracore.base.registry.RegistryList;
         name = NetherUtils.NAME,
         version = NetherUtils.VERSION,
         guiFactory = NetherUtils.GUI_FACTORY,
-        dependencies = "required-after:terracore@[0.0.0,);")
+        dependencies = "required-after:terracore@[0.0.0,);after:biomesoplenty")
 public class NetherUtils extends MainModClass<NetherUtils> {
 
     public static final String MOD_ID = "netherutils";

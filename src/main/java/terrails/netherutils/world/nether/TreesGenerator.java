@@ -31,14 +31,20 @@ public class TreesGenerator implements IWorldGenerator {
     @SuppressWarnings("deprecation")
     public TreesGenerator() {
         if (Loader.isModLoaded("biomesoplenty")) {
-            blockStates = new IBlockState[]{
-                    Blocks.NETHERRACK.getDefaultState(),
-                    Objects.requireNonNull(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("biomesoplenty", "grass"))).getStateFromMeta(6),
-                    Objects.requireNonNull(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("biomesoplenty", "grass"))).getStateFromMeta(8)};
+            ResourceLocation location = new ResourceLocation("biomesoplenty", "grass");
+            if (ForgeRegistries.BLOCKS.containsKey(location)) {
+                blockStates = new IBlockState[]{
+                        Blocks.NETHERRACK.getDefaultState(),
+                        Objects.requireNonNull(ForgeRegistries.BLOCKS.getValue(location)).getStateFromMeta(6),
+                        Objects.requireNonNull(ForgeRegistries.BLOCKS.getValue(location)).getStateFromMeta(8)};
+            } else {
+                blockStates = new IBlockState[]{Blocks.NETHERRACK.getDefaultState()};
+            }
             HELL_WOOD = new WorldGeneratorHellwood(false, blockStates);
             ASH_WOOD = new WorldGeneratorAshwood(false, blockStates);
             SOUL_WOOD = new WorldGeneratorSoulwood(false, blockStates);
         } else {
+            blockStates = new IBlockState[]{Blocks.NETHERRACK.getDefaultState()};
             this.HELL_WOOD = new WorldGeneratorHellwood(false);
             this.ASH_WOOD = new WorldGeneratorAshwood(false);
             this.SOUL_WOOD = new WorldGeneratorSoulwood(false);
