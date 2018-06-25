@@ -33,7 +33,7 @@ repositories {
 }
 
 dependencies {
-    deobfCompile(group: "terrails.terracore", name: "TerraCore", version: "${minecraft_major}-${terracore_version}")
+    deobfCompile(group: "terrails.terracore", name: "TerraCore", version: "${minecraft_major}-${terracore_version}-SNAPSHOT.+")
 }
 
 processResources {
@@ -54,21 +54,7 @@ processResources {
 sourceCompatibility = targetCompatibility = '1.8'
 sourceCompatibility = targetCompatibility = '1.8'
 
-/** Cleans old SNAPSHOT versions of TerraCore since IntelliJ
- is sometimes being stupid and uses older version for libraries **/
-task cleanTerraCore(type: Delete) {
+task refreshDependencies() {
     dependsOn 'deobfCompileDeobfDepTask0'
     dependsOn 'deobfCompileRemapDepSourcesTask1'
-    doLast {
-        def dirName = new File("${gradle.gradleUserHomeDir}/caches/minecraft/deobfedDeps/deobf/terrails/terracore/TerraCore")
-        dirName.eachDir { dir ->
-            configurations.deobfCompile.resolvedConfiguration.firstLevelModuleDependencies.each {
-                if (dir.name.contains("SNAPSHOT") && it.moduleName.contains("TerraCore")) {
-                    if (!dir.name.contains(it.moduleVersion)) {
-                        delete(dir)
-                    }
-                }
-            }
-        }
-    }
 }
